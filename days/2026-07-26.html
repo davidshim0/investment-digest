@@ -145,25 +145,22 @@ figure.trends figcaption{margin-top:16px;font-size:.88rem;color:var(--ink-faint)
 .foot b{color:var(--ink-soft)}
 .empty-state{color:var(--ink-faint);font-style:italic;padding:24px 2px}
 
-.navlinks{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 22px}
-.navlinks a{font-family:var(--mono);font-size:.82rem;font-weight:700;color:var(--ink-soft);
-  background:var(--card);border:1px solid var(--line-strong);border-radius:999px;padding:7px 14px;border-bottom:1px solid var(--line-strong)}
-.navlinks a:hover{color:var(--honey-deep);border-color:var(--honey)}
-
 .zchart-panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px 24px;box-shadow:var(--shadow-sm)}
-.zchart-asof{font-family:var(--mono);font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:14px}
-.zchart-grid{display:grid;grid-template-columns:1fr 220px;gap:22px;align-items:start}
-@media(max-width:760px){.zchart-grid{grid-template-columns:1fr}}
-.zrank-list{display:flex;flex-direction:column;gap:2px;border-left:1px solid var(--line);padding-left:18px}
-@media(max-width:760px){.zrank-list{border-left:none;border-top:1px solid var(--line);padding-left:0;padding-top:14px}}
-.zrank-h{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:8px;font-weight:700}
-.zrank-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-top:1px dashed var(--line);font-size:.87rem}
+.zchart-asof{font-size:.86rem;color:var(--ink-faint);margin-bottom:14px;line-height:1.5}
+.zchart-grid{display:grid;grid-template-columns:1fr 300px;gap:22px;align-items:start}
+@media(max-width:820px){.zchart-grid{grid-template-columns:1fr}}
+.zrank-list{display:flex;flex-direction:column;border-left:1px solid var(--line);padding-left:18px}
+@media(max-width:820px){.zrank-list{border-left:none;border-top:1px solid var(--line);padding-left:0;padding-top:14px}}
+.zrank-row{display:grid;grid-template-columns:12px 1fr auto auto;align-items:center;gap:9px;padding:6px 0;border-top:1px dashed var(--line);font-size:.86rem}
 .zrank-row:first-of-type{border-top:none}
-.zrank-dot{width:10px;height:10px;border-radius:50%;flex:0 0 auto}
-.zrank-ticker{flex:1;color:var(--ink);font-weight:600}
-.zrank-val{font-family:var(--mono);font-weight:700;font-size:.85rem}
+.zrank-row.zrank-head{border-top:none;border-bottom:1px solid var(--line);padding-bottom:8px;margin-bottom:2px;
+  font-family:var(--mono);font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-faint);font-weight:700}
+.zrank-dot{width:10px;height:10px;border-radius:50%}
+.zrank-ticker{color:var(--ink);font-weight:600}
+.zrank-val{font-family:var(--mono);font-weight:700;font-size:.85rem;text-align:right}
 .zrank-val.pos{color:var(--buy)}
 .zrank-val.neg{color:var(--sell)}
+.zrank-alloc{font-family:var(--mono);font-weight:700;font-size:.85rem;text-align:right;color:var(--ink-soft);min-width:52px}
 .zchart-note{font-size:.85rem;color:var(--ink-faint);margin:16px 0 0}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>

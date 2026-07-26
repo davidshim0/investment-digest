@@ -50,17 +50,24 @@ h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.2;color:var(--
 
 .sec{margin:30px 0 0}
 .sec-h{font-family:var(--display);font-weight:600;font-size:1.15rem;margin:0 0 14px}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
-a.cardlink{text-decoration:none;color:inherit;border-bottom:none}
-.gcard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px;box-shadow:var(--shadow-sm);
-  transition:transform .18s,box-shadow .18s,border-color .18s;height:100%;display:flex;flex-direction:column}
-.gcard:hover{transform:translateY(-4px);box-shadow:var(--shadow-md);border-color:var(--line-strong)}
-.gcard h2{font-size:1.18rem;letter-spacing:-.01em;margin:0 0 .3em}
-.gcard .date{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:10px}
-.gcard .counts{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 12px}
-.gcard .tickers{font-size:.88rem;color:var(--ink-soft);margin:0 0 12px;flex:1}
-.gcard .go{font-family:var(--body);font-weight:700;font-size:.88rem;color:var(--honey-deep);display:inline-flex;align-items:center;gap:6px}
-.gcard:hover .go{color:var(--ltram)}
+
+.date-groups{display:flex;flex-direction:column;gap:16px}
+.date-group{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px 24px;box-shadow:var(--shadow-sm);
+  transition:border-color .18s,box-shadow .18s}
+.date-group:hover{border-color:var(--line-strong);box-shadow:var(--shadow-md)}
+.date-group .dg-head{display:flex;align-items:baseline;flex-wrap:wrap;gap:10px 14px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.date-group .dg-date{font-family:var(--display);font-weight:600;font-size:1.25rem;color:var(--ink);border-bottom:1.5px solid var(--honey-soft)}
+.date-group .dg-date:hover{color:var(--honey-deep);border-color:var(--honey)}
+.date-group .dg-count{font-family:var(--mono);font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-faint)}
+.date-videos{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+.date-videos li{display:flex;flex-direction:column;gap:3px;font-size:.94rem}
+.date-videos .dv-row{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline}
+.date-videos .dv-channel{font-family:var(--mono);font-size:10px;letter-spacing:.04em;text-transform:uppercase;color:var(--honey-deep);
+  background:var(--honey-soft);border-radius:999px;padding:2px 9px;flex:0 0 auto}
+.date-videos .dv-title{color:var(--ink)}
+.date-videos .dv-summary{color:var(--ink-faint);font-size:.85rem;line-height:1.5;margin:0 0 0 2px}
+.date-videos a{color:var(--ink);border-bottom:1.5px solid var(--line-strong)}
+.date-videos a:hover{color:var(--honey-deep);border-color:var(--honey)}
 
 .status{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-weight:700;font-size:10.5px;letter-spacing:.03em;
   text-transform:uppercase;padding:3px 9px;border-radius:999px}
@@ -244,7 +251,7 @@ figure.trends figcaption{margin-top:16px;font-size:.88rem;color:var(--ink-faint)
   <section class="sec">
     <div class="sec-h">Videos covered (9)</div>
     
-    <details class="vcard">
+    <details class="vcard" id="vid-0">
       <summary>
         <div class="vmeta">
           <div class="channel">Orlando Kim</div>
@@ -258,7 +265,7 @@ figure.trends figcaption{margin-top:16px;font-size:.88rem;color:var(--ink-faint)
       </div>
     </details>
 
-    <details class="vcard">
+    <details class="vcard" id="vid-1">
       <summary>
         <div class="vmeta">
           <div class="channel">Orlando Kim</div>
@@ -272,7 +279,7 @@ figure.trends figcaption{margin-top:16px;font-size:.88rem;color:var(--ink-faint)
       </div>
     </details>
 
-    <details class="vcard">
+    <details class="vcard" id="vid-2">
       <summary>
         <div class="vmeta">
           <div class="channel">3Pro TV (삼프로TV)</div>
@@ -286,7 +293,7 @@ figure.trends figcaption{margin-top:16px;font-size:.88rem;color:var(--ink-faint)
       </div>
     </details>
 
-    <details class="vcard">
+    <details class="vcard" id="vid-3">
       <summary>
         <div class="vmeta">
           <div class="channel">3Pro TV (삼프로TV)</div>
@@ -300,7 +307,7 @@ figure.trends figcaption{margin-top:16px;font-size:.88rem;color:var(--ink-faint)
       </div>
     </details>
 
-    <details class="vcard">
+    <details class="vcard" id="vid-4">
       <summary>
         <div class="vmeta">
           <div class="channel">3Pro TV (삼프로TV)</div>
@@ -314,7 +321,7 @@ figure.trends figcaption{margin-top:16px;font-size:.88rem;color:var(--ink-faint)
       </div>
     </details>
 
-    <details class="vcard">
+    <details class="vcard" id="vid-5">
       <summary>
         <div class="vmeta">
           <div class="channel">Andrei Jikh</div>
@@ -328,7 +335,7 @@ figure.trends figcaption{margin-top:16px;font-size:.88rem;color:var(--ink-faint)
       </div>
     </details>
 
-    <details class="vcard">
+    <details class="vcard" id="vid-6">
       <summary>
         <div class="vmeta">
           <div class="channel">The Plain Bagel</div>
@@ -342,7 +349,7 @@ figure.trends figcaption{margin-top:16px;font-size:.88rem;color:var(--ink-faint)
       </div>
     </details>
 
-    <details class="vcard">
+    <details class="vcard" id="vid-7">
       <summary>
         <div class="vmeta">
           <div class="channel">Patrick Boyle</div>
@@ -356,7 +363,7 @@ figure.trends figcaption{margin-top:16px;font-size:.88rem;color:var(--ink-faint)
       </div>
     </details>
 
-    <details class="vcard">
+    <details class="vcard" id="vid-8">
       <summary>
         <div class="vmeta">
           <div class="channel">The Money Guy Show</div>
@@ -375,5 +382,19 @@ figure.trends figcaption{margin-top:16px;font-size:.88rem;color:var(--ink-faint)
     <b>Investment Digest</b> · generated automatically. Not financial advice — personal reading notes only.
   </footer>
 </div>
+<script>
+(function(){
+  var h = window.location.hash;
+  if (h && h.indexOf('#vid-') === 0) {
+    var el = document.querySelector(h);
+    if (el) {
+      el.setAttribute('open', '');
+      requestAnimationFrame(function(){
+        el.scrollIntoView({behavior: 'smooth', block: 'start'});
+      });
+    }
+  }
+})();
+</script>
 </body>
 </html>

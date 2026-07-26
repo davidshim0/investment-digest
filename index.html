@@ -50,17 +50,24 @@ h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.2;color:var(--
 
 .sec{margin:30px 0 0}
 .sec-h{font-family:var(--display);font-weight:600;font-size:1.15rem;margin:0 0 14px}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
-a.cardlink{text-decoration:none;color:inherit;border-bottom:none}
-.gcard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px;box-shadow:var(--shadow-sm);
-  transition:transform .18s,box-shadow .18s,border-color .18s;height:100%;display:flex;flex-direction:column}
-.gcard:hover{transform:translateY(-4px);box-shadow:var(--shadow-md);border-color:var(--line-strong)}
-.gcard h2{font-size:1.18rem;letter-spacing:-.01em;margin:0 0 .3em}
-.gcard .date{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:10px}
-.gcard .counts{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 12px}
-.gcard .tickers{font-size:.88rem;color:var(--ink-soft);margin:0 0 12px;flex:1}
-.gcard .go{font-family:var(--body);font-weight:700;font-size:.88rem;color:var(--honey-deep);display:inline-flex;align-items:center;gap:6px}
-.gcard:hover .go{color:var(--ltram)}
+
+.date-groups{display:flex;flex-direction:column;gap:16px}
+.date-group{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px 24px;box-shadow:var(--shadow-sm);
+  transition:border-color .18s,box-shadow .18s}
+.date-group:hover{border-color:var(--line-strong);box-shadow:var(--shadow-md)}
+.date-group .dg-head{display:flex;align-items:baseline;flex-wrap:wrap;gap:10px 14px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.date-group .dg-date{font-family:var(--display);font-weight:600;font-size:1.25rem;color:var(--ink);border-bottom:1.5px solid var(--honey-soft)}
+.date-group .dg-date:hover{color:var(--honey-deep);border-color:var(--honey)}
+.date-group .dg-count{font-family:var(--mono);font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-faint)}
+.date-videos{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+.date-videos li{display:flex;flex-direction:column;gap:3px;font-size:.94rem}
+.date-videos .dv-row{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline}
+.date-videos .dv-channel{font-family:var(--mono);font-size:10px;letter-spacing:.04em;text-transform:uppercase;color:var(--honey-deep);
+  background:var(--honey-soft);border-radius:999px;padding:2px 9px;flex:0 0 auto}
+.date-videos .dv-title{color:var(--ink)}
+.date-videos .dv-summary{color:var(--ink-faint);font-size:.85rem;line-height:1.5;margin:0 0 0 2px}
+.date-videos a{color:var(--ink);border-bottom:1.5px solid var(--line-strong)}
+.date-videos a:hover{color:var(--honey-deep);border-color:var(--honey)}
 
 .status{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-weight:700;font-size:10.5px;letter-spacing:.03em;
   text-transform:uppercase;padding:3px 9px;border-radius:999px}
@@ -149,86 +156,47 @@ figure.trends figcaption{margin-top:16px;font-size:.88rem;color:var(--ink-faint)
   </header>
 
   <section class="sec">
-    <figure class="trends">
-      <div class="viz-title">Ticker mentions over time</div>
-      <div class="viz-kicker">Which stocks your videos are talking about, day by day</div>
-      <svg class="trends-chart" viewBox="0 0 880 300" xmlns="http://www.w3.org/2000/svg"><line class="gridline" x1="46" y1="266.0" x2="860" y2="266.0"/><text class="axis-lab" x="38" y="269.0" text-anchor="end">0</text><line class="gridline" x1="46" y1="143.0" x2="860" y2="143.0"/><text class="axis-lab" x="38" y="146.0" text-anchor="end">1</text><line class="gridline" x1="46" y1="20.0" x2="860" y2="20.0"/><text class="axis-lab" x="38" y="23.0" text-anchor="end">2</text><text class="axis-lab" x="46.0" y="282" text-anchor="middle">07-20</text><text class="axis-lab" x="249.5" y="282" text-anchor="middle">07-21</text><text class="axis-lab" x="453.0" y="282" text-anchor="middle">07-22</text><text class="axis-lab" x="656.5" y="282" text-anchor="middle">07-23</text><text class="axis-lab" x="860.0" y="282" text-anchor="middle">07-25</text><line class="event-line" x1="46.0" y1="20" x2="46.0" y2="266"><title>2026-07-20: 미-이란 양해각서 체결, 호르무즈 긴장 일시 완화</title></line><path class="event-marker" d="M41.0,16 L51.0,16 L46.0,26 Z"><title>2026-07-20: 미-이란 양해각서 체결, 호르무즈 긴장 일시 완화</title></path><line class="event-line" x1="453.0" y1="20" x2="453.0" y2="266"><title>2026-07-22: 미-이란 협상 결렬 조짐, 호르무즈 해협 긴장 재고조</title></line><path class="event-marker" d="M448.0,16 L458.0,16 L453.0,26 Z"><title>2026-07-22: 미-이란 협상 결렬 조짐, 호르무즈 해협 긴장 재고조</title></path><line class="event-line" x1="860.0" y1="20" x2="860.0" y2="266"><title>2026-07-25: 미-이란 양해각서 사실상 무산, 호르무즈 해협 긴장 고조</title></line><path class="event-marker" d="M855.0,16 L865.0,16 L860.0,26 Z"><title>2026-07-25: 미-이란 양해각서 사실상 무산, 호르무즈 해협 긴장 고조</title></path><line class="event-line" x1="860.0" y1="20" x2="860.0" y2="266"><title>2026-07-25: AI 혁명 속도 논쟁 - 투자자 기대와 실제 성장 속도 간 괴리</title></line><path class="event-marker" d="M855.0,16 L865.0,16 L860.0,26 Z"><title>2026-07-25: AI 혁명 속도 논쟁 - 투자자 기대와 실제 성장 속도 간 괴리</title></path><path class="series-line" d="M46.0,143.0 L249.5,143.0 L453.0,143.0 L656.5,143.0 L860.0,143.0" stroke="#2C8C7C"/><circle class="series-dot" cx="46.0" cy="143.0" r="4.5" fill="#2C8C7C"><title>삼성전자: 1</title></circle><circle class="series-dot" cx="249.5" cy="143.0" r="4.5" fill="#2C8C7C"><title>삼성전자: 1</title></circle><circle class="series-dot" cx="453.0" cy="143.0" r="4.5" fill="#2C8C7C"><title>삼성전자: 1</title></circle><circle class="series-dot" cx="656.5" cy="143.0" r="4.5" fill="#2C8C7C"><title>삼성전자: 1</title></circle><circle class="series-dot" cx="860.0" cy="143.0" r="4.5" fill="#2C8C7C"><title>삼성전자: 1</title></circle><path class="series-line" d="M46.0,143.0 L249.5,143.0 L453.0,143.0 L656.5,143.0 L860.0,143.0" stroke="#5A61B4"/><circle class="series-dot" cx="46.0" cy="143.0" r="4.5" fill="#5A61B4"><title>SK하이닉스: 1</title></circle><circle class="series-dot" cx="249.5" cy="143.0" r="4.5" fill="#5A61B4"><title>SK하이닉스: 1</title></circle><circle class="series-dot" cx="453.0" cy="143.0" r="4.5" fill="#5A61B4"><title>SK하이닉스: 1</title></circle><circle class="series-dot" cx="656.5" cy="143.0" r="4.5" fill="#5A61B4"><title>SK하이닉스: 1</title></circle><circle class="series-dot" cx="860.0" cy="143.0" r="4.5" fill="#5A61B4"><title>SK하이닉스: 1</title></circle><path class="series-line" d="M46.0,143.0 L249.5,143.0 L453.0,143.0 L656.5,266.0 L860.0,266.0" stroke="#C27D14"/><circle class="series-dot" cx="46.0" cy="143.0" r="4.5" fill="#C27D14"><title>엔비디아: 1</title></circle><circle class="series-dot" cx="249.5" cy="143.0" r="4.5" fill="#C27D14"><title>엔비디아: 1</title></circle><circle class="series-dot" cx="453.0" cy="143.0" r="4.5" fill="#C27D14"><title>엔비디아: 1</title></circle><path class="series-line" d="M46.0,143.0 L249.5,266.0 L453.0,266.0 L656.5,143.0 L860.0,266.0" stroke="#C0563B"/><circle class="series-dot" cx="46.0" cy="143.0" r="4.5" fill="#C0563B"><title>TSMC: 1</title></circle><circle class="series-dot" cx="656.5" cy="143.0" r="4.5" fill="#C0563B"><title>TSMC: 1</title></circle><path class="series-line" d="M46.0,266.0 L249.5,143.0 L453.0,266.0 L656.5,266.0 L860.0,143.0" stroke="#8B5A8C"/><circle class="series-dot" cx="249.5" cy="143.0" r="4.5" fill="#8B5A8C"><title>아이온큐: 1</title></circle><circle class="series-dot" cx="860.0" cy="143.0" r="4.5" fill="#8B5A8C"><title>아이온큐: 1</title></circle><path class="series-line" d="M46.0,266.0 L249.5,266.0 L453.0,143.0 L656.5,266.0 L860.0,143.0" stroke="#3E6B8A"/><circle class="series-dot" cx="453.0" cy="143.0" r="4.5" fill="#3E6B8A"><title>마이크론: 1</title></circle><circle class="series-dot" cx="860.0" cy="143.0" r="4.5" fill="#3E6B8A"><title>마이크론: 1</title></circle></svg>
-      <div class="trends-legend"><span><i style="background:#2C8C7C"></i>삼성전자 (5)</span><span><i style="background:#5A61B4"></i>SK하이닉스 (5)</span><span><i style="background:#C27D14"></i>엔비디아 (3)</span><span><i style="background:#C0563B"></i>TSMC (2)</span><span><i style="background:#8B5A8C"></i>아이온큐 (2)</span><span><i style="background:#3E6B8A"></i>마이크론 (2)</span></div>
-      <figcaption>Counts how many buy/hold/sell calls named each ticker per day.</figcaption>
-      <div class="events-log">
-        <h4>Market-moving events flagged</h4>
-        <div class="event-item"><div class="edate">2026-07-20</div><div class="etxt"><b>미-이란 양해각서 체결, 호르무즈 긴장 일시 완화</b><span>60일간 대화 합의로 에너지 시장 변동성 축소 기대</span></div></div><div class="event-item"><div class="edate">2026-07-22</div><div class="etxt"><b>미-이란 협상 결렬 조짐, 호르무즈 해협 긴장 재고조</b><span>이란, 통행 선박 통제권 주장하며 양해각서 사실상 무산</span></div></div><div class="event-item"><div class="edate">2026-07-25</div><div class="etxt"><b>미-이란 양해각서 사실상 무산, 호르무즈 해협 긴장 고조</b><span>이란의 통행 통제권 주장으로 협상 결렬, 에너지 운송 비용 상승 우려</span></div></div><div class="event-item"><div class="edate">2026-07-25</div><div class="etxt"><b>AI 혁명 속도 논쟁 - 투자자 기대와 실제 성장 속도 간 괴리</b><span>신한은행 오건영 단장, 반도체·비반도체 양극화 심화 진단</span></div></div>
+    <div class="sec-h">Digests by date</div>
+    <div class="date-groups">
+    <div class="date-group">
+      <div class="dg-head">
+        <a class="dg-date" href="days/2026-07-25.html">2026-07-25</a>
+        <span class="dg-count">9 videos</span>
       </div>
-    </figure></section>
+      <ul class="date-videos"><li><div class="dv-row"><span class="dv-channel">Orlando Kim</span><span class="dv-title"><a href="days/2026-07-25.html#vid-0">(아이온큐) 지금부터는 매수관점인가?</a></span></div><div class="dv-summary">아이온큐(IonQ) 주식에 대한 매매 전략을 다루는 영상이다. 올해 들어 아이온큐를 포함한 양자컴퓨팅 관련 주식들이 전반적으로 30~40% 하락했으며, 이는 금리 상승과 맞물려…</div></li><li><div class="dv-row"><span class="dv-channel">Orlando Kim</span><span class="dv-title"><a href="days/2026-07-25.html#vid-1">(삼전닉스) 지금이 바닥,그래서 분할매수?</a></span></div><div class="dv-summary">삼성전자, SK하이닉스, 마이크론 등 메모리 반도체 업체들의 현재 상황과 향후 전망을 분석한다. AI 수요 증가로 HBM 메모리 수요가 폭발적으로 늘어나고 있으며, D램과 HBM…</div></li><li><div class="dv-row"><span class="dv-channel">3Pro TV (삼프로TV)</span><span class="dv-title"><a href="days/2026-07-25.html#vid-2">마녀는 사라졌지만, 마녀사냥은 끝나지 않았습니다 | 김학철 연세대학교 학부대학 교수 [더 릴리전]</a></span></div><div class="dv-summary">연세대 김학철 교수가 마녀사냥의 역사적 진실과 현대적 의미를 다룬 인터뷰. 종교, 경제, 정치적 요인이 겹쳐 마녀사냥이 발생했으며, 오늘날에도 캔슬 컬처 등 다른 형태로 이어지고…</div></li><li><div class="dv-row"><span class="dv-channel">3Pro TV (삼프로TV)</span><span class="dv-title"><a href="days/2026-07-25.html#vid-3">호르무즈가 막히면 벌어지는 일... 한국도 피할 수 없습니다 | 박현도 서강대 유로메나연구소 교수 [주말인터뷰]</a></span></div><div class="dv-summary">호르무즈 해협과 홍해를 둘러싼 미국-이란 갈등을 분석. 미-이란 양해각서가 사실상 무산되며 긴장이 고조되고 있고, 한국은 호르무즈 통과 물량의 12%를 차지하는 세계 3위…</div></li><li><div class="dv-row"><span class="dv-channel">3Pro TV (삼프로TV)</span><span class="dv-title"><a href="days/2026-07-25.html#vid-4">AI 혁명이 실패하는 순간, 세계 경제는 흔들립니다 | 오건영 신한은행 프리미어 패스파인더 단장 [주말인터뷰]</a></span></div><div class="dv-summary">신한은행 오건영 단장의 매크로 분석. 반도체 성장은 강하나 비반도체는 약한 양극화 국면이며, AI 발전 속도는 전문가 예상보다 빠르지만 투자자 기대보다는 느려 조정 중이라는…</div></li><li><div class="dv-row"><span class="dv-channel">Andrei Jikh</span><span class="dv-title"><a href="days/2026-07-25.html#vid-5">This Is What Made America A Superpower</a></span></div><div class="dv-summary">해밀턴 경제학의 역사 — 관세와 산업 보조금으로 미국을 농업국에서 산업 강국으로 성장시킨 150년 전략을 설명. 역사 콘텐츠로 특정 종목 언급 없음.</div></li><li><div class="dv-row"><span class="dv-channel">The Plain Bagel</span><span class="dv-title"><a href="days/2026-07-25.html#vid-6">The Truth About Social Security</a></span></div><div class="dv-summary">스크립트 없음 - 요약 불가 (60초 미만 Shorts).</div></li><li><div class="dv-row"><span class="dv-channel">Patrick Boyle</span><span class="dv-title"><a href="days/2026-07-25.html#vid-7">Where Did Venezuela&#x27;s $13 Billion Go?</a></span></div><div class="dv-summary">베네수엘라 석유 수익 130억 달러 중 127억 달러의 행방이 불분명한 상황을 추적. 시트고 매각, 영란은행 동결 금괴, 국제 신탁 논란 등을 다룸. 상장 종목에 대한 직접적…</div></li><li><div class="dv-row"><span class="dv-channel">The Money Guy Show</span><span class="dv-title"><a href="days/2026-07-25.html#vid-8">The Easiest Investing Habit That Actually Matters</a></span></div><div class="dv-summary">스크립트 없음 - 요약 불가 (60초 미만 Shorts).</div></li></ul>
+    </div>
 
-  <section class="sec">
-    <div class="sec-h">Recent digests</div>
-    <div class="grid">
-    <a class="cardlink" href="days/2026-07-25.html">
-      <div class="gcard">
-        <div class="date">2026-07-25</div>
-        <h2>Daily Digest</h2>
-        <div class="counts">
-          <span class="status buyhold">◆ 4 Buy / Hold</span>
-        </div>
-        <p class="tickers">아이온큐, 삼성전자, SK하이닉스, 마이크론</p>
-        <span class="go">Read digest <span class="arr">→</span></span>
+    <div class="date-group">
+      <div class="dg-head">
+        <a class="dg-date" href="days/2026-07-23.html">2026-07-23</a>
+        <span class="dg-count">0 videos</span>
       </div>
-    </a>
+      <div class="empty-state">No videos recorded for this day.</div>
+    </div>
 
-    <a class="cardlink" href="days/2026-07-23.html">
-      <div class="gcard">
-        <div class="date">2026-07-23</div>
-        <h2>Daily Digest</h2>
-        <div class="counts">
-          <span class="status buy">▲ 1 Buy</span>
-      <span class="status buyhold">◆ 1 Buy / Hold</span>
-        </div>
-        <p class="tickers">삼성전자, SK하이닉스, TSMC</p>
-        <span class="go">Read digest <span class="arr">→</span></span>
+    <div class="date-group">
+      <div class="dg-head">
+        <a class="dg-date" href="days/2026-07-22.html">2026-07-22</a>
+        <span class="dg-count">0 videos</span>
       </div>
-    </a>
+      <div class="empty-state">No videos recorded for this day.</div>
+    </div>
 
-    <a class="cardlink" href="days/2026-07-22.html">
-      <div class="gcard">
-        <div class="date">2026-07-22</div>
-        <h2>Daily Digest</h2>
-        <div class="counts">
-          <span class="status buy">▲ 1 Buy</span>
-      <span class="status buyhold">◆ 2 Buy / Hold</span>
-      <span class="status holdsell">◇ 1 Hold / Sell</span>
-        </div>
-        <p class="tickers">삼성전자, SK하이닉스, 마이크론, 엔비디아</p>
-        <span class="go">Read digest <span class="arr">→</span></span>
+    <div class="date-group">
+      <div class="dg-head">
+        <a class="dg-date" href="days/2026-07-21.html">2026-07-21</a>
+        <span class="dg-count">0 videos</span>
       </div>
-    </a>
+      <div class="empty-state">No videos recorded for this day.</div>
+    </div>
 
-    <a class="cardlink" href="days/2026-07-21.html">
-      <div class="gcard">
-        <div class="date">2026-07-21</div>
-        <h2>Daily Digest</h2>
-        <div class="counts">
-          <span class="status buy">▲ 1 Buy</span>
-      <span class="status buyhold">◆ 2 Buy / Hold</span>
-      <span class="status hold">● 1 Hold</span>
-        </div>
-        <p class="tickers">삼성전자, SK하이닉스, 아이온큐, 엔비디아</p>
-        <span class="go">Read digest <span class="arr">→</span></span>
+    <div class="date-group">
+      <div class="dg-head">
+        <a class="dg-date" href="days/2026-07-20.html">2026-07-20</a>
+        <span class="dg-count">0 videos</span>
       </div>
-    </a>
-
-    <a class="cardlink" href="days/2026-07-20.html">
-      <div class="gcard">
-        <div class="date">2026-07-20</div>
-        <h2>Daily Digest</h2>
-        <div class="counts">
-          <span class="status buy">▲ 2 Buy</span>
-      <span class="status buyhold">◆ 1 Buy / Hold</span>
-        </div>
-        <p class="tickers">삼성전자, SK하이닉스, 엔비디아, TSMC</p>
-        <span class="go">Read digest <span class="arr">→</span></span>
-      </div>
-    </a></div>
+      <div class="empty-state">No videos recorded for this day.</div>
+    </div></div>
     
   </section>
 

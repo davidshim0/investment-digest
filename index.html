@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Investment Digest</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Mulish:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#FBF6EC">
+<style>
+:root{
+  --paper:#FBF6EC; --paper-2:#F3EADA; --card:#FFFDF8;
+  --ink:#332C24; --ink-soft:#6E6456; --ink-faint:#9A8E7C;
+  --line:#E7DBC6; --line-strong:#D8C8AC;
+  --honey:#E8A33D; --honey-deep:#C27D14; --honey-soft:#FBEACB;
+  --dram:#2C8C7C; --dram-soft:#DCEFE9;
+  --ltram:#5A61B4; --ltram-soft:#E6E6F6;
+  --optane:#C0563B; --optane-soft:#F7E1D8;
+  --shadow-sm:0 1px 2px rgba(80,60,30,.06),0 2px 8px rgba(80,60,30,.05);
+  --shadow-md:0 6px 18px rgba(90,66,28,.10),0 16px 36px rgba(90,66,28,.08);
+  --radius:18px; --radius-sm:12px; --maxw:1000px;
+  --display:"Fraunces",Georgia,serif;
+  --body:"Mulish",-apple-system,system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,monospace;
+  /* status scale: buy (green) -> hold (neutral) -> sell (red). Never used alone --
+     every status also carries an icon glyph + text label. */
+  --buy:#1F7A4D; --buy-soft:#DDF0E3;
+  --buyhold:#6E9A3C; --buyhold-soft:#EAF2D8;
+  --hold:#8A7F6C; --hold-soft:#F3EADA;
+  --holdsell:#C27D14; --holdsell-soft:#FBEACB;
+  --sell:#B23D26; --sell-soft:#F7E1D8;
+}
+*{box-sizing:border-box} html{scroll-behavior:smooth}
+body{margin:0;font-family:var(--body);color:var(--ink);line-height:1.6;background:var(--paper);
+  background-image:radial-gradient(circle at 10% 6%,rgba(44,140,124,.06),transparent 42%),radial-gradient(circle at 90% 18%,rgba(90,97,180,.06),transparent 44%),radial-gradient(circle at 50% 120%,rgba(232,163,61,.07),transparent 55%);
+  -webkit-font-smoothing:antialiased;min-height:100vh;}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 22px}
+a{color:var(--honey-deep);text-decoration:none;border-bottom:1.5px solid var(--honey-soft);transition:border-color .2s}
+a:hover{border-color:var(--honey)}
+h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.2;color:var(--ink);margin:0 0 .5em}
+.head{padding:52px 0 18px}
+.eyebrow{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--honey-deep);background:var(--honey-soft);padding:7px 14px;border-radius:999px;border:1px solid #F0DCB0;margin-bottom:18px}
+.eyebrow .dot{width:8px;height:8px;border-radius:50%;background:var(--honey);box-shadow:0 0 0 4px rgba(232,163,61,.2)}
+.head h1{font-weight:700;font-size:clamp(2.1rem,5.6vw,3.2rem);letter-spacing:-.015em;margin:0 0 .3em}
+.head p{font-size:clamp(1rem,2vw,1.1rem);color:var(--ink-soft);max-width:60ch;margin:0}
+.back{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:.85rem;color:var(--ink-soft);border-bottom:none;margin-bottom:18px}
+.back:hover{color:var(--honey-deep)}
+
+.sec{margin:30px 0 0}
+.sec-h{font-family:var(--display);font-weight:600;font-size:1.15rem;margin:0 0 14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
+a.cardlink{text-decoration:none;color:inherit;border-bottom:none}
+.gcard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px;box-shadow:var(--shadow-sm);
+  transition:transform .18s,box-shadow .18s,border-color .18s;height:100%;display:flex;flex-direction:column}
+.gcard:hover{transform:translateY(-4px);box-shadow:var(--shadow-md);border-color:var(--line-strong)}
+.gcard h2{font-size:1.18rem;letter-spacing:-.01em;margin:0 0 .3em}
+.gcard .date{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:10px}
+.gcard .counts{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 12px}
+.gcard .tickers{font-size:.88rem;color:var(--ink-soft);margin:0 0 12px;flex:1}
+.gcard .go{font-family:var(--body);font-weight:700;font-size:.88rem;color:var(--honey-deep);display:inline-flex;align-items:center;gap:6px}
+.gcard:hover .go{color:var(--ltram)}
+
+.status{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-weight:700;font-size:10.5px;letter-spacing:.03em;
+  text-transform:uppercase;padding:3px 9px;border-radius:999px}
+.status.buy{background:var(--buy-soft);color:var(--buy)}
+.status.buyhold{background:var(--buyhold-soft);color:var(--buyhold)}
+.status.hold{background:var(--hold-soft);color:var(--hold)}
+.status.holdsell{background:var(--holdsell-soft);color:#8a5a0e}
+.status.sell{background:var(--sell-soft);color:var(--sell)}
+
+.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px 24px;margin:14px 0;box-shadow:var(--shadow-sm)}
+.panel.buy{border-left:4px solid var(--buy)}
+.panel.buyhold{border-left:4px solid var(--buyhold)}
+.panel.hold{border-left:4px solid var(--hold)}
+.panel.holdsell{border-left:4px solid var(--holdsell)}
+.panel.sell{border-left:4px solid var(--sell)}
+.panel h3{font-size:1.08rem;margin:0 0 12px;display:flex;align-items:center;gap:10px}
+.panel .empty{color:var(--ink-faint);font-style:italic;font-size:.94rem;margin:0}
+.pick{padding:10px 0;border-top:1px dashed var(--line)}
+.pick:first-of-type{border-top:none;padding-top:2px}
+.pick .ticker{font-weight:700;font-family:var(--display);font-size:1.02rem;margin-bottom:2px}
+.pick .rationale{font-size:.92rem;color:var(--ink-soft);margin:0}
+
+.tickerbar{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 6px}
+.tchip{font-family:var(--mono);font-weight:700;font-size:.82rem;background:var(--paper-2);color:var(--ink-soft);
+  border:1px solid var(--line-strong);border-radius:999px;padding:5px 12px}
+
+.vcard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius-sm);margin:12px 0;overflow:hidden}
+.vcard summary{list-style:none;cursor:pointer;padding:16px 20px;display:flex;gap:14px;align-items:flex-start}
+.vcard summary::-webkit-details-marker{display:none}
+.vcard .vmeta{flex:1;min-width:0}
+.vcard .channel{font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--honey-deep);margin-bottom:3px}
+.vcard .title{font-weight:700;font-size:1rem;color:var(--ink)}
+.vcard .chev{margin-left:auto;color:var(--ink-faint);transition:transform .25s;font-family:var(--mono);flex:0 0 auto}
+.vcard[open] summary .chev{transform:rotate(180deg)}
+.vcard .body{padding:0 20px 20px 20px;color:var(--ink-soft);font-size:.95rem}
+.vcard .body p{margin:0 0 12px}
+.vcard .watch{font-family:var(--mono);font-size:.82rem}
+
+.brk-group{margin:16px 0}
+.brk-ticker{font-family:var(--display);font-weight:600;font-size:1.05rem;margin:0 0 8px}
+.brk-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius-sm);padding:14px 18px;margin:8px 0;position:relative}
+.brk-card .brk-top{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:6px}
+.brk-card .brk-date{font-family:var(--mono);font-size:10.5px;color:var(--ink-faint)}
+.brk-card .brk-firm{font-family:var(--mono);font-size:10.5px;font-weight:700;color:var(--honey-deep);background:var(--honey-soft);padding:2px 8px;border-radius:999px}
+.brk-card .brk-new{font-family:var(--mono);font-size:9.5px;font-weight:700;color:#fff;background:var(--sell);padding:2px 7px;border-radius:999px;letter-spacing:.04em}
+.brk-card .brk-title{font-weight:700;font-size:.98rem;margin:0 0 6px}
+.brk-card .brk-meta{font-size:.86rem;color:var(--ink-soft);margin:0 0 8px}
+.brk-card ul{margin:0;padding-left:18px}
+.brk-card li{font-size:.88rem;color:var(--ink-soft);margin:3px 0}
+.brk-empty{color:var(--ink-faint);font-style:italic;font-size:.92rem;margin:8px 0 0}
+
+figure.trends{margin:26px 0 0;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:24px 26px 20px;box-shadow:var(--shadow-sm)}
+figure.trends figcaption{margin-top:16px;font-size:.88rem;color:var(--ink-faint)}
+.trends-chart{width:100%;height:auto;display:block}
+.trends-chart .gridline{stroke:var(--line);stroke-width:1}
+.trends-chart .axis-lab{font-family:var(--mono);font-size:10px;fill:var(--ink-faint)}
+.trends-chart .series-line{fill:none;stroke-width:2.5}
+.trends-chart .series-dot{stroke:var(--card);stroke-width:2}
+.trends-chart .event-line{stroke:var(--ink-faint);stroke-width:1.5;stroke-dasharray:3,3}
+.trends-chart .event-marker{fill:var(--sell)}
+.trends-legend{display:flex;flex-wrap:wrap;gap:14px 20px;margin-top:16px}
+.trends-legend span{display:inline-flex;align-items:center;gap:7px;font-size:.86rem;font-weight:700;color:var(--ink-soft)}
+.trends-legend i{width:12px;height:12px;border-radius:3px;display:inline-block}
+.events-log{margin-top:6px}
+.events-log h4{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint);margin:0 0 10px;font-weight:700}
+.event-item{display:flex;gap:14px;padding:8px 0;border-top:1px dashed var(--line);font-size:.9rem}
+.event-item:first-child{border-top:none}
+.event-item .edate{font-family:var(--mono);font-size:10.5px;color:var(--ink-faint);flex:0 0 auto;padding-top:2px}
+.event-item .etxt b{color:var(--ink)}
+.event-item .etxt span{color:var(--ink-soft);display:block;font-size:.86rem;margin-top:2px}
+.viz-title{font-family:var(--display);font-size:1.22rem;font-weight:600;margin-bottom:4px}
+.viz-kicker{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:4px}
+
+.foot{margin:54px 0 40px;padding-top:20px;border-top:1px solid var(--line);font-size:.85rem;color:var(--ink-faint);font-family:var(--mono);line-height:1.7}
+.foot b{color:var(--ink-soft)}
+.empty-state{color:var(--ink-faint);font-style:italic;padding:24px 2px}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="head">
+    <span class="eyebrow"><span class="dot"></span>Investment Digest</span>
+    <h1>Daily Investment Digest</h1>
+    <p>Morning-ready summaries of finance &amp; investing videos — tickers by call, one line each, so you can catch up before the market opens.</p>
+  </header>
+
+  <section class="sec">
+    <figure class="trends">
+      <div class="viz-title">Ticker mentions over time</div>
+      <div class="viz-kicker">Which stocks your videos are talking about, day by day</div>
+      <svg class="trends-chart" viewBox="0 0 880 300" xmlns="http://www.w3.org/2000/svg"><line class="gridline" x1="46" y1="266.0" x2="860" y2="266.0"/><text class="axis-lab" x="38" y="269.0" text-anchor="end">0</text><line class="gridline" x1="46" y1="143.0" x2="860" y2="143.0"/><text class="axis-lab" x="38" y="146.0" text-anchor="end">1</text><line class="gridline" x1="46" y1="20.0" x2="860" y2="20.0"/><text class="axis-lab" x="38" y="23.0" text-anchor="end">2</text><text class="axis-lab" x="46.0" y="282" text-anchor="middle">07-20</text><text class="axis-lab" x="249.5" y="282" text-anchor="middle">07-21</text><text class="axis-lab" x="453.0" y="282" text-anchor="middle">07-22</text><text class="axis-lab" x="656.5" y="282" text-anchor="middle">07-23</text><text class="axis-lab" x="860.0" y="282" text-anchor="middle">07-25</text><line class="event-line" x1="46.0" y1="20" x2="46.0" y2="266"><title>2026-07-20: 미-이란 양해각서 체결, 호르무즈 긴장 일시 완화</title></line><path class="event-marker" d="M41.0,16 L51.0,16 L46.0,26 Z"><title>2026-07-20: 미-이란 양해각서 체결, 호르무즈 긴장 일시 완화</title></path><line class="event-line" x1="453.0" y1="20" x2="453.0" y2="266"><title>2026-07-22: 미-이란 협상 결렬 조짐, 호르무즈 해협 긴장 재고조</title></line><path class="event-marker" d="M448.0,16 L458.0,16 L453.0,26 Z"><title>2026-07-22: 미-이란 협상 결렬 조짐, 호르무즈 해협 긴장 재고조</title></path><line class="event-line" x1="860.0" y1="20" x2="860.0" y2="266"><title>2026-07-25: 미-이란 양해각서 사실상 무산, 호르무즈 해협 긴장 고조</title></line><path class="event-marker" d="M855.0,16 L865.0,16 L860.0,26 Z"><title>2026-07-25: 미-이란 양해각서 사실상 무산, 호르무즈 해협 긴장 고조</title></path><line class="event-line" x1="860.0" y1="20" x2="860.0" y2="266"><title>2026-07-25: AI 혁명 속도 논쟁 - 투자자 기대와 실제 성장 속도 간 괴리</title></line><path class="event-marker" d="M855.0,16 L865.0,16 L860.0,26 Z"><title>2026-07-25: AI 혁명 속도 논쟁 - 투자자 기대와 실제 성장 속도 간 괴리</title></path><path class="series-line" d="M46.0,143.0 L249.5,143.0 L453.0,143.0 L656.5,143.0 L860.0,143.0" stroke="#2C8C7C"/><circle class="series-dot" cx="46.0" cy="143.0" r="4.5" fill="#2C8C7C"><title>삼성전자: 1</title></circle><circle class="series-dot" cx="249.5" cy="143.0" r="4.5" fill="#2C8C7C"><title>삼성전자: 1</title></circle><circle class="series-dot" cx="453.0" cy="143.0" r="4.5" fill="#2C8C7C"><title>삼성전자: 1</title></circle><circle class="series-dot" cx="656.5" cy="143.0" r="4.5" fill="#2C8C7C"><title>삼성전자: 1</title></circle><circle class="series-dot" cx="860.0" cy="143.0" r="4.5" fill="#2C8C7C"><title>삼성전자: 1</title></circle><path class="series-line" d="M46.0,143.0 L249.5,143.0 L453.0,143.0 L656.5,143.0 L860.0,143.0" stroke="#5A61B4"/><circle class="series-dot" cx="46.0" cy="143.0" r="4.5" fill="#5A61B4"><title>SK하이닉스: 1</title></circle><circle class="series-dot" cx="249.5" cy="143.0" r="4.5" fill="#5A61B4"><title>SK하이닉스: 1</title></circle><circle class="series-dot" cx="453.0" cy="143.0" r="4.5" fill="#5A61B4"><title>SK하이닉스: 1</title></circle><circle class="series-dot" cx="656.5" cy="143.0" r="4.5" fill="#5A61B4"><title>SK하이닉스: 1</title></circle><circle class="series-dot" cx="860.0" cy="143.0" r="4.5" fill="#5A61B4"><title>SK하이닉스: 1</title></circle><path class="series-line" d="M46.0,143.0 L249.5,143.0 L453.0,143.0 L656.5,266.0 L860.0,266.0" stroke="#C27D14"/><circle class="series-dot" cx="46.0" cy="143.0" r="4.5" fill="#C27D14"><title>엔비디아: 1</title></circle><circle class="series-dot" cx="249.5" cy="143.0" r="4.5" fill="#C27D14"><title>엔비디아: 1</title></circle><circle class="series-dot" cx="453.0" cy="143.0" r="4.5" fill="#C27D14"><title>엔비디아: 1</title></circle><path class="series-line" d="M46.0,143.0 L249.5,266.0 L453.0,266.0 L656.5,143.0 L860.0,266.0" stroke="#C0563B"/><circle class="series-dot" cx="46.0" cy="143.0" r="4.5" fill="#C0563B"><title>TSMC: 1</title></circle><circle class="series-dot" cx="656.5" cy="143.0" r="4.5" fill="#C0563B"><title>TSMC: 1</title></circle><path class="series-line" d="M46.0,266.0 L249.5,143.0 L453.0,266.0 L656.5,266.0 L860.0,143.0" stroke="#8B5A8C"/><circle class="series-dot" cx="249.5" cy="143.0" r="4.5" fill="#8B5A8C"><title>아이온큐: 1</title></circle><circle class="series-dot" cx="860.0" cy="143.0" r="4.5" fill="#8B5A8C"><title>아이온큐: 1</title></circle><path class="series-line" d="M46.0,266.0 L249.5,266.0 L453.0,143.0 L656.5,266.0 L860.0,143.0" stroke="#3E6B8A"/><circle class="series-dot" cx="453.0" cy="143.0" r="4.5" fill="#3E6B8A"><title>마이크론: 1</title></circle><circle class="series-dot" cx="860.0" cy="143.0" r="4.5" fill="#3E6B8A"><title>마이크론: 1</title></circle></svg>
+      <div class="trends-legend"><span><i style="background:#2C8C7C"></i>삼성전자 (5)</span><span><i style="background:#5A61B4"></i>SK하이닉스 (5)</span><span><i style="background:#C27D14"></i>엔비디아 (3)</span><span><i style="background:#C0563B"></i>TSMC (2)</span><span><i style="background:#8B5A8C"></i>아이온큐 (2)</span><span><i style="background:#3E6B8A"></i>마이크론 (2)</span></div>
+      <figcaption>Counts how many buy/hold/sell calls named each ticker per day.</figcaption>
+      <div class="events-log">
+        <h4>Market-moving events flagged</h4>
+        <div class="event-item"><div class="edate">2026-07-20</div><div class="etxt"><b>미-이란 양해각서 체결, 호르무즈 긴장 일시 완화</b><span>60일간 대화 합의로 에너지 시장 변동성 축소 기대</span></div></div><div class="event-item"><div class="edate">2026-07-22</div><div class="etxt"><b>미-이란 협상 결렬 조짐, 호르무즈 해협 긴장 재고조</b><span>이란, 통행 선박 통제권 주장하며 양해각서 사실상 무산</span></div></div><div class="event-item"><div class="edate">2026-07-25</div><div class="etxt"><b>미-이란 양해각서 사실상 무산, 호르무즈 해협 긴장 고조</b><span>이란의 통행 통제권 주장으로 협상 결렬, 에너지 운송 비용 상승 우려</span></div></div><div class="event-item"><div class="edate">2026-07-25</div><div class="etxt"><b>AI 혁명 속도 논쟁 - 투자자 기대와 실제 성장 속도 간 괴리</b><span>신한은행 오건영 단장, 반도체·비반도체 양극화 심화 진단</span></div></div>
+      </div>
+    </figure></section>
+
+  <section class="sec">
+    <div class="sec-h">Recent digests</div>
+    <div class="grid">
+    <a class="cardlink" href="days/2026-07-25.html">
+      <div class="gcard">
+        <div class="date">2026-07-25</div>
+        <h2>Daily Digest</h2>
+        <div class="counts">
+          <span class="status buyhold">◆ 4 Buy / Hold</span>
+        </div>
+        <p class="tickers">아이온큐, 삼성전자, SK하이닉스, 마이크론</p>
+        <span class="go">Read digest <span class="arr">→</span></span>
+      </div>
+    </a>
+
+    <a class="cardlink" href="days/2026-07-23.html">
+      <div class="gcard">
+        <div class="date">2026-07-23</div>
+        <h2>Daily Digest</h2>
+        <div class="counts">
+          <span class="status buy">▲ 1 Buy</span>
+      <span class="status buyhold">◆ 1 Buy / Hold</span>
+        </div>
+        <p class="tickers">삼성전자, SK하이닉스, TSMC</p>
+        <span class="go">Read digest <span class="arr">→</span></span>
+      </div>
+    </a>
+
+    <a class="cardlink" href="days/2026-07-22.html">
+      <div class="gcard">
+        <div class="date">2026-07-22</div>
+        <h2>Daily Digest</h2>
+        <div class="counts">
+          <span class="status buy">▲ 1 Buy</span>
+      <span class="status buyhold">◆ 2 Buy / Hold</span>
+      <span class="status holdsell">◇ 1 Hold / Sell</span>
+        </div>
+        <p class="tickers">삼성전자, SK하이닉스, 마이크론, 엔비디아</p>
+        <span class="go">Read digest <span class="arr">→</span></span>
+      </div>
+    </a>
+
+    <a class="cardlink" href="days/2026-07-21.html">
+      <div class="gcard">
+        <div class="date">2026-07-21</div>
+        <h2>Daily Digest</h2>
+        <div class="counts">
+          <span class="status buy">▲ 1 Buy</span>
+      <span class="status buyhold">◆ 2 Buy / Hold</span>
+      <span class="status hold">● 1 Hold</span>
+        </div>
+        <p class="tickers">삼성전자, SK하이닉스, 아이온큐, 엔비디아</p>
+        <span class="go">Read digest <span class="arr">→</span></span>
+      </div>
+    </a>
+
+    <a class="cardlink" href="days/2026-07-20.html">
+      <div class="gcard">
+        <div class="date">2026-07-20</div>
+        <h2>Daily Digest</h2>
+        <div class="counts">
+          <span class="status buy">▲ 2 Buy</span>
+      <span class="status buyhold">◆ 1 Buy / Hold</span>
+        </div>
+        <p class="tickers">삼성전자, SK하이닉스, 엔비디아, TSMC</p>
+        <span class="go">Read digest <span class="arr">→</span></span>
+      </div>
+    </a></div>
+    
+  </section>
+
+  <footer class="foot">
+    <b>Investment Digest</b> · generated automatically from daily video transcripts. Not financial advice — personal reading notes only.
+  </footer>
+</div>
+</body>
+</html>

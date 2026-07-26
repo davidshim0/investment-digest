@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026-07-25 — Investment Digest</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Mulish:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#FBF6EC">
+<style>
+:root{
+  --paper:#FBF6EC; --paper-2:#F3EADA; --card:#FFFDF8;
+  --ink:#332C24; --ink-soft:#6E6456; --ink-faint:#9A8E7C;
+  --line:#E7DBC6; --line-strong:#D8C8AC;
+  --honey:#E8A33D; --honey-deep:#C27D14; --honey-soft:#FBEACB;
+  --dram:#2C8C7C; --dram-soft:#DCEFE9;
+  --ltram:#5A61B4; --ltram-soft:#E6E6F6;
+  --optane:#C0563B; --optane-soft:#F7E1D8;
+  --shadow-sm:0 1px 2px rgba(80,60,30,.06),0 2px 8px rgba(80,60,30,.05);
+  --shadow-md:0 6px 18px rgba(90,66,28,.10),0 16px 36px rgba(90,66,28,.08);
+  --radius:18px; --radius-sm:12px; --maxw:1000px;
+  --display:"Fraunces",Georgia,serif;
+  --body:"Mulish",-apple-system,system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,monospace;
+  /* status scale: buy (green) -> hold (neutral) -> sell (red). Never used alone --
+     every status also carries an icon glyph + text label. */
+  --buy:#1F7A4D; --buy-soft:#DDF0E3;
+  --buyhold:#6E9A3C; --buyhold-soft:#EAF2D8;
+  --hold:#8A7F6C; --hold-soft:#F3EADA;
+  --holdsell:#C27D14; --holdsell-soft:#FBEACB;
+  --sell:#B23D26; --sell-soft:#F7E1D8;
+}
+*{box-sizing:border-box} html{scroll-behavior:smooth}
+body{margin:0;font-family:var(--body);color:var(--ink);line-height:1.6;background:var(--paper);
+  background-image:radial-gradient(circle at 10% 6%,rgba(44,140,124,.06),transparent 42%),radial-gradient(circle at 90% 18%,rgba(90,97,180,.06),transparent 44%),radial-gradient(circle at 50% 120%,rgba(232,163,61,.07),transparent 55%);
+  -webkit-font-smoothing:antialiased;min-height:100vh;}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 22px}
+a{color:var(--honey-deep);text-decoration:none;border-bottom:1.5px solid var(--honey-soft);transition:border-color .2s}
+a:hover{border-color:var(--honey)}
+h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.2;color:var(--ink);margin:0 0 .5em}
+.head{padding:52px 0 18px}
+.eyebrow{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--honey-deep);background:var(--honey-soft);padding:7px 14px;border-radius:999px;border:1px solid #F0DCB0;margin-bottom:18px}
+.eyebrow .dot{width:8px;height:8px;border-radius:50%;background:var(--honey);box-shadow:0 0 0 4px rgba(232,163,61,.2)}
+.head h1{font-weight:700;font-size:clamp(2.1rem,5.6vw,3.2rem);letter-spacing:-.015em;margin:0 0 .3em}
+.head p{font-size:clamp(1rem,2vw,1.1rem);color:var(--ink-soft);max-width:60ch;margin:0}
+.back{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:.85rem;color:var(--ink-soft);border-bottom:none;margin-bottom:18px}
+.back:hover{color:var(--honey-deep)}
+
+.sec{margin:30px 0 0}
+.sec-h{font-family:var(--display);font-weight:600;font-size:1.15rem;margin:0 0 14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
+a.cardlink{text-decoration:none;color:inherit;border-bottom:none}
+.gcard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px;box-shadow:var(--shadow-sm);
+  transition:transform .18s,box-shadow .18s,border-color .18s;height:100%;display:flex;flex-direction:column}
+.gcard:hover{transform:translateY(-4px);box-shadow:var(--shadow-md);border-color:var(--line-strong)}
+.gcard h2{font-size:1.18rem;letter-spacing:-.01em;margin:0 0 .3em}
+.gcard .date{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:10px}
+.gcard .counts{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 12px}
+.gcard .tickers{font-size:.88rem;color:var(--ink-soft);margin:0 0 12px;flex:1}
+.gcard .go{font-family:var(--body);font-weight:700;font-size:.88rem;color:var(--honey-deep);display:inline-flex;align-items:center;gap:6px}
+.gcard:hover .go{color:var(--ltram)}
+
+.status{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-weight:700;font-size:10.5px;letter-spacing:.03em;
+  text-transform:uppercase;padding:3px 9px;border-radius:999px}
+.status.buy{background:var(--buy-soft);color:var(--buy)}
+.status.buyhold{background:var(--buyhold-soft);color:var(--buyhold)}
+.status.hold{background:var(--hold-soft);color:var(--hold)}
+.status.holdsell{background:var(--holdsell-soft);color:#8a5a0e}
+.status.sell{background:var(--sell-soft);color:var(--sell)}
+
+.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px 24px;margin:14px 0;box-shadow:var(--shadow-sm)}
+.panel.buy{border-left:4px solid var(--buy)}
+.panel.buyhold{border-left:4px solid var(--buyhold)}
+.panel.hold{border-left:4px solid var(--hold)}
+.panel.holdsell{border-left:4px solid var(--holdsell)}
+.panel.sell{border-left:4px solid var(--sell)}
+.panel h3{font-size:1.08rem;margin:0 0 12px;display:flex;align-items:center;gap:10px}
+.panel .empty{color:var(--ink-faint);font-style:italic;font-size:.94rem;margin:0}
+.pick{padding:10px 0;border-top:1px dashed var(--line)}
+.pick:first-of-type{border-top:none;padding-top:2px}
+.pick .ticker{font-weight:700;font-family:var(--display);font-size:1.02rem;margin-bottom:2px}
+.pick .rationale{font-size:.92rem;color:var(--ink-soft);margin:0}
+
+.tickerbar{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 6px}
+.tchip{font-family:var(--mono);font-weight:700;font-size:.82rem;background:var(--paper-2);color:var(--ink-soft);
+  border:1px solid var(--line-strong);border-radius:999px;padding:5px 12px}
+
+.vcard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius-sm);margin:12px 0;overflow:hidden}
+.vcard summary{list-style:none;cursor:pointer;padding:16px 20px;display:flex;gap:14px;align-items:flex-start}
+.vcard summary::-webkit-details-marker{display:none}
+.vcard .vmeta{flex:1;min-width:0}
+.vcard .channel{font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--honey-deep);margin-bottom:3px}
+.vcard .title{font-weight:700;font-size:1rem;color:var(--ink)}
+.vcard .chev{margin-left:auto;color:var(--ink-faint);transition:transform .25s;font-family:var(--mono);flex:0 0 auto}
+.vcard[open] summary .chev{transform:rotate(180deg)}
+.vcard .body{padding:0 20px 20px 20px;color:var(--ink-soft);font-size:.95rem}
+.vcard .body p{margin:0 0 12px}
+.vcard .watch{font-family:var(--mono);font-size:.82rem}
+
+.brk-group{margin:16px 0}
+.brk-ticker{font-family:var(--display);font-weight:600;font-size:1.05rem;margin:0 0 8px}
+.brk-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius-sm);padding:14px 18px;margin:8px 0;position:relative}
+.brk-card .brk-top{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:6px}
+.brk-card .brk-date{font-family:var(--mono);font-size:10.5px;color:var(--ink-faint)}
+.brk-card .brk-firm{font-family:var(--mono);font-size:10.5px;font-weight:700;color:var(--honey-deep);background:var(--honey-soft);padding:2px 8px;border-radius:999px}
+.brk-card .brk-new{font-family:var(--mono);font-size:9.5px;font-weight:700;color:#fff;background:var(--sell);padding:2px 7px;border-radius:999px;letter-spacing:.04em}
+.brk-card .brk-title{font-weight:700;font-size:.98rem;margin:0 0 6px}
+.brk-card .brk-meta{font-size:.86rem;color:var(--ink-soft);margin:0 0 8px}
+.brk-card ul{margin:0;padding-left:18px}
+.brk-card li{font-size:.88rem;color:var(--ink-soft);margin:3px 0}
+.brk-empty{color:var(--ink-faint);font-style:italic;font-size:.92rem;margin:8px 0 0}
+
+figure.trends{margin:26px 0 0;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:24px 26px 20px;box-shadow:var(--shadow-sm)}
+figure.trends figcaption{margin-top:16px;font-size:.88rem;color:var(--ink-faint)}
+.trends-chart{width:100%;height:auto;display:block}
+.trends-chart .gridline{stroke:var(--line);stroke-width:1}
+.trends-chart .axis-lab{font-family:var(--mono);font-size:10px;fill:var(--ink-faint)}
+.trends-chart .series-line{fill:none;stroke-width:2.5}
+.trends-chart .series-dot{stroke:var(--card);stroke-width:2}
+.trends-chart .event-line{stroke:var(--ink-faint);stroke-width:1.5;stroke-dasharray:3,3}
+.trends-chart .event-marker{fill:var(--sell)}
+.trends-legend{display:flex;flex-wrap:wrap;gap:14px 20px;margin-top:16px}
+.trends-legend span{display:inline-flex;align-items:center;gap:7px;font-size:.86rem;font-weight:700;color:var(--ink-soft)}
+.trends-legend i{width:12px;height:12px;border-radius:3px;display:inline-block}
+.events-log{margin-top:6px}
+.events-log h4{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint);margin:0 0 10px;font-weight:700}
+.event-item{display:flex;gap:14px;padding:8px 0;border-top:1px dashed var(--line);font-size:.9rem}
+.event-item:first-child{border-top:none}
+.event-item .edate{font-family:var(--mono);font-size:10.5px;color:var(--ink-faint);flex:0 0 auto;padding-top:2px}
+.event-item .etxt b{color:var(--ink)}
+.event-item .etxt span{color:var(--ink-soft);display:block;font-size:.86rem;margin-top:2px}
+.viz-title{font-family:var(--display);font-size:1.22rem;font-weight:600;margin-bottom:4px}
+.viz-kicker{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:4px}
+
+.foot{margin:54px 0 40px;padding-top:20px;border-top:1px solid var(--line);font-size:.85rem;color:var(--ink-faint);font-family:var(--mono);line-height:1.7}
+.foot b{color:var(--ink-soft)}
+.empty-state{color:var(--ink-faint);font-style:italic;padding:24px 2px}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="head">
+    <a class="back" href="../index.html">← All digests</a>
+    <span class="eyebrow"><span class="dot"></span>2026-07-25</span>
+    <h1>Daily Digest</h1>
+    <p>Executive read of today's finance &amp; investing videos, sorted by call.</p>
+    <div class="tickerbar">
+      <span class="tchip">아이온큐</span>
+<span class="tchip">삼성전자</span>
+<span class="tchip">SK하이닉스</span>
+<span class="tchip">마이크론</span>
+    </div>
+  </header>
+
+  <section class="sec">
+    <div class="sec-h">Executive summary</div>
+    
+    <div class="panel buy">
+      <h3><span class="status buy">▲ Buy</span></h3>
+      <p class="empty">No calls in this category today.</p>
+    </div>
+
+    <div class="panel buyhold">
+      <h3><span class="status buyhold">◆ Buy / Hold</span></h3>
+      <div class="pick">
+        <div class="ticker">아이온큐 (IonQ)</div>
+        <p class="rationale">PSR이 약 40배로 매수 기준인 30배에 근접하고 있어 24~26달러 구간을 저점으로 보고 분할 매수로 접근하되 포트폴리오 비중은 5% 미만으로 유지하는 것이 바람직하다는 분석.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">삼성전자</div>
+        <p class="rationale">HBM/D램 공급 부족이 2027년까지 이어질 것으로 예상되는 가운데 PER 3.8배로 역사적 평균 대비 저평가되어 있어 분할 매수 전략이 유효하다는 의견.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">SK하이닉스</div>
+        <p class="rationale">HBM 시장 점유율 60%를 보유, PER 3.9배로 저평가 상태이며 마찬가지로 분할 매수 관점의 접근이 적절하다는 분석.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">마이크론</div>
+        <p class="rationale">동일한 메모리 반도체 공급 부족 사이클의 수혜주로 함께 언급됨.</p>
+      </div>
+    </div>
+
+    <div class="panel hold">
+      <h3><span class="status hold">● Hold</span></h3>
+      <p class="empty">No calls in this category today.</p>
+    </div>
+
+    <div class="panel holdsell">
+      <h3><span class="status holdsell">◇ Hold / Sell</span></h3>
+      <p class="empty">No calls in this category today.</p>
+    </div>
+
+    <div class="panel sell">
+      <h3><span class="status sell">▼ Sell</span></h3>
+      <p class="empty">No calls in this category today.</p>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="sec-h">증권사 리포트</div>
+    
+    <div class="brk-group">
+      <div class="brk-ticker">삼성전자</div>
+      
+      <div class="brk-card">
+        <div class="brk-top">
+          <span class="brk-date">26/07/23</span>
+          <span class="brk-firm">KB증권</span>
+          <span class="status buy">▲ BUY</span>
+          <span class="brk-new">NEW</span>
+        </div>
+        <div class="brk-title">구글 AI 생태계 최대 수혜주</div>
+        <div class="brk-meta">목표가 600,000 · 김동원,이창민,강다현</div>
+        <ul><li>2028년까지 메모리 공급 부족 심화</li><li>3개 분기 연속 어닝 서프라이즈 기대</li><li>구글 메모리 공급 점유율 1위, 50~80%</li></ul>
+      </div>
+      <div class="brk-card">
+        <div class="brk-top">
+          <span class="brk-date">26/07/15</span>
+          <span class="brk-firm">KB증권</span>
+          <span class="status hold">● HOLD</span>
+          
+        </div>
+        <div class="brk-title">변한 것은 없다</div>
+        <div class="brk-meta">목표가 - · 김동원,이창민,강다현</div>
+        <ul><li>AI 인프라, 불변의 성장 방향성 유효</li><li>2027년은 반도체 고갈의 시대, 메모리 공급 제약 심화</li></ul>
+      </div>
+      <div class="brk-card">
+        <div class="brk-top">
+          <span class="brk-date">26/07/08</span>
+          <span class="brk-firm">DB증권</span>
+          <span class="status buy">▲ Buy</span>
+          
+        </div>
+        <div class="brk-title">메모리가 다했다</div>
+        <div class="brk-meta">목표가 360,000 · 서승연</div>
+        <ul><li>2Q26 잠정 Review - 메모리가 다했다</li><li>투자의견 Buy, 목표주가 360,000원 유지</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="sec-h">Videos covered (9)</div>
+    
+    <details class="vcard">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">Orlando Kim</div>
+          <div class="title">(아이온큐) 지금부터는 매수관점인가?</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        <p>아이온큐(IonQ) 주식에 대한 매매 전략을 다루는 영상이다. 올해 들어 아이온큐를 포함한 양자컴퓨팅 관련 주식들이 전반적으로 30~40% 하락했으며, 이는 금리 상승과 맞물려 적자 기업 및 고밸류에이션 주식들이 일괄적으로 하락한 결과다. 매매 판단 기준으로는 PSR이 100배를 넘으면 매도, 30배 이하로 내려오면 매수 관점으로 봐야 한다고 설명한다. 현재 PSR은 약 40배 수준이므로 조금 더 내려오면 매수 구간에 진입한다. 24~26불대를 저점으로 보고 분할 매수로 접근하면서 3년 정도 장기적 관점에서 보유 수량을 점진적으로 늘려가는 방식이 바람직하다고 정리한다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=EGBlDO9SF4A" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">Orlando Kim</div>
+          <div class="title">(삼전닉스) 지금이 바닥,그래서 분할매수?</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        <p>삼성전자, SK하이닉스, 마이크론 등 메모리 반도체 업체들의 현재 상황과 향후 전망을 분석한다. AI 수요 증가로 HBM 메모리 수요가 폭발적으로 늘어나고 있으며, D램과 HBM 모두 2027년까지 쇼티지가 지속될 전망이다. SK하이닉스는 PER 3.9배, 삼성전자는 PER 3.8배로 통상적 최소 배수 대비 크게 저평가된 상태다. 매물벽이 많아 V자 반등보다는 기간 조정을 거치며 점진적으로 상승할 가능성이 높아, 현재 가격대에서는 분할매수 관점으로 접근하는 것이 적절하다고 분석한다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=CVadOe8gyKE" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">3Pro TV (삼프로TV)</div>
+          <div class="title">마녀는 사라졌지만, 마녀사냥은 끝나지 않았습니다 | 김학철 연세대학교 학부대학 교수 [더 릴리전]</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        <p>연세대 김학철 교수가 마녀사냥의 역사적 진실과 현대적 의미를 다룬 인터뷰. 종교, 경제, 정치적 요인이 겹쳐 마녀사냥이 발생했으며, 오늘날에도 캔슬 컬처 등 다른 형태로 이어지고 있다는 분석. 특정 종목이나 투자 관련 내용은 없음.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=E6iZGZoNekc" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">3Pro TV (삼프로TV)</div>
+          <div class="title">호르무즈가 막히면 벌어지는 일... 한국도 피할 수 없습니다 | 박현도 서강대 유로메나연구소 교수 [주말인터뷰]</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        <p>호르무즈 해협과 홍해를 둘러싼 미국-이란 갈등을 분석. 미-이란 양해각서가 사실상 무산되며 긴장이 고조되고 있고, 한국은 호르무즈 통과 물량의 12%를 차지하는 세계 3위 이용국으로 직접적 영향권에 있다는 설명. 에너지 운송 비용 상승 가능성이 거론되나 구체적 종목 추천은 없음.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=zpLxItC57UU" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">3Pro TV (삼프로TV)</div>
+          <div class="title">AI 혁명이 실패하는 순간, 세계 경제는 흔들립니다 | 오건영 신한은행 프리미어 패스파인더 단장 [주말인터뷰]</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        <p>신한은행 오건영 단장의 매크로 분석. 반도체 성장은 강하나 비반도체는 약한 양극화 국면이며, AI 발전 속도는 전문가 예상보다 빠르지만 투자자 기대보다는 느려 조정 중이라는 평가. AI 혁명이 실패하면 저성장·고물가·고금리 조합이 올 수 있어 AI는 실패하기엔 너무 중요하다고 진단. 에너지·테크 섹터 분산 배분을 제안.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=-5RvcnIFk18" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">Andrei Jikh</div>
+          <div class="title">This Is What Made America A Superpower</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        <p>해밀턴 경제학의 역사 — 관세와 산업 보조금으로 미국을 농업국에서 산업 강국으로 성장시킨 150년 전략을 설명. 역사 콘텐츠로 특정 종목 언급 없음.</p>
+        <a class="watch" href="https://www.youtube.com/shorts/YeX9bJQmLuU" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">The Plain Bagel</div>
+          <div class="title">The Truth About Social Security</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        <p>스크립트 없음 - 요약 불가 (60초 미만 Shorts).</p>
+        <a class="watch" href="https://www.youtube.com/shorts/cQtgWjUU164" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">Patrick Boyle</div>
+          <div class="title">Where Did Venezuela&#x27;s $13 Billion Go?</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        <p>베네수엘라 석유 수익 130억 달러 중 127억 달러의 행방이 불분명한 상황을 추적. 시트고 매각, 영란은행 동결 금괴, 국제 신탁 논란 등을 다룸. 상장 종목에 대한 직접적 투자 시사점은 없음.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=EzvdGKs05Rc" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">The Money Guy Show</div>
+          <div class="title">The Easiest Investing Habit That Actually Matters</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        <p>스크립트 없음 - 요약 불가 (60초 미만 Shorts).</p>
+        <a class="watch" href="https://www.youtube.com/shorts/txzhjlDpTz4" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+  </section>
+
+  <footer class="foot">
+    <b>Investment Digest</b> · generated automatically. Not financial advice — personal reading notes only.
+  </footer>
+</div>
+</body>
+</html>

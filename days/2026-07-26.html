@@ -157,6 +157,24 @@ a.cardlink{text-decoration:none;color:inherit;border-bottom:none}
 .zrank-val.neg{color:var(--sell)}
 .zrank-alloc{font-family:var(--mono);font-weight:700;font-size:.85rem;text-align:right;color:var(--ink-soft);min-width:52px}
 .zchart-note{font-size:.85rem;color:var(--ink-faint);margin:16px 0 0}
+
+.date-groups{display:flex;flex-direction:column;gap:16px}
+.date-group{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px 24px;box-shadow:var(--shadow-sm);
+  transition:border-color .18s,box-shadow .18s}
+.date-group:hover{border-color:var(--line-strong);box-shadow:var(--shadow-md)}
+.date-group .dg-head{display:flex;align-items:baseline;flex-wrap:wrap;gap:10px 14px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.date-group .dg-date{font-family:var(--display);font-weight:600;font-size:1.25rem;color:var(--ink);border-bottom:1.5px solid var(--honey-soft)}
+.date-group .dg-date:hover{color:var(--honey-deep);border-color:var(--honey)}
+.date-group .dg-count{font-family:var(--mono);font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-faint)}
+.date-videos{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+.date-videos li{display:flex;flex-direction:column;gap:3px;font-size:.94rem}
+.date-videos .dv-row{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline}
+.date-videos .dv-channel{font-family:var(--mono);font-size:10px;letter-spacing:.04em;text-transform:uppercase;color:var(--honey-deep);
+  background:var(--honey-soft);border-radius:999px;padding:2px 9px;flex:0 0 auto}
+.date-videos .dv-title{color:var(--ink)}
+.date-videos .dv-summary{color:var(--ink-faint);font-size:.85rem;line-height:1.5;margin:0 0 0 2px}
+.date-videos a{color:var(--ink);border-bottom:1.5px solid var(--line-strong)}
+.date-videos a:hover{color:var(--honey-deep);border-color:var(--honey)}
 </style>
 </head>
 <body>
@@ -223,7 +241,7 @@ a.cardlink{text-decoration:none;color:inherit;border-bottom:none}
         <span class="chev">▾</span>
       </summary>
       <div class="body">
-        <p></p>
+        <p>아이온큐는 8월 5일 장 마감 후 실적 발표와 어닝콜을 앞두고 있다. 올해 들어 컨티뉴엄, 리게티, D웨이브 등 양자컴퓨팅 관련주들이 동반 급락했는데 아이온큐는 YTD 약 28% 하락, 리게티는 40%가량 빠졌다. 최근 한 달만 보면 아이온큐는 약 42% 급락했는데 같은 기간 미국 10년물 금리가 5~6% 상승한 것이 주요 배경으로, 적자 성장주가 금리 상승의 직격탄을 맞았다고 설명한다.</p><p>장기 추세를 보면 2025년 3월부터 10월까지 약 360%(3.5배) 급등했다가 2026년 3월까지 고점 대비 약 70% 급락해 1년간 순수익은 약 45%에 그쳤고, 이후 2026년 3월 저점에서 6월 고점(약 183불)까지 다시 약 150% 상승했다가 이후 55% 급락해 실제 수익은 20% 수준에 불과했다며 등락이 매우 심한 종목임을 강조한다. 이 때문에 EPS가 마이너스인 적자 기업에는 전체 자금의 5% 미만, 감당 가능한 수준만 투입하고 분할 매매로 대응해야 한다고 조언한다.</p><p>매매 기준으로는 PS레시오(PSR)를 제시하는데, 과거 고점은 152배, 167배, 120배, 약 96~100배 수준이었고 100배를 넘어서면 경계해야 하며, 저점인 18불 당시 PSR은 약 32배였다고 밝힌다. 현재 PSR은 약 40배로 30배 부근까지 내려오면 매수 관점이라고 본다. 인베스팅닷컴 기준 11개 모델 평균 적정주가는 약 32불이며, PSR은 45배로 섹터 평균 3배 대비 크게 높지만 PBR은 2.59배로 섹터 평균 4.9배 대비 저평가 상태라, BPS 13.33에 PBR 4배를 적용하면 적정주가는 약 50불로 산출된다고 설명한다.</p><p>마지노선은 직전 저점인 30불이며 그 아래 24~26불 구간을 매집 관점의 저점 후보로 제시한다. 현재 공매도 비율은 12.67%로 과거 20~30%대에서 크게 낮아졌고 데이즈 투 커버도 짧아 하방경직성이 있다고 본다. 현금은 2025년 4분기 약 11억 달러에서 2026년 1분기 4억9300만 달러로 줄었지만 부채(약 3천만 달러) 대비 여전히 넉넉해 버틸 여력이 있다고 평가한다. 주봉 스토캐스틱과 200주 이평선 이격도 축소도 바닥권 신호로 언급하며, 애널리스트 목표주가는 실제 주가와 크게 어긋나 신뢰하기 어렵다고 지적한다.</p>
         <a class="watch" href="https://www.youtube.com/watch?v=EGBlDO9SF4A" target="_blank" rel="noopener">Watch on YouTube →</a>
       </div>
     </details>
@@ -237,7 +255,7 @@ a.cardlink{text-decoration:none;color:inherit;border-bottom:none}
         <span class="chev">▾</span>
       </summary>
       <div class="body">
-        <p></p>
+        <p>이 인터뷰에서 김학철 교수는 유럽 마녀사냥에 대한 통념을 바로잡는다. 흔히 900만 명이 희생됐다고 알려져 있지만 실제로는 약 8만 명이 기소되어 4만에서 6만 명 정도가 처형됐으며, 이는 중세가 아니라 17~18세기에 집중됐고 남성 희생자도 상당수였다고 설명한다. 마녀사냥의 원인으로는 가톨릭과 개신교의 경쟁적 신앙 강요 같은 종교적 요인, 신대륙 은 유입으로 인한 16세기 인플레이션과 기후 위기에 따른 경제난, 중앙 권력이 약한 지역일수록 사적 폭력이 늘어나는 정치·사법 구조, 그리고 경계에 선 이방인이나 오랜 갈등이 누적된 이웃을 희생양 삼는 인간 심리와 탐욕을 꼽는다.</p><p>마녀사냥은 30년 전쟁 종식과 산업혁명, 정치·사법 시스템 안정화로 줄었지만 완전히 사라지지 않았다고 강조한다. 인도에서는 땅을 가진 과부가 마녀로 지목돼 재산을 빼앗기고, 아프리카에는 마녀로 몰린 여성과 아동을 위한 마녀 캠프가 존재하며, 사우디아라비아는 반마법 수사단을 두고 실제로 참수형까지 집행했다는 사례를 소개한다. 나아가 1950년대 매카시즘, 1980년대 보육교사 아동학대 소동, 오늘날의 캔슬 컬처를 현대판 마녀사냥으로 지목하며 이를 말살 문화로 부를 것을 제안한다.</p><p>성경 속 예수가 간음한 여인을 돌로 치려는 군중을 막은 일화를 마녀사냥 저지의 상징으로 소개하고, 르네 지라르를 인용해 기독교의 인류적 공헌은 마녀는 죄가 없다고 말해준 데 있다고 말한다. 끝으로 인간은 변할 수 있고 서로 관용해야 한다며, 시청자들에게 자신도 SNS나 댓글에서 마녀사냥에 가담하고 있지 않은지 성찰해볼 것을 권한다. 특정 종목이나 투자 관련 내용은 없다.</p>
         <a class="watch" href="https://www.youtube.com/watch?v=E6iZGZoNekc" target="_blank" rel="noopener">Watch on YouTube →</a>
       </div>
     </details>
@@ -251,7 +269,7 @@ a.cardlink{text-decoration:none;color:inherit;border-bottom:none}
         <span class="chev">▾</span>
       </summary>
       <div class="body">
-        <p></p>
+        <p>서강대 박현도 교수는 6월 17일 미국과 이란이 서명한 MOU에 따라 60일간 호르무즈 해협 안전통항을 보장하고 8월 말까지 핵협상을 이어가기로 했으나, 7월 7일 이란이 통항 선박을 공격하며 합의가 붕괴됐다고 설명했다. 쟁점은 MOU 5조 해석으로, 이란은 해협 통제권이 자국에 있으며 61일째부터 통항료를 받을 수 있다고 주장하지만 원문에는 그런 신고 의무 조항이 없다고 지적했다. 트럼프 대통령은 이란이 선박을 공격할 때마다 이란의 다리와 발전소를 폭파하겠다고 경고했으며, 실제로 호르무즈 인근 해안 지역 다리는 이미 대부분 파괴됐고 이번에는 테헤란 발전소까지 겨냥한다고 밝혔다.</p><p>동시에 홍해에서는 예멘 후티 반군이 이란계 항공편 착륙 거부를 계기로 사우디 선박과 항구를 공격 대상으로 선언, 사우디 원유(하루 약 700만 배럴 중 450만~500만 배럴 수출분)가 홍해-바브엘만데브 경로 대신 희망봉을 우회할 경우 운송 기간이 기존 20~25일에서 50~55일로 늘어난다고 전했다. 이란은 작년 12일 전쟁 이후 미국 GPS 대신 중국 베이더우 위성으로 전환해 미사일 명중률이 크게 향상됐고, 뉴욕타임스는 이란 미사일이 건물을 정확히 타격했다고 보도했으며 러시아의 좌표 지원 의혹도 제기된다.</p><p>트럼프 행정부가 이란 지하 핵시설 쿠헤 콜랑(곡괭이산)을 공격 목표로 삼는 가운데, 이란은 주변국 미군기지와 담수·발전 시설, 심지어 트럼프 소유 골프장·호텔까지 보복 리스트에 올렸다고 한다. 박 교수는 이란 체제가 최고지도자 대리인이 전국 행정기관에 배치된 촘촘한 통제 구조와 강한 민병조직(바시지)을 갖춰 리비아·이라크식 붕괴는 없을 것이라 진단했다. 한편 미국이 사우디의 우라늄 농축을 승인하려는 움직임은 이란 설득 명분을 약화시킬 수 있다고 우려했다.</p><p>호르무즈 해협 통과 원유 의존도는 중국 38%, 인도 15%, 한국 12%, 일본 11%로 한중일 비중이 60%를 넘어 한국도 직접 타격권이며, 실제 한국의 미국산 원유 수입 비중이 16%에서 30%대로 급증했다고 밝혔다. 카타르 중재 10일 휴전안이 논의 중이나 이란은 완전한 종전을 원해 임시휴전만으로는 불안정하며, 협상과 공격이 반복되는 상태가 새로운 표준이 될 수 있다고 경고하며 전쟁 종료 시점은 예측 불가능하다고 결론지었다.</p>
         <a class="watch" href="https://www.youtube.com/watch?v=zpLxItC57UU" target="_blank" rel="noopener">Watch on YouTube →</a>
       </div>
     </details>

@@ -41,6 +41,10 @@ static unsigned int  uncached = 0;   // 1 = device-mapped read window (cache-byp
 static unsigned int  do_verify = 1;  // test=2: 0 = skip PHASE 2/4 verify loops (write-only run;
                                      // verification happens afterward via golden+thrash census —
                                      // saves ~36h of retry windows burned on untrusted reads)
+// ---- test=6 PACED CHURN parameters (design: user, 2026-07-31) ----
+static unsigned long num_ops      = 10000; // total ops (writes+erases+reads); 1M+ for soaks
+static unsigned int  write_pace_us = 1000; // min gap between writes (1 sector / ms)
+static unsigned int  erase_pace_ms = 50;   // min gap between erases
 // ---- test=5 RANDOM STRESS parameters (defaults per 2026-07-30 design) ----
 static unsigned int  n_erase   = 16;   // erases per round (phase B)
 static unsigned int  n_write   = 8;    // writes per round (phase B); must be < n_erase so
@@ -59,7 +63,13 @@ static unsigned int  thrash_mb = 0;  // >0 = before each verify/scan, read this 
                                      // to capacity-evict L2 (16MB on CN8890; use 64 for margin).
                                      // Safe alternative to uncached=1: no new ECI op types.
 static void         *thrash_buf;
-#define PAT(b)     (pat_mode ? (((u32)(b)) ^ (((u32)(b)) << 16)) : ((u32)(b)))
+// pat_mode 2: ALL-ZEROS — every bit programs, ZERO toggle between consecutive 16-bit
+//   program units. SI/SSO hypothesis predicts CLEAN.
+// pat_mode 3: 0x5555AAAA — units alternate AAAA/5555: all 16 DQ lanes toggle every
+//   unit = worst-case simultaneous switching. SI/SSO hypothesis predicts WORST.
+#define PAT(b)     (pat_mode == 0 ? ((u32)(b)) : \
+                    pat_mode == 1 ? (((u32)(b)) ^ (((u32)(b)) << 16)) : \
+                    pat_mode == 2 ? 0x00000000u : 0x5555AAAAu)
 
 static unsigned int  test          = 1;     // 1=per-sector cycle, 2=whole-device phases, 3=settle characterization
 static unsigned long start_sector  = 0;
@@ -87,6 +97,9 @@ module_param(n_write, uint, 0444);
 module_param(read_every, uint, 0444);
 module_param(rng_seed, uint, 0444);
 module_param(batch_mb, uint, 0444);
+module_param(num_ops, ulong, 0444);
+module_param(write_pace_us, uint, 0444);
+module_param(erase_pace_ms, uint, 0444);
 MODULE_LICENSE("GPL");
 
 static struct task_struct *worker;
@@ -106,9 +119,14 @@ static unsigned long done_sectors, err_erase, err_ff, err_wr_timeout, err_data, 
 static u8  *st;          // 65536 sector states
 static u32 *seedv;       // per-sector pattern seed (valid when ST_WRITTEN)
 static u32 *order;       // phase-A randomized fill order
+// test=6 churn state: O(1) random pick + removal from either pool
+static u32 *flist;       // free (erased) sector list
+static u32 *wlist;       // written sector list
+static u32 *lpos;        // sector -> its index in whichever list holds it
+static u64 *chg_ns;      // sector -> ktime of its last write-ack/erase (read exclusion)
 static u32  rngs;        // xorshift32 state
 static u32  cur_seed;    // XORed into write_sector's fill (0 for tests 1/2)
-static unsigned long stress_bad_words, stress_compares, stress_rounds;
+static unsigned long stress_bad_words, stress_compares;
 
 static u32 rng(void) { rngs ^= rngs << 13; rngs ^= rngs >> 17; rngs ^= rngs << 5; return rngs; }
 static int aborted;
@@ -421,18 +439,106 @@ static int fulltest_thread(void *unused)
         goto out;
     }
 
+    if (test == 6) {
+        // ========== PACED CHURN STRESS (design: user, 2026-07-31) ==========
+        // Start fully erased+verified. Then a single serialized op stream:
+        //   ERASE: <=1 per erase_pace_ms, random pick from the WRITTEN list;
+        //          quiet-window (msleep erase_wait_ms) before anything else runs —
+        //          the harness-level "wait until done" guarantee.
+        //   WRITE: <=1 per write_pace_us, random pick from the FREE list; done =
+        //          FPGA DMA ack (polled inside write_sector).
+        //   READ:  fills every other slot; random sector NOT changed in the last
+        //          60ms (write-ack/erase-done ordering by construction); full-4KB
+        //          compare vs shadow. ANY mismatch -> STOP, state preserved.
+        // Pools self-balance; either empty just skips that op type. Runs num_ops
+        // ops (default 10k; 1M+ for soaks), then a final full-device compare.
+        u64 ops = 0, n_wr = 0, n_er = 0, n_rd = 0;
+        u64 last_wr = 0, last_er = 0, last_prog = 0;
+        u32 fcnt = 0, wcnt = 0;
+        rngs = rng_seed ? rng_seed : 1;
+
+        pr_info("fulltest: CHURN phase 0: erase all + verify\n");
+        for (s = 0; s < TOTAL_SECT && !kthread_should_stop(); s++) {
+            (void)readq(er_win + s * SECT_SZ);
+            msleep(erase_wait_ms);
+            st[s] = ST_ERASED; seedv[s] = 0; chg_ns[s] = 0;
+            if (progress && ((s + 1) % progress == 0))
+                pr_info("fulltest: churn erase progress %llu/%llu\n", s + 1, TOTAL_SECT);
+        }
+        if (stress_compare_all()) {
+            pr_err("fulltest: CHURN ABORT — device not clean after erase-all\n");
+            err_data++; aborted = 1; goto out;
+        }
+        for (s = 0; s < TOTAL_SECT; s++) { lpos[s] = fcnt; flist[fcnt++] = s; }
+
+        pr_info("fulltest: CHURN: %lu ops (write<=1/%uus, erase<=1/%ums, reads fill)\n",
+                num_ops, write_pace_us, erase_pace_ms);
+        while (ops < num_ops && !kthread_should_stop()) {
+            u64 now = ktime_get_ns();
+            if (wcnt && now - last_er >= (u64)erase_pace_ms * 1000000ULL) {
+                u32 wi = rng() % wcnt, sec = wlist[wi];
+                (void)readq(er_win + (u64)sec * SECT_SZ);
+                msleep(erase_wait_ms);                   // quiet window: die busy
+                wlist[wi] = wlist[wcnt - 1]; lpos[wlist[wi]] = wi; wcnt--;
+                st[sec] = ST_ERASED; seedv[sec] = 0; chg_ns[sec] = ktime_get_ns();
+                lpos[sec] = fcnt; flist[fcnt++] = sec;
+                last_er = now; n_er++; ops++;
+            } else if (fcnt && now - last_wr >= (u64)write_pace_us * 1000ULL) {
+                u32 fi = rng() % fcnt, sec = flist[fi];
+                seedv[sec] = rng() | 1;
+                cur_seed = seedv[sec];
+                if (write_sector(sec)) { cur_seed = 0; err_wr_timeout++; aborted = 1; goto out; }
+                cur_seed = 0;
+                flist[fi] = flist[fcnt - 1]; lpos[flist[fi]] = fi; fcnt--;
+                st[sec] = ST_WRITTEN; chg_ns[sec] = ktime_get_ns();
+                lpos[sec] = wcnt; wlist[wcnt++] = sec;
+                last_wr = now; n_wr++; ops++;
+            } else {
+                u32 sec; unsigned int tries = 0;
+                u64 b2; unsigned long bad = 0; u32 fgot = 0; u64 fb = 0;
+                unsigned long a2, e2;
+                do { sec = rng() % TOTAL_SECT; tries++; }
+                while (chg_ns[sec] && (ktime_get_ns() - chg_ns[sec]) < 60000000ULL && tries < 64);
+                if (tries >= 64) { usleep_range(200, 400); continue; }
+                a2 = (unsigned long)rd_win + (u64)sec * SECT_SZ; e2 = a2 + SECT_SZ;
+                for (; a2 < e2; a2 += 128) asm volatile("dc civac, %0" :: "r"(a2) : "memory");
+                asm volatile("dsb sy" ::: "memory");
+                for (b2 = (u64)sec * SECT_SZ; b2 < ((u64)sec + 1) * SECT_SZ; b2 += 4) {
+                    u32 got = readl(rd_win + b2);
+                    u32 exp = (st[sec] == ST_WRITTEN) ? (PAT(b2) ^ seedv[sec]) : 0xFFFFFFFFu;
+                    if (got != exp) { if (!bad) { fgot = got; fb = b2; } bad++; }
+                }
+                if (bad) {
+                    pr_err("fulltest: CHURN STOP op %llu — s%u(st=%u) %lu bad words, first @0x%08llx got=%08x seed=%08x\n",
+                           ops, sec, st[sec], bad, fb, fgot, seedv[sec]);
+                    stress_bad_words += bad; err_data++; aborted = 1; goto out;
+                }
+                n_rd++; ops++;
+            }
+            if (ops - last_prog >= 50000) {
+                last_prog = ops;
+                pr_info("fulltest: churn %llu/%lu ops (wr=%llu er=%llu rd=%llu) written=%u free=%u\n",
+                        ops, num_ops, n_wr, n_er, n_rd, wcnt, fcnt);
+            }
+            cond_resched();
+        }
+        pr_info("fulltest: CHURN final full compare\n");
+        if (stress_compare_all()) { err_data++; aborted = 1; }
+        pr_info("fulltest: ===== CHURN SUMMARY: ops=%llu wr=%llu er=%llu rd=%llu bad=%lu wr_timeout=%lu aborted=%d =====\n",
+                ops, n_wr, n_er, n_rd, stress_bad_words, err_wr_timeout, aborted);
+        goto out;
+    }
+
     if (test == 5) {
-        // ================= RANDOM STRESS (design: user, 2026-07-30) =================
-        // Phase A: erase all -> verify all FF -> fill the device in RANDOM order with
-        //   per-sector seeded patterns, verifying in self-thrashing batches (batch_mb
-        //   >= 2x L2 so batch verify reads always come from flash).
-        // Phase B: rounds of {n_erase random erases of written sectors, n_write writes
-        //   into (settled) erased sectors, full compare-vs-shadow every read_every
-        //   rounds}. Writes never land on a sector erased in the same round. Ends when
-        //   the erased pool reaches the whole device (net +n_erase-n_write per round).
+        // ============ RANDOM FILL STRESS (simplified design: user, 2026-07-31) ============
+        // 1) erase all, verify all erased (full compare vs shadow).
+        // 2) write random 4KB sectors with seeded stress patterns; NO sector twice.
+        // 3) after every batch of batch_mb (>= 2x LLC) writes, with all DMA acks
+        //    already polled + a program-drain settle, FULL-DEVICE compare vs shadow.
+        //    Any mismatch -> STOP IMMEDIATELY (state preserved for post-mortem).
+        // 4) continue until every sector is written.
         u64 batch_sect = ((u64)batch_mb << 20) / SECT_SZ;
-        u64 idx, k, written_cnt, erased_cnt;
-        u32 prev_er[256]; unsigned int prev_n = 0;
+        u64 idx, k;
         rngs = rng_seed ? rng_seed : 1;
 
         pr_info("fulltest: STRESS phase A1: erase all\n");
@@ -455,75 +561,32 @@ static int fulltest_thread(void *unused)
         }
         for (idx = 0; idx < TOTAL_SECT && !kthread_should_stop(); idx += batch_sect) {
             u64 bn = min(batch_sect, TOTAL_SECT - idx);
-            unsigned long bbad = 0;
+            unsigned long cbad;
             for (k = 0; k < bn && !kthread_should_stop(); k++) {
                 u64 sec = order[idx + k];
                 seedv[sec] = rng() | 1;
                 cur_seed = seedv[sec];
-                if (write_sector(sec)) { err_wr_timeout++; aborted = 1; goto out; }
+                if (write_sector(sec)) { cur_seed = 0; err_wr_timeout++; aborted = 1; goto out; }
                 st[sec] = ST_WRITTEN;
             }
             cur_seed = 0;
-            for (k = 0; k < bn && !kthread_should_stop(); k++) {   // batch verify, write order
-                u64 sec = order[idx + k];
-                unsigned long a = (unsigned long)rd_win + sec * SECT_SZ, e2 = a + SECT_SZ;
-                u64 b2;
-                for (; a < e2; a += 128) asm volatile("dc civac, %0" :: "r"(a) : "memory");
-                asm volatile("dsb sy" ::: "memory");
-                for (b2 = sec * SECT_SZ; b2 < (sec + 1) * SECT_SZ; b2 += 4) {
-                    u32 got = readl(rd_win + b2);
-                    if (got != (PAT(b2) ^ seedv[sec])) bbad++;
-                }
-                cond_resched();
+            // every write above polled its DMA ack to completion; give the queued
+            // page programs a moment to drain, then check THE WHOLE DEVICE against
+            // the shadow (written sectors -> their pattern, untouched -> FF).
+            msleep(500);
+            cbad = stress_compare_all();
+            pr_info("fulltest: stress fill %llu/%llu written, full-compare bad_words=%lu\n",
+                    min(idx + bn, TOTAL_SECT), TOTAL_SECT, cbad);
+            if (cbad) {
+                pr_err("fulltest: STRESS STOP — first divergence after %llu sectors written; state preserved\n",
+                       min(idx + bn, TOTAL_SECT));
+                err_data++; aborted = 1; goto out;
             }
-            stress_bad_words += bbad;
-            pr_info("fulltest: stress fill %llu/%llu written, batch bad_words=%lu\n",
-                    min(idx + bn, TOTAL_SECT), TOTAL_SECT, bbad);
         }
 
-        pr_info("fulltest: STRESS phase B: rounds of %u erases / %u writes, compare every %u rounds\n",
-                n_erase, n_write, read_every);
-        written_cnt = TOTAL_SECT; erased_cnt = 0;
-        while (erased_cnt < TOTAL_SECT && !kthread_should_stop()) {
-            unsigned int i2;
-            stress_rounds++;
-            for (i2 = 0; i2 < prev_n; i2++)               // last round's erases settle
-                if (st[prev_er[i2]] == ST_SETTLING) st[prev_er[i2]] = ST_ERASED;
-            prev_n = 0;
-            for (i2 = 0; i2 < n_erase && written_cnt > 0; i2++) {
-                u64 sec;
-                do { sec = rng() % TOTAL_SECT; } while (st[sec] != ST_WRITTEN);
-                (void)readq(er_win + sec * SECT_SZ);
-                msleep(erase_wait_ms);
-                st[sec] = ST_SETTLING; seedv[sec] = 0;
-                if (prev_n < 256) prev_er[prev_n++] = sec;
-                written_cnt--; erased_cnt++;
-            }
-            for (i2 = 0; i2 < n_write && erased_cnt > prev_n; i2++) {
-                u64 sec; unsigned int guard = 0;
-                do { sec = rng() % TOTAL_SECT; guard++; }
-                while (st[sec] != ST_ERASED && guard < 2000000);
-                if (st[sec] != ST_ERASED) break;
-                seedv[sec] = rng() | 1;
-                cur_seed = seedv[sec];
-                if (write_sector(sec)) { cur_seed = 0; err_wr_timeout++; aborted = 1; goto out; }
-                cur_seed = 0;
-                st[sec] = ST_WRITTEN;
-                written_cnt++; erased_cnt--;
-            }
-            if (read_every && (stress_rounds % read_every) == 0)
-                (void)stress_compare_all();
-            if ((stress_rounds % 64) == 0)
-                pr_info("fulltest: stress round %lu: written=%llu erased=%llu cum_bad=%lu\n",
-                        stress_rounds, written_cnt, erased_cnt, stress_bad_words);
-            cond_resched();
-        }
-        for (k = 0; k < prev_n; k++) st[prev_er[k]] = ST_ERASED;  // let final settle
-        msleep(500);
-        pr_info("fulltest: STRESS final compare (device should be fully erased)\n");
-        (void)stress_compare_all();
-        pr_info("fulltest: ===== STRESS SUMMARY: rounds=%lu compares=%lu bad_words=%lu wr_timeout=%lu aborted=%d =====\n",
-                stress_rounds, stress_compares, stress_bad_words, err_wr_timeout, aborted);
+        pr_info("fulltest: ===== STRESS SUMMARY: written=%llu/%llu compares=%lu bad_words=%lu wr_timeout=%lu aborted=%d =====\n",
+                min(idx, TOTAL_SECT), TOTAL_SECT, stress_compares, stress_bad_words,
+                err_wr_timeout, aborted);
         goto out;
     }
 
@@ -621,23 +684,37 @@ static int __init ft_init(void)
         if (!thrash_buf)
             pr_warn("fulltest: thrash buffer alloc failed — thrash disabled\n");
     }
-    if (test == 5) {
+    if (test == 5 || test == 6) {
         st    = vmalloc(TOTAL_SECT);
         seedv = vmalloc(TOTAL_SECT * sizeof(u32));
         order = vmalloc(TOTAL_SECT * sizeof(u32));
-        if (!thrash_buf) {                 // stress compares REQUIRE the thrash epoch
-            if (!thrash_mb) thrash_mb = 64;
-            thrash_buf = vmalloc((u64)thrash_mb << 20);
+        if (test == 6) {
+            flist  = vmalloc(TOTAL_SECT * sizeof(u32));
+            wlist  = vmalloc(TOTAL_SECT * sizeof(u32));
+            lpos   = vmalloc(TOTAL_SECT * sizeof(u32));
+            chg_ns = vmalloc(TOTAL_SECT * sizeof(u64));
         }
-        if (!st || !seedv || !order || !thrash_buf) {
+        // NOTE: on PEMD builds compares need the thrash epoch; on PSHA (v6+) civac
+        // works and thrash_mb=0 is fine — stress_thrash_once() no-ops without a buf.
+        if (thrash_mb && !thrash_buf)
+            thrash_buf = vmalloc((u64)thrash_mb << 20);
+        if (!st || !seedv || !order ||
+            (test == 6 && (!flist || !wlist || !lpos || !chg_ns))) {
             pr_err("fulltest: stress shadow alloc failed\n");
-            if (st) vfree(st); if (seedv) vfree(seedv); if (order) vfree(order);
+            if (st)     vfree(st);
+            if (seedv)  vfree(seedv);
+            if (order)  vfree(order);
+            if (flist)  vfree(flist);
+            if (wlist)  vfree(wlist);
+            if (lpos)   vfree(lpos);
+            if (chg_ns) vfree(chg_ns);
             iounmap(rd_win); iounmap(er_win); iounmap(io_win);
             dma_free_coherent(&pdev->dev, SECT_SZ, dma_buf, dma_h);
             platform_device_unregister(pdev);
             return -ENOMEM;
         }
         memset(st, ST_ERASED, TOTAL_SECT);
+        if (test == 6) memset(chg_ns, 0, TOTAL_SECT * sizeof(u64));
     }
     worker = kthread_run(fulltest_thread, NULL, "nor_fulltest");
     if (IS_ERR(worker)) return PTR_ERR(worker);
@@ -653,6 +730,10 @@ static void __exit ft_exit(void)
     if (st) vfree(st);
     if (seedv) vfree(seedv);
     if (order) vfree(order);
+    if (flist) vfree(flist);
+    if (wlist) vfree(wlist);
+    if (lpos) vfree(lpos);
+    if (chg_ns) vfree(chg_ns);
     iounmap(rd_win); iounmap(er_win); iounmap(io_win);
     dma_free_coherent(&pdev->dev, SECT_SZ, dma_buf, dma_h);
     platform_device_unregister(pdev);

@@ -232,7 +232,7 @@ a.cardlink{text-decoration:none;color:inherit;border-bottom:none}
   <section class="sec">
     <div class="sec-h">Videos covered (3)</div>
     
-    <details class="vcard">
+    <details class="vcard" id="vid-0">
       <summary>
         <div class="vmeta">
           <div class="channel">Orlando Kim</div>
@@ -246,7 +246,7 @@ a.cardlink{text-decoration:none;color:inherit;border-bottom:none}
       </div>
     </details>
 
-    <details class="vcard">
+    <details class="vcard" id="vid-1">
       <summary>
         <div class="vmeta">
           <div class="channel">3Pro TV (삼프로TV)</div>
@@ -260,7 +260,7 @@ a.cardlink{text-decoration:none;color:inherit;border-bottom:none}
       </div>
     </details>
 
-    <details class="vcard">
+    <details class="vcard" id="vid-2">
       <summary>
         <div class="vmeta">
           <div class="channel">3Pro TV (삼프로TV)</div>
@@ -279,5 +279,17 @@ a.cardlink{text-decoration:none;color:inherit;border-bottom:none}
     <b>Investment Digest</b> · generated automatically. Not financial advice — personal reading notes only.
   </footer>
 </div>
+<script>
+(function() {
+  var h = window.location.hash;
+  if (h && h.indexOf("#vid-") === 0) {
+    var el = document.querySelector(h);
+    if (el && el.tagName === "DETAILS") {
+      el.open = true;
+      el.scrollIntoView({block: "start"});
+    }
+  }
+})();
+</script>
 </body>
 </html>

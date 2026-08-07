@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026-08-07 — Investment Digest</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Mulish:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#FBF6EC">
+<script>(function(){
+  var t = localStorage.getItem('theme') || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  document.documentElement.setAttribute('data-theme', t);
+})();</script>
+<style>
+:root{
+  --paper:#FBF6EC; --paper-2:#F3EADA; --card:#FFFDF8;
+  --ink:#332C24; --ink-soft:#6E6456; --ink-faint:#9A8E7C;
+  --line:#E7DBC6; --line-strong:#D8C8AC;
+  --honey:#E8A33D; --honey-deep:#C27D14; --honey-soft:#FBEACB;
+  --dram:#2C8C7C; --dram-soft:#DCEFE9;
+  --ltram:#5A61B4; --ltram-soft:#E6E6F6;
+  --optane:#C0563B; --optane-soft:#F7E1D8;
+  --shadow-sm:0 1px 2px rgba(80,60,30,.06),0 2px 8px rgba(80,60,30,.05);
+  --shadow-md:0 6px 18px rgba(90,66,28,.10),0 16px 36px rgba(90,66,28,.08);
+  --radius:18px; --radius-sm:12px; --maxw:1500px;
+  --display:"Fraunces",Georgia,serif;
+  --body:"Mulish",-apple-system,system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,monospace;
+  /* status scale: buy (green) -> hold (neutral) -> sell (red). Never used alone --
+     every status also carries an icon glyph + text label. */
+  --buy:#1F7A4D; --buy-soft:#DDF0E3;
+  --buyhold:#6E9A3C; --buyhold-soft:#EAF2D8;
+  --hold:#8A7F6C; --hold-soft:#F3EADA;
+  --holdsell:#C27D14; --holdsell-soft:#FBEACB; --holdsell-text:#8A5A0E;
+  --sell:#B23D26; --sell-soft:#F7E1D8;
+}
+/* Dark theme -- same design tokens, re-tuned for a dark warm-charcoal background
+   instead of the light "paper" one. Applied via a data-theme attribute on <html>
+   (set before first paint by the inline init script in <head>, so there's no
+   flash of the wrong theme) rather than only prefers-color-scheme, so the
+   toggle button can override the system setting and remember the choice. */
+:root[data-theme="dark"]{
+  --paper:#181512; --paper-2:#211D18; --card:#221E19;
+  --ink:#EEE7D9; --ink-soft:#BBB09C; --ink-faint:#8C8172;
+  --line:#38332A; --line-strong:#4A4335;
+  --honey:#F0B85B; --honey-deep:#F5C878; --honey-soft:#3A2D16;
+  --dram:#4FC0A9; --dram-soft:#173129;
+  --ltram:#9098E8; --ltram-soft:#242850;
+  --optane:#E68A6B; --optane-soft:#3B241B;
+  --shadow-sm:0 1px 2px rgba(0,0,0,.35),0 2px 8px rgba(0,0,0,.3);
+  --shadow-md:0 6px 18px rgba(0,0,0,.45),0 16px 36px rgba(0,0,0,.4);
+  --buy:#5FCB93; --buy-soft:#173121;
+  --buyhold:#A9CC6D; --buyhold-soft:#262E16;
+  --hold:#BBB09C; --hold-soft:#2A2620;
+  --holdsell:#F0B85B; --holdsell-soft:#3A2D16; --holdsell-text:#F0B85B;
+  --sell:#EE8065; --sell-soft:#3A211A;
+}
+*{box-sizing:border-box} html{scroll-behavior:smooth}
+body{margin:0;font-family:var(--body);color:var(--ink);line-height:1.6;background:var(--paper);
+  background-image:radial-gradient(circle at 10% 6%,rgba(44,140,124,.06),transparent 42%),radial-gradient(circle at 90% 18%,rgba(90,97,180,.06),transparent 44%),radial-gradient(circle at 50% 120%,rgba(232,163,61,.07),transparent 55%);
+  -webkit-font-smoothing:antialiased;min-height:100vh;transition:background-color .25s,color .25s}
+:root[data-theme="dark"] body{
+  background-image:radial-gradient(circle at 10% 6%,rgba(79,192,169,.08),transparent 42%),radial-gradient(circle at 90% 18%,rgba(144,152,232,.08),transparent 44%),radial-gradient(circle at 50% 120%,rgba(240,184,91,.06),transparent 55%);
+}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 22px}
+.theme-toggle{position:fixed;top:18px;right:18px;z-index:30;display:inline-flex;align-items:center;justify-content:center;
+  width:42px;height:42px;border-radius:50%;border:1px solid var(--line-strong);background:var(--card);color:var(--ink-soft);
+  cursor:pointer;box-shadow:var(--shadow-sm);font-size:17px;line-height:1;padding:0;transition:border-color .2s,color .2s,transform .15s}
+.theme-toggle:hover{border-color:var(--honey);color:var(--honey-deep);transform:scale(1.06)}
+.theme-toggle .tt-sun,.theme-toggle .tt-moon{display:none}
+:root[data-theme="light"] .theme-toggle .tt-moon{display:inline}
+:root[data-theme="dark"] .theme-toggle .tt-sun{display:inline}
+@media(max-width:480px){.theme-toggle{top:12px;right:12px;width:38px;height:38px;font-size:15px}}
+:root[data-theme="dark"] .eyebrow{border-color:var(--line-strong)}
+a{color:var(--honey-deep);text-decoration:none;border-bottom:1.5px solid var(--honey-soft);transition:border-color .2s}
+a:hover{border-color:var(--honey)}
+h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.2;color:var(--ink);margin:0 0 .5em}
+.head{padding:52px 0 18px}
+.eyebrow{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--honey-deep);background:var(--honey-soft);padding:7px 14px;border-radius:999px;border:1px solid #F0DCB0;margin-bottom:18px}
+.eyebrow .dot{width:8px;height:8px;border-radius:50%;background:var(--honey);box-shadow:0 0 0 4px rgba(232,163,61,.2)}
+.head h1{font-weight:700;font-size:clamp(2.1rem,5.6vw,3.2rem);letter-spacing:-.015em;margin:0 0 .3em}
+.head p{font-size:clamp(1rem,2vw,1.1rem);color:var(--ink-soft);max-width:60ch;margin:0}
+.back{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:.85rem;color:var(--ink-soft);border-bottom:none;margin-bottom:18px}
+.back:hover{color:var(--honey-deep)}
+
+.sec{margin:30px 0 0}
+.sec-h{font-family:var(--display);font-weight:600;font-size:1.15rem;margin:0 0 14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
+a.cardlink{text-decoration:none;color:inherit;border-bottom:none}
+.gcard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px;box-shadow:var(--shadow-sm);
+  transition:transform .18s,box-shadow .18s,border-color .18s;height:100%;display:flex;flex-direction:column}
+.gcard:hover{transform:translateY(-4px);box-shadow:var(--shadow-md);border-color:var(--line-strong)}
+.gcard h2{font-size:1.18rem;letter-spacing:-.01em;margin:0 0 .3em}
+.gcard .date{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:10px}
+.gcard .counts{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 12px}
+.gcard .tickers{font-size:.88rem;color:var(--ink-soft);margin:0 0 12px;flex:1}
+.gcard .go{font-family:var(--body);font-weight:700;font-size:.88rem;color:var(--honey-deep);display:inline-flex;align-items:center;gap:6px}
+.gcard:hover .go{color:var(--ltram)}
+
+.status{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-weight:700;font-size:10.5px;letter-spacing:.03em;
+  text-transform:uppercase;padding:3px 9px;border-radius:999px}
+.status.buy{background:var(--buy-soft);color:var(--buy)}
+.status.buyhold{background:var(--buyhold-soft);color:var(--buyhold)}
+.status.hold{background:var(--hold-soft);color:var(--hold)}
+.status.holdsell{background:var(--holdsell-soft);color:var(--holdsell-text)}
+.status.sell{background:var(--sell-soft);color:var(--sell)}
+
+.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px 24px;margin:14px 0;box-shadow:var(--shadow-sm)}
+.panel.buy{border-left:4px solid var(--buy)}
+.panel.buyhold{border-left:4px solid var(--buyhold)}
+.panel.hold{border-left:4px solid var(--hold)}
+.panel.holdsell{border-left:4px solid var(--holdsell)}
+.panel.sell{border-left:4px solid var(--sell)}
+.panel h3{font-size:1.08rem;margin:0 0 12px;display:flex;align-items:center;gap:10px}
+.panel .empty{color:var(--ink-faint);font-style:italic;font-size:.94rem;margin:0}
+.pick{padding:10px 0;border-top:1px dashed var(--line)}
+.pick:first-of-type{border-top:none;padding-top:2px}
+.pick .ticker{font-weight:700;font-family:var(--display);font-size:1.02rem;margin-bottom:2px}
+.pick .rationale{font-size:.92rem;color:var(--ink-soft);margin:0}
+
+.tickerbar{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 6px}
+.tchip{font-family:var(--mono);font-weight:700;font-size:.82rem;background:var(--paper-2);color:var(--ink-soft);
+  border:1px solid var(--line-strong);border-radius:999px;padding:5px 12px}
+
+.vcard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius-sm);margin:12px 0;overflow:hidden}
+.vcard summary{list-style:none;cursor:pointer;padding:16px 20px;display:flex;gap:14px;align-items:flex-start}
+.vcard summary::-webkit-details-marker{display:none}
+.vcard .vmeta{flex:1;min-width:0}
+.vcard .channel{font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--honey-deep);margin-bottom:3px}
+.vcard .title{font-weight:700;font-size:1rem;color:var(--ink)}
+.vcard .chev{margin-left:auto;color:var(--ink-faint);transition:transform .25s;font-family:var(--mono);flex:0 0 auto}
+.vcard[open] summary .chev{transform:rotate(180deg)}
+.vcard .body{padding:0 20px 20px 20px;color:var(--ink-soft);font-size:.95rem}
+.vcard .body p{margin:0 0 12px}
+.vcard .watch{font-family:var(--mono);font-size:.82rem}
+
+.foot{margin:54px 0 40px;padding-top:20px;border-top:1px solid var(--line);font-size:.85rem;color:var(--ink-faint);font-family:var(--mono);line-height:1.7}
+.foot b{color:var(--ink-soft)}
+.empty-state{color:var(--ink-faint);font-style:italic;padding:24px 2px}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+.zchart-panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px 24px;box-shadow:var(--shadow-sm)}
+.zchart-asof{font-size:.86rem;color:var(--ink-faint);margin-bottom:14px;line-height:1.5}
+.zchart-grid{display:grid;grid-template-columns:1fr 300px;gap:22px;align-items:start}
+@media(max-width:820px){.zchart-grid{grid-template-columns:1fr}}
+.zrank-list{display:flex;flex-direction:column;border-left:1px solid var(--line);padding-left:18px}
+@media(max-width:820px){.zrank-list{border-left:none;border-top:1px solid var(--line);padding-left:0;padding-top:14px}}
+.zrank-row{display:grid;grid-template-columns:12px 1fr auto auto;align-items:center;gap:9px;padding:6px 0;border-top:1px dashed var(--line);font-size:.86rem}
+.zrank-row:first-of-type{border-top:none}
+.zrank-row.zrank-head{border-top:none;border-bottom:1px solid var(--line);padding-bottom:8px;margin-bottom:2px;
+  font-family:var(--mono);font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-faint);font-weight:700}
+.zrank-dot{width:10px;height:10px;border-radius:50%}
+.zrank-ticker{color:var(--ink);font-weight:600}
+.zrank-val{font-family:var(--mono);font-weight:700;font-size:.85rem;text-align:right}
+.zrank-val.pos{color:var(--buy)}
+.zrank-val.neg{color:var(--sell)}
+.zrank-alloc{font-family:var(--mono);font-weight:700;font-size:.85rem;text-align:right;color:var(--ink-soft);min-width:52px}
+.zchart-note{font-size:.85rem;color:var(--ink-faint);margin:16px 0 0}
+
+.date-groups{display:flex;flex-direction:column;gap:16px}
+.date-group{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px 24px;box-shadow:var(--shadow-sm);
+  transition:border-color .18s,box-shadow .18s}
+.date-group:hover{border-color:var(--line-strong);box-shadow:var(--shadow-md)}
+.date-group .dg-head{display:flex;align-items:baseline;flex-wrap:wrap;gap:10px 14px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.date-group .dg-date{font-family:var(--display);font-weight:600;font-size:1.25rem;color:var(--ink);border-bottom:1.5px solid var(--honey-soft)}
+.date-group .dg-date:hover{color:var(--honey-deep);border-color:var(--honey)}
+.date-group .dg-count{font-family:var(--mono);font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-faint)}
+.date-videos{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+.date-videos li{display:flex;flex-direction:column;gap:3px;font-size:.94rem}
+.date-videos .dv-row{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline}
+.date-videos .dv-channel{font-family:var(--mono);font-size:10px;letter-spacing:.04em;text-transform:uppercase;color:var(--honey-deep);
+  background:var(--honey-soft);border-radius:999px;padding:2px 9px;flex:0 0 auto}
+.date-videos .dv-title{color:var(--ink)}
+.date-videos .dv-summary{color:var(--ink-faint);font-size:.85rem;line-height:1.5;margin:0 0 0 2px}
+.date-videos a{color:var(--ink);border-bottom:1.5px solid var(--line-strong)}
+.date-videos a:hover{color:var(--honey-deep);border-color:var(--honey)}
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode" title="Toggle dark mode">
+  <span class="tt-sun">☀</span><span class="tt-moon">☾</span>
+</button>
+<script>function toggleTheme(){
+  var r = document.documentElement, next = r.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  r.setAttribute('data-theme', next); localStorage.setItem('theme', next);
+  var mc = document.querySelector('meta[name="theme-color"]'); if (mc) mc.content = next === 'dark' ? '#181512' : '#FBF6EC';
+}</script>
+<div class="wrap">
+  <header class="head">
+    <a class="back" href="../index.html">← All digests</a>
+    <span class="eyebrow"><span class="dot"></span>2026-08-07</span>
+    <h1>Daily Digest</h1>
+    <p>Executive read of today's finance &amp; investing videos, sorted by call.</p>
+    <div class="tickerbar">
+      <span class="tchip">인텔</span>
+<span class="tchip">ARM</span>
+<span class="tchip">AMD</span>
+<span class="tchip">코덱스 미국 CPU반도체탑10 ETF</span>
+<span class="tchip">도어대시</span>
+<span class="tchip">S-Oil</span>
+<span class="tchip">SK이노베이션</span>
+<span class="tchip">퀄컴</span>
+<span class="tchip">마벨</span>
+<span class="tchip">마이크론</span>
+<span class="tchip">샌디스크</span>
+<span class="tchip">루멘텀</span>
+<span class="tchip">코히런트</span>
+<span class="tchip">코닝</span>
+<span class="tchip">삼성전자 우선주</span>
+<span class="tchip">SK스퀘어</span>
+<span class="tchip">삼성생명</span>
+<span class="tchip">키옥시아</span>
+<span class="tchip">한화오션</span>
+<span class="tchip">신한지주</span>
+<span class="tchip">기업은행</span>
+<span class="tchip">우리금융지주</span>
+<span class="tchip">카카오뱅크</span>
+<span class="tchip">LG전자</span>
+<span class="tchip">삼양식품</span>
+<span class="tchip">APR</span>
+<span class="tchip">삼성전자</span>
+<span class="tchip">SK하이닉스</span>
+<span class="tchip">야스</span>
+<span class="tchip">현대차</span>
+<span class="tchip">파마리서치</span>
+<span class="tchip">금</span>
+<span class="tchip">구리</span>
+<span class="tchip">삼성전자 보통주</span>
+<span class="tchip">네이버</span>
+<span class="tchip">비트코인</span>
+<span class="tchip">엔비디아</span>
+<span class="tchip">웨스턴디지털</span>
+<span class="tchip">마이크로소프트</span>
+<span class="tchip">구글</span>
+<span class="tchip">아마존</span>
+<span class="tchip">메타</span>
+<span class="tchip">TSMC</span>
+    </div>
+  </header>
+
+  <section class="sec">
+    <div class="sec-h">Executive summary</div>
+    
+    <div class="panel buy">
+      <h3><span class="status buy">▲ Buy</span></h3>
+      <div class="pick">
+        <div class="ticker">인텔</div>
+        <p class="rationale">AI 에이전트 시대 CPU 수요 급증의 핵심 수혜주로 지목되며 매수 전략이 제시됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">ARM</div>
+        <p class="rationale">자체 AI 데이터센터용 CPU 출시와 빅테크 고객 확보로 성장성이 높다고 평가되어 매수가 제안됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">AMD</div>
+        <p class="rationale">CPU와 GPU를 모두 잘 만드는 하이브리드형 강자로 데이터센터 매출 성장이 두드러져 매수가 제안됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">코덱스 미국 CPU반도체탑10 ETF</div>
+        <p class="rationale">인텔 ARM AMD 등 CPU 반도체 테마에 집중 투자하는 신규 상장 ETF로 담을 것을 권유함.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">도어대시</div>
+        <p class="rationale">주문량과 매출이 컨센서스를 크게 상회하며 목표주가 대비 약 45퍼센트 상승 여력이 있다고 평가됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">S-Oil</div>
+        <p class="rationale">정제마진 개선 기대와 외국인 수급 유입으로 급등하며 강한 매수세가 확인됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">SK이노베이션</div>
+        <p class="rationale">정제마진 개선 기대감 속에 외국인 매수세가 유입되며 주가가 강세를 보임.</p>
+      </div>
+    </div>
+
+    <div class="panel buyhold">
+      <h3><span class="status buyhold">◆ Buy / Hold</span></h3>
+      <div class="pick">
+        <div class="ticker">퀄컴</div>
+        <p class="rationale">CPU 생태계 관련 수혜주로 언급되며 테마 ETF 편입을 통한 긍정적 관심이 제시됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">마벨</div>
+        <p class="rationale">CPU 및 패키징 생태계 관련주로 분류되어 테마 투자 관점에서 긍정적으로 언급됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">마이크론</div>
+        <p class="rationale">메모리 공급 부족 사이클과 회복 조짐이 근거로 제시되나 분할 매수 등 신중한 접근이 권장됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">샌디스크</div>
+        <p class="rationale">마진율 둔화 우려에도 장기 계약 확대로 향후 재평가 가능성이 있다고 평가됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">루멘텀</div>
+        <p class="rationale">GPU 세대 진화에 따른 광트랜시버 수요 급증의 수혜주로 관심을 가질 필요가 있다고 언급됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">코히런트</div>
+        <p class="rationale">광트랜시버 수요 성장 전망에 따라 관련주로 주목할 필요가 있다고 언급됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">코닝</div>
+        <p class="rationale">광트랜시버 수요 확대 흐름 속에서 관심 종목으로 제시됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">삼성전자 우선주</div>
+        <p class="rationale">보통주와의 괴리율이 과거 평균보다 크게 벌어져 있어 축소 시 상대적 수익 기대로 비중 확대가 이루어짐.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">SK스퀘어</div>
+        <p class="rationale">SK하이닉스 대신 접근할 수 있는 지주회사형 대안 투자처로 제시됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">삼성생명</div>
+        <p class="rationale">삼성전자 지분을 다량 보유한 저평가 프록시 투자처로 제안됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">키옥시아</div>
+        <p class="rationale">상대적으로 저평가된 메모리 프록시 투자처로 관심을 가질 만하다고 언급됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">한화오션</div>
+        <p class="rationale">조선업 실적 호조 속에 견조한 흐름을 보이며 긍정적으로 평가됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">신한지주</div>
+        <p class="rationale">외국인 매수세가 유입되며 실적 우수 종목으로 긍정적으로 언급됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">기업은행</div>
+        <p class="rationale">외국인 매수 유입과 함께 견조한 흐름을 보이는 은행주로 언급됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">우리금융지주</div>
+        <p class="rationale">외국인 수급이 몰리며 강세를 보이는 은행주로 긍정적으로 평가됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">카카오뱅크</div>
+        <p class="rationale">외국인 매수세 유입 속에 긍정적인 흐름을 보이는 종목으로 언급됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">LG전자</div>
+        <p class="rationale">AI 및 로봇 액추에이터 사업 기대감으로 반도체 대비 상대적으로 견조한 모습을 보임.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">삼양식품</div>
+        <p class="rationale">실적이 우수한 개별 종목으로 강세 흐름이 긍정적으로 평가됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">APR</div>
+        <p class="rationale">견조한 실적을 바탕으로 긍정적인 주가 흐름을 보이는 종목으로 언급됨.</p>
+      </div>
+    </div>
+
+    <div class="panel hold">
+      <h3><span class="status hold">● Hold</span></h3>
+      <div class="pick">
+        <div class="ticker">삼성전자</div>
+        <p class="rationale">실적 개선은 확실하나 성장 모멘텀 둔화 우려와 방향성 불확실성으로 관망이 필요하다고 진단됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">SK하이닉스</div>
+        <p class="rationale">장기계약 확대로 사이클 변동성은 줄었으나 개별 이슈와 모멘텀 둔화로 당분간 박스권이 예상됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">야스</div>
+        <p class="rationale">반대매매로 인한 지분율 이슈가 있었지만 실적 자체는 견조하다고 평가됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">현대차</div>
+        <p class="rationale">고점 대비 크게 하락했지만 여전히 신뢰를 갖고 보유를 유지하겠다는 입장이 제시됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">파마리서치</div>
+        <p class="rationale">단기 매매로 소소한 수익을 낸 종목으로 특별한 방향성 제시 없이 언급됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">금</div>
+        <p class="rationale">달러 강세로 소폭 하락했으나 포트폴리오 일부로 장기 보유할 만한 관심 자산으로 언급됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">구리</div>
+        <p class="rationale">투자 관심 대상으로 언급되었을 뿐 구체적인 매수 매도 의견은 제시되지 않음.</p>
+      </div>
+    </div>
+
+    <div class="panel holdsell">
+      <h3><span class="status holdsell">◇ Hold / Sell</span></h3>
+      <div class="pick">
+        <div class="ticker">삼성전자 보통주</div>
+        <p class="rationale">보통주 비중을 거의 없애고 우선주로 옮긴 것으로 보아 상대적으로 비중 축소가 이루어짐.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">네이버</div>
+        <p class="rationale">외국인이 매도 우위를 보이며 반도체와 함께 소외되는 모습을 보임.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">비트코인</div>
+        <p class="rationale">삶을 바꿀 만한 수익을 기대하며 의존하는 것은 위험하다는 경고와 함께 비중 축소가 권고됨.</p>
+      </div>
+    </div>
+
+    <div class="panel sell">
+      <h3><span class="status sell">▼ Sell</span></h3>
+      <p class="empty">No calls in this category today.</p>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="sec-h">Videos covered (16)</div>
+    
+    <details class="vcard" id="vid-0">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">somong</div>
+          <div class="title">하락은 기회? AI 에이전트 시대 새롭게 주도주가 될 주식들</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        <p>삼성 코덱스 최성민 매니저와의 인터뷰를 정리한 것으로, AI 반도체 시장의 무게중심이 GPU에서 CPU로 옮겨가고 있다는 내용을 다룬다. 지난 4월 말 인텔 실적 발표일에 인텔 주가가 하루 23% 이상 급등하고 ARM이 15%, AMD가 14% 오른 사건을 상징적인 전환점으로 제시한다. CPU와 GPU, 메모리의 역할을 레스토랑 비유로 설명하는데, CPU는 주방을 총괄하며 복잡한 판단과 지시를 순서대로 처리하는 총괄 셰프이고, GPU는 단순 반복 작업을 대량으로 동시에 처리하는 조리 보조이며, 메모리는 재료를 나르는 통로 역할을 한다고 설명한다.</p><p>기존 AI가 질문에 답하는 챗봇 방식일 때는 단순 반복 작업이 많아 GPU 비중이 압도적으로 높았지만, AI 에이전트 시대로 넘어가면서 AI가 스스로 계획을 세우고 검색, 코드 실행, 결과 확인, 재시도 등 복잡한 작업을 수행하게 되어 이를 판단하고 지시하는 CPU의 역할이 커지고 있다고 설명한다. 모건스탠리 분석에 따르면 단순 챗봇 단계에서는 GPU 대 CPU 비중이 약 12대 1이었으나, 추론 단계에서는 2대 1, AI 에이전트 단계에서는 1대 1까지 높아진다고 언급한다. 엔비디아 젠슨 황 CEO도 올해 3월 GTC 기조연설에서 CPU가 이제 모델을 단순 지원하는 것이 아니라 모델을 구동한다고 언급했다고 전한다. AI 에이전트가 작업 하나를 마치는 데 걸리는 시간의 최대 90%가 CPU 처리에 몰려 있어 GPU가 오히려 대기하는 시간이 생긴다는 분석도 소개한다. ARM에 따르면 데이터센터 전력 1GW당 필요한 CPU 코어 수가 생성형 AI 시대의 3천만 개에서 AI 에이전트 시대에는 약 1억 2천만 개로 약 네 배 늘어날 것으로 전망된다고 밝힌다.</p><p>수요 급증에 비해 공급이 따라가지 못해 서버 CPU 시장이 품귀 현상을 겪고 있으며, 인텔과 AMD는 가격 인상과 납기 지연에 나섰다고 설명한다. 이는 과거 메모리 반도체 시장에서 겪었던 공급 병목 현상과 유사하다고 지적한다. 빅테크 기업들도 엔비디아의 베라, 마이크로소프트의 코발트 등 자체 CPU 개발에 뛰어들고 있으며, 뱅크오브아메리카는 2030년 글로벌 서버 CPU 시장 규모 전망을 기존 1250억 달러에서 1700억 달러로 상향 조정했다고 전한다. 2025년 말 기준 서버 CPU 시장 규모는 350억 달러 수준으로, 5년 만에 약 다섯 배 성장할 것으로 전망된다고 설명한다.</p><p>이 시장을 주도하는 3대 기업으로 인텔, ARM, AMD를 꼽으며, 각각의 강점을 설명한다. 인텔은 x86 기반의 범용 CPU 시장에서 여전히 높은 점유율을 가지고 있으며, 소프트웨어 호환성이 강점이지만 전력 소모와 발열이 단점이라고 설명한다. 최근 엔비디아와의 지분 투자 및 맞춤형 x86 CPU 공동 개발, 구글과의 장기 공급 계약이라는 두 가지 우호적 요인이 생겼고, 자체 파운드리를 보유해 TSMC에 의존하지 않고 직접 생산 물량을 늘릴 수 있다는 히든카드도 있다고 설명한다. ARM은 원래 설계도(IP)를 제공하고 로열티를 받는 사업 모델이었으나, 창사 35년 만에 처음으로 올해 3월 자체 칩인 ARM AGI CPU를 직접 만들어 판매하겠다고 선언했으며, TSMC와 협업해 양산에 들어갈 계획이라고 전한다. 이는 전력 대비 성능비가 뛰어난 AI 데이터센터 특화 CPU로, 이미 메타 등 빅테크를 고객사로 확보했으며, 2025년 기준 전체 매출 47억 달러 수준에서 데이터센터 사업만으로 향후 5년 내 150억 달러 매출을 목표로 제시했다고 설명한다. AMD는 CPU와 GPU를 모두 잘 만드는 유일한 회사로, 최근 데이터센터 매출 성장세가 두드러지며, 인텔보다 발열과 코어 측면에서 우위가 있고 ARM보다 호환성 측면에서 우위가 있는 하이브리드형 기업으로 소개된다.</p><p>세 기업 중 하나를 콕 집어 추천하기보다는, 시장 자체가 본격적으로 커지는 국면이므로 세 종목을 모두 담는 전략이 유효하다고 제안한다. 이에 맞춰 삼성 코덱스가 8월 4일 상장한 코덱스 미국 CPU 반도체 탑10 ETF를 소개하며, 인텔, ARM, AMD 세 종목에 약 75% 비중으로 집중 투자하고 퀄컴, 마벨 등 CPU 생태계 관련 기업 및 일부 패키징 기업을 포함해 총 10개 종목으로 구성된다고 설명한다. 시가총액뿐 아니라 AI 관련성 점수를 반영해 비중을 정하며 분기마다 리밸런싱하고, 총보수는 0.5%이며 환헤지를 하지 않는 환노출형 상품이라고 안내한다. 마지막으로 AI 인프라 사이클에서 병목 현상이 GPU에서 메모리로, 이제는 CPU로 옮겨가고 있다는 관점을 제시하며, 새로운 병목이 시작될 때 성장률이 급등하는 패턴을 목격해 온 만큼 GPU나 메모리에 이미 투자하고 있는 투자자라도 새로운 관심 영역으로서 CPU 관련주를 눈여겨볼 필요가 있다고 조언하며 마무리한다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=dBCJCdi3fEw" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-1">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">Orlando Kim</div>
+          <div class="title">(삼전닉스,마이크론) 바닥은? 상승은 언제?</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        <p>골드만삭스 분석과 차트 흐름을 바탕으로 삼성전자, SK하이닉스, 마이크론의 저점과 향후 상승 시점을 정리한 내용이다.</p><p>골드만삭스에 따르면 디램, 낸드, HBM 시장 모두 공급 부족 현상이 2027년에 정점을 찍을 것으로 전망된다. 2020년과 2017년 사례를 비교했을 때, 2017년이 공급 부족의 정점이었던 시기이며 디램은 마이너스 5.9퍼센트, 낸드는 마이너스 4.6퍼센트, HBM은 마이너스 6.6퍼센트까지 공급 부족이 심화된 바 있다. 이번 사이클에서는 2027년이 그와 유사한 정점이 될 것으로 예상되며, 2028년부터는 공급 부족이 다소 완화될 전망이다. 주가는 통상 공급 부족 정점보다 6개월에서 1년 앞서 움직이므로, 이번에도 2026년 말까지는 상승세가 이어질 가능성이 있다는 분석이다. 아울러 HBM 가격은 1.6에서 2.9로, 디램 가격도 1.4에서 1.9 수준으로 오르는 등 2027년에 가격 측면에서도 정점을 형성할 가능성이 높다고 언급됐다.</p><p>최근 디램 관련주들이 2022년 당시 ARK 성장주와 유사하게 급등 후 조정받는 것 아니냐는 우려가 있으나, 이는 밸류에이션과 수익성, 금리 환경이 당시와 크게 다르기 때문에 단순 비교는 무리가 있으며 한 차례 더 상승 후 조정이 나타날 가능성이 있다고 보고 있다.</p><p>밸류에이션 측면에서 한국 반도체 지수는 고점 대비 약 39퍼센트 하락한 상태로, 이는 코로나 시기의 36퍼센트 하락보다도 큰 낙폭이다. 과거 코로나, 금융위기, 이라크 전쟁 등 급락 이후 3개월, 6개월, 12개월 뒤 평균적으로 각각 16퍼센트, 43퍼센트, 59퍼센트 반등한 사례가 있어 현재도 반등 가능성이 충분하다는 분석이다. 현재 PER은 약 4배 수준으로 과거 저점 국면인 5배, 6배보다도 낮아 상당히 저평가된 상태로 평가된다.</p><p>빅테크 기업들의 데이터센터 투자와 관련해, 리스 계약 등 실제 부채 성격의 투자 규모가 재무제표에 아직 온전히 반영되지 않은 부분이 인식된 부채보다 약 4배 많은 것으로 나타나 있으며, 이는 향후 HBM 등 메모리 수요가 지속적으로 늘어날 근거로 해석된다.</p><p>골드만삭스는 또한 삼성전자, SK하이닉스, 마이크론, 샌디스크 등 메모리 업체들의 장기 계약 조건이 공급업체에 유리한 방향으로 바뀌고 있다고 분석했다. 계약 기간은 기존 3에서 5년에서 5년 기본 계약에 매년 연장하는 방식으로 길어졌고, 공급 범위도 기존 생산능력의 50퍼센트 수준에서 60에서 70퍼센트 수준으로 확대됐다. 가격 구조도 고정가격에서 상하한선이 있는 밴드 방식으로 바뀌어 시장가에 근접하면서도 높은 마진을 확보할 수 있게 됐다. 마이크론은 약 220억 달러, 샌디스크는 110억 달러 이상의 선지급 보증금을 확보했고 삼성전자도 다년간 계약금 중 4분의 1을 이미 수령하는 등, 이러한 구조 변화가 경기 변동에 따른 하방 위험을 줄여주는 요인으로 작용할 것으로 평가된다.</p><p>차트 측면에서 살펴보면, SK하이닉스는 주봉 피보나치 되돌림상 124만 원대가 0.618 조정 구간으로 나타나며 스토캐스틱도 바닥권에 위치해 있어 반등 가능성이 있으나, 160만 원대 이상에서 매물대가 많아 상승 시 저항이 클 수 있어 시간 조정이 필요한 상태로 분석된다. 밸류에이션은 PER 약 3.5배, PBR 약 2.75에서 2.8배 수준까지 하락해 있다.</p><p>삼성전자는 피보나츠 되돌림상 17만 7천 원대가 저점 구간으로 나타나며 18만 원대에서 반등이 일부 발생했다. 다만 25만 원대 이상에서 매물대가 많아 상승 시 저항이 예상되며, 쌍바닥 확인 등 바닥을 다지는 과정이 필요한 것으로 보인다.</p><p>마이크론은 주봉상 800달러대가 1차 지지선으로, 이를 깨더라도 685달러대 부근에서 저점이 형성될 가능성이 있다. 900달러대 부근에 매물대가 많아 상승이 쉽지 않은 모습이며, 일봉상 추세는 여전히 하락 중이다. 밸류에이션은 PER 약 6배, PBR 약 10배 수준으로 한국 대비 항상 약 두 배 높은 편인데, 이는 한국 기업들이 자사주 매입이나 배당 등 주주환원에 소극적이어서 상대적으로 낮은 멀티플을 받고 있기 때문으로 분석된다.</p><p>결론적으로 세 종목 모두 아직 일봉상 하락 추세에 있으며, 저점을 확인하고 상승 전환하기까지는 기간과 시간 조정이 필요할 것으로 보인다. 유가와 금리 하락 등의 여건이 갖춰지면서 대략 8월 말에서 9월 초 정도까지 조정 국면이 이어질 가능성이 있으며, 이 기간 동안에는 한 번에 몰빵 매수하기보다는 분할 매수로 접근하는 것이 안전하다는 의견이 제시됐다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=gJzcfc53J-g" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-2">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">Orlando Kim</div>
+          <div class="title">(시황분석) 언제 협상하나? 시간은 이란편</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        <p>이란 호르무즈 해협 협상 국면이 시장을 계속 지배하고 있다는 시황 분석 영상이다. 다우는 0.85% 하락, 나스닥과 SP500은 큰 변동 없이 마감했으며 러셀 2000도 소폭 하락했다. 하루 동안 상승 종목보다 하락 종목이 많았고 마이크로소프트만 빅테크 중에서 두드러지게 올랐다. 반면 샌디스크, 웨스턴디지털 등 전날 실적을 발표한 종목들이 하락했고 마이크론 테크놀로지 등 메모리 반도체 관련주도 동반 하락했다. 반도체 장비와 소프트웨어 업종도 부진했다. 섹터별로는 에너지가 1.56% 상승해 가장 좋았고 헬스케어가 0.21%, 테크놀로지가 0.03% 소폭 상승한 반면 11개 섹터 중 8개가 하락해 전반적으로 하락세가 강했다. 이는 호르무즈 해협에서 이란과의 협상이 잘 풀리지 않으면서 유가가 급등한 영향으로, 통신주 헬스케어 에너지가 강세일 때는 반도체나 소프트웨어 같은 성장주가 부진한 전형적인 장세가 나타났다.</p><p>유가는 브렌트유가 4.43% 급등해 80달러를 재돌파했고 WTI도 3.44% 상승했는데 이는 이란과의 협상이 원활하지 않다는 신호다. 이로 인해 10년물 국채금리가 1% 이상 뛰어 4.66%, 30년물은 5.2%로 올라섰다. 여기에 구글, 아마존, 메타 등 빅테크가 대규모 회사채를 계속 발행하고 있는 점도 국채 수요를 잠식해 금리 상승 압력을 키우고 있다. 실제로 아마존 알파벳 메타 세 회사만 2016년 이후 1700억 달러 규모의 투자등급 채권을 발행했고 알파벳은 추가로 250억 달러 채권 발행을 추진 중이며 이 소식에 주가가 하락하기도 했다.</p><p>기술적으로 SP500, 나스닥, 다우 모두 이전 고점을 돌파한 후 조정 국면에 들어가 있으며 반등을 위해서는 결국 호르무즈 해협 문제 해결이 관건이라고 분석했다. 반도체 지수도 돌파 후 옆으로 눕는 기간 조정 국면에 있다. 금 지수는 달러 강세로 소폭 하락했지만 50일 이평선을 돌파했으며 4천 달러 부근을 바닥으로 보고 포트폴리오의 5% 정도를 현금 대신 담아 장기 보유하는 전략을 제안했다.</p><p>호르무즈 해협 협상과 관련해서는 트럼프의 발언에 대한 시장 신뢰가 이미 떨어진 상태이며, 이란이 해협을 통과하는 선박에 통행료를 부과할 것인지가 핵심 쟁점으로 부상했다. 초안에 따르면 미국과 이스라엘 선박은 통과가 금지되고 이란에 피해를 준 다른 국가들도 배상금을 지불할 때까지 통과가 불허되며 위반국에는 화물가치의 20%에 해당하는 벌금이 부과될 수 있다는 내용이 담겨 있다. 영국 해상무역운영센터는 호르무즈 해협을 지나던 유조선 인근에서 두 차례 폭발음이 보고되었다고 밝혔다. 미국은 이러한 조건을 즉각 거부하는 반응을 보여 협상 타결까지 상당한 시간이 걸릴 것으로 예상된다.</p><p>경제지표로는 신규 실업수당 청구건수가 예상보다 낮은 19만9천 건으로 긍정적이었으나 계속실업수당 청구건수는 예상보다 높은 180만 건대로 나와 혼조세를 보였고, GDP는 예측치 5.9%보다 낮은 5.8%로 발표됐다.</p><p>일부 차트 분석가들이 SP500의 급격한 상승세가 1999년, 2000년 닷컴버블 고점 당시와 유사하다며 경고하고 있으나, 당시와 달리 현재는 마이크로소프트를 비롯한 빅테크들의 실적(EPS)이 꾸준히 우상향하며 주가 상승을 뒷받침하고 있어 펀더멘털 없는 버블 붕괴 가능성은 낮다고 진단했다. 강세론자인 톰 리는 8월 중 SP500이 7900에서 8000까지 오를 수 있다고 전망했으며 그 근거로 2분기 실적 호조, 호르무즈 해협 재개방 기대, 반도체 관련주의 강한 성과, 나스닥이 20일 50일 200일 이평선 위에 있는 기술적 우위 등을 들었다. JP모건은 아시아 기술주 매도세가 AI 투자 사이클 종료를 의미하지 않는다고 밝히며 AI 추론 수요가 강세를 보이고 있고 하이퍼스케일러들이 AI 인프라 투자를 축소할 조짐이 없다고 진단했다. 또한 웨이퍼 제조 장비, 2.5D 및 3D 패키징, TSMC 투자 사이클 관련주가 유망하다고 평가했다. 메모리는 향후 2, 3년간 공급이 수요를 앞지를 것으로 예상되어 단기 반등은 가능하나 이전 고점 회복은 어려울 것으로 전망되며 엔비디아 루빈 울트라가 메모리 부족으로 당초 계획보다 낮은 192에서 256GB HBM 버전을 테스트 중인 것으로 알려졌다. CFRA는 SP500 연말 목표치를 8500으로 상향했고 RBC 8150, UBS 8100을 각각 제시했으며 근거로 펀더멘털과 기술적, 역사적 요인, 완화되는 인플레이션 우려, AI 인프라 투자 지속 등을 꼽았다.</p><p>샌디스크는 실적 발표 후 한때 10% 하락했다가 5%대로 낙폭을 줄였는데, 원인은 총마진율 전망이 직전 분기 84.6%에서 83에서 85%로 다소 둔화된 데 있다. 그러나 신규 비즈니스 모델 계약을 8개 고객사로 확대하며 향후 최소 933억 달러의 매출을 확보했고 월가에서는 장기 사업 지속 가능성에 대한 확신이 서면 주가가 재평가될 것으로 전망하고 있으며 이달 말 애널리스트 데이가 계기가 될 수 있다고 언급했다. 카운터포인트에 따르면 국가 주도 AI 시장에서 엔비디아의 점유율이 약 92%에 달할 것으로 전망됐다. UBS는 GPU 세대가 진화할수록 광트랜시버 수요가 늘어난다고 분석했는데 호퍼는 GPU당 8개, 블랙웰과 루빈은 16개, 차세대 페인만은 32개까지 필요해 광트랜시버 수요가 2028년까지 연평균 41% 성장할 것으로 예상되며 루멘텀, 코히런트, 코닝 등 관련주에 관심을 가질 필요가 있다고 언급했다. 마지막으로 에버코어는 도어대시에 대해 목표주가 300달러를 유지하며 약 45%의 상승 여력이 있다고 평가했는데, 2분기 실적에서 총주문량이 전년 대비 28% 증가한 9억7천만 건, 총주문액이 36% 증가한 331억 달러를 기록했고 매출도 컨센서스를 상회한 44억5천만 달러를 기록했다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=EbEAg8bWIa8" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-3">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">Schuka World (슈카월드)</div>
+          <div class="title">전쟁 와중에 불 붙은 우크라이나 폴란드 역사 갈등</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        <p>우크라이나가 이유 신규 가입 협상 국가로 몰도바, 몬테네그로, 알바니아와 함께 이름을 올렸고, 헝가리가 오르반 정부에서 야당으로 정권이 바뀐 후 반대 입장을 접으면서 마지막 걸림돌이 사라진 것처럼 보였다. 그런데 뜻밖에도 폴란드가 우크라이나의 이유 및 나토 가입에 반대 의사를 밝히면서 논란이 됐다. 폴란드는 러시아의 침공 이후 우크라이나에 가장 적극적으로 무기와 물자를 지원하고 난민 100만 명 이상을 수용한 나라였음에도, 지난 5월 우크라이나가 자국 특수작전부대의 이름을 UPA, 즉 우크라이나 반군으로 바꾸는 법령을 발표하자 강하게 반발했다. 폴란드는 이를 즉시 철회할 것을 요구했고, 이전에 젤렌스키에게 수여했던 최고 국가훈장인 백수리 훈장 수여를 취소했다. 이에 젤렌스키는 훈장을 다시 포장해 폴란드로 돌려보내는 모습을 SNS에 올렸고, 다른 우크라이나 정치인들도 잇따라 폴란드 훈장을 반납했다.</p><p>이 갈등의 뿌리는 두 나라의 오랜 역사에 있다. 16~18세기에는 폴란드 리투아니아 대공국 아래 한 나라였으나, 1918년 세계대전 종료 후 각자 독립을 선언하면서 국경 지역인 볼리니아와 갈라치아를 두고 전쟁을 벌였다. 이후 소련이 침공해오자 우크라이나는 폴란드와 손잡고 맞섰으나 결국 패배해 소련에 편입되었고, 폴란드는 해당 국경 지역을 차지했다. 1932년에는 스탈린에 의한 대기근 홀로도모르로 우크라이나에서 수백만 명이 굶어 죽는 참사가 발생했다. 1939년 2차 세계대전이 시작되며 폴란드는 독일과 소련에 의해 분할 점령되고 인구의 17퍼센트인 600만 명이 사망했다. 1941년 독일이 소련을 침공하자 우크라이나 민족주의자 스테판 반데라는 독립을 위해 나치 독일과 협력했으나, 이후 독일이 그를 체포하면서 남은 세력은 우크라이나 반군 UPA를 창설해 소련, 폴란드, 독일 모두를 상대로 게릴라전을 벌였다. 이 과정에서 1943년 볼리니아 대학살이 벌어져 UPA가 폴란드인 거주 지역에서 대규모 인종청소를 자행했고, 5만에서 10만 명 이상이 희생됐다. 특히 1943년 7월 11일은 볼리니아 피의 일요일로 불리며 폴란드에서는 이 날을 국가 추모일로 기념하고 있다.</p><p>2차대전 종전 후 소련이 승리하면서 폴란드 영토는 서쪽으로 밀리고 갈라치아와 볼리니아 지역은 소련 영토로 편입됐으며, 이 지역이 1991년 소련 붕괴 후 독립한 우크라이나의 영토로 남게 됐다. 소련은 반데라와 UPA 세력을 나치 협력자이자 분리주의 테러리스트로 규정해 철저히 탄압했고, 반데라는 1959년 소련 스파이에 의해 독일에서 암살당했다. 반면 미국은 냉전 시기 반소 활동을 위해 UPA 지도부 인사를 데려가 보호하기도 했다. 이런 배경 속에서 러시아의 푸틴 대통령은 우크라이나를 나치로 규정하며 침공의 명분으로 활용하고 있다.</p><p>2017년 폴란드 두다 대통령은 볼리니아 학살 추모 연설에서 이를 반우크라이나 감정을 부추기기 위함이 아니라 양국 우호의 토대로 기억해야 한다고 밝히며 관계를 다독인 바 있다. 그러나 이번에 우크라이나가 특수작전부대 이름을 UPA로 정한 사건은 폴란드 내 반우크라이나 여론을 크게 자극해, 우크라이나의 이유 가입에 대한 폴란드의 지지율이 90퍼센트에서 50퍼센트까지 떨어졌다. 폴란드 총리는 볼리니아 희생자를 위한 국가 기념관 건립을 발표하며 우크라이나가 이유에 가입하려면 이러한 역사적 사실을 직시해야 한다고 강조했다. 현재 폴란드 외무장관이 우크라이나를 방문해 관계 회복을 모색하고 있으며, 젤렌스키도 볼리니아 학살 희생자를 위한 폴란드 합동 기도회에 참석하고 진실 규명에 최선을 다하겠다고 밝히면서, 양국이 공통의 위협인 러시아에 맞서 함께해야 한다는 점을 강조했다. 결국 전쟁이라는 현재의 위기 속에서 오래된 역사적 상처가 다시 불붙으며 양국 관계와 우크라이나의 이유 가입 전망에 새로운 변수로 떠오른 상황이다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=2LgOD1pZHVY" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-4">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">Schuka World (슈카월드)</div>
+          <div class="title">주식 차트 볼 때 착각하면 안되는 것</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        <p>이 영상은 주식 차트를 볼 때 넥스트 장(넥장), 즉 시간외 거래나 다음 거래일 시가와 연결된 통합 차트를 보면서 흔히 생기는 착시 현상에 대해 설명한다. 화자는 최근 특정 종목의 차트를 예시로 들며, 넥장까지 통합해서 연결된 차트로 보면 마치 눌림목처럼 살짝 눌렸다가 다시 오르는 듯한 모양으로 보여서 투자자들이 곧 반등할 것처럼 착각하게 만든다고 지적한다. 하지만 이는 넥장 데이터가 함께 섞여서 나타나는 왜곡된 모습일 뿐, 실제 정규장만 따로 떼어놓고 보면 전혀 다른 그림이 나온다고 설명한다.</p><p>화자는 실제로 최근 12~13영업일 중 10개의 캔들이 음봉, 즉 파란색으로 나타나 있다는 점을 강조하며, 이는 명백히 주가가 계속 하락하며 눌려온 것이라고 말한다. 해당 종목은 170만 원대였다가 현재 150만 원 수준까지 내려온 상태로, 완전한 하락장이라 단정하기는 애매하지만 등락을 반복하면서도 전반적으로는 계속 매도 압력에 눌려온 흐름이라고 분석한다. 이런 연속적인 음봉 발생은 개별적으로 봤을 때는 크게 위험해 보이지 않을 수 있지만, 통합해서 보면 눌림목처럼 매력적으로 보이는 착시를 만들어낸다는 것이다.</p><p>화자는 이를 넥장이 투자자를 속이고 있다고 표현하며, 넥장이라는 색안경을 벗고 정규장 데이터만으로 차트를 봐야 진짜 흐름이 보인다고 강조한다. 넥장을 포함한 통합 차트로 보면 마치 살이 붙어 먹음직스러워 보이는 모습이지만, 이를 걷어내고 보면 사실상 뼈만 앙상하게 남은 모습, 즉 실제로는 매우 부진한 주가 흐름이라는 비유를 사용한다.</p><p>이어서 이러한 통합 차트와 정규장 전용 차트를 구분해서 보는 방법에 대해 안내하는데, 증권사 앱이나 차트 프로그램에서 상단 메뉴를 통해 통합, KRX, 또는 정규장(넥장)만 보기 등의 옵션을 선택할 수 있다고 설명한다. 많은 사람들이 이 기능을 잘 모르고 있었다며, 이번 기회에 알아두면 좋다고 언급한다.</p><p>마지막으로 이 종목의 상태에 대해 완전히 끝난 것은 아니지만 최근 컨디션이 매우 좋지 않은, 즉 환자와 같은 상태라고 정리하며 마무리한다. 전체적으로 이 영상은 주식 차트를 해석할 때 정규장과 시간외 거래(넥스트 장)를 구분하지 않고 통합해서 보면 실제 주가 흐름을 왜곡해서 인식할 수 있으니 주의해야 한다는 메시지를 담고 있다.</p>
+        <a class="watch" href="https://www.youtube.com/shorts/KW_b_oO43E8" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-5">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">부읽남</div>
+          <div class="title">&quot;삶의 흐름을 바꾸고 싶어요&quot; 우리 가족 어떻게 해야 하나요? [상남자들]</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        <p>시흥에서 세 자매(엄마, 언니, 동생)가 경제 공동체로 살고 있는 상담자의 사례입니다. 언니는 소득 약 400만 원, 동생은 약 350만 원을 벌고 어머니는 소득이 없으며, 세 사람이 함께 생활하면서 월 고정 지출 약 400만 원을 쓰고 남는 돈으로 저축을 하고 있습니다. 현재 현금성 자산은 약 2억 원, 주식과 비트코인에 약 5천만 원을 투자 중이며 부동산은 없고 대출을 받아 빌라 전세에 거주하고 있습니다. 상담자는 지금 살고 있는 동네와 집을 벗어나 삶의 흐름 자체를 바꾸고 싶어 하지만 서울 진입이나 지방 투자 같은 선택지는 어렵고 어머니 사정으로 시흥을 떠날 수 없는 제약이 있어 이사와 내 집 마련, 현금 활용 방법, 주식과 비트코인 처분 여부 등을 고민하고 있습니다.</p><p>상담을 진행한 전문가는 먼저 이 가정의 구조를 언니가 남편 역할, 동생이 아내 역할, 어머니가 딸 역할을 하는 특이한 삼인 가족 형태로 규정합니다. 실제 지출 내역을 살펴보면 생활비, 식비, 통신비 등이 언니와 동생 사이에 뚜렷한 구분 없이 뒤섞여 있고, 대출이자, 보험료, 종교 헌금, 어머니 용돈 등 포기할 수 없는 고정비가 매우 커서 저축이 어려운 구조임을 지적합니다. 특히 어머니의 건강 문제로 인한 보험료 부담과 헌금, 용돈 등을 합치면 고정비가 상당하다는 점을 짚습니다.</p><p>전문가는 두 자매가 모두 결혼 계획이 없다고 밝힌 점을 언급하며, 만약 나중에 결혼하게 되면 부부의 이혼과 같은 재산 분할 문제가 발생할 수 있으므로 지금부터 언니와 동생의 자산을 명확히 구분해 관리해야 한다고 강조합니다. 또한 두 자매가 자산을 완전히 합쳐 공동으로 운영하는 현재 방식은 세금 문제(형제간 증여세 등)와 향후 갈등의 위험을 안고 있다고 경고합니다.</p><p>가장 핵심적인 제안은 어머니를 세대 분리하여 기초생활수급자 등 국가 지원을 받게 하는 것입니다. 현재는 어머니가 두 딸과 세대를 함께 두고 있어 국가 지원을 받지 못하고 있는데, 어머니를 별도 주거지로 분리하면 임대주택과 생계비 지원을 받을 수 있어 경제적 부담이 크게 줄어들 수 있다고 설명합니다. 이는 불효가 아니라 자녀들이 경제적으로 무너지지 않도록 국가가 지원하는 제도를 활용하는 것이며, 분리 후에도 자주 찾아가 돌볼 수 있다고 조언합니다.</p><p>전문가는 상담자에게 두 가지 극단적인 선택 중 하나를 분명히 하라고 요구합니다. 첫째는 자산 상승을 완전히 포기하고 시흥에서 저렴한 빌라를 사서 세 식구가 그대로 행복하게 사는 방법이고, 둘째는 자산 상승을 추구하려면 어머니와의 거주를 분리하고 언니와 동생이 재건축 가능성이 있는 인천 부평역 인근 등으로 이동해 아파트를 매수하는 방법입니다. 두 마리 토끼를 다 잡으려면 순자산이 최소 6~7억 원 이상 더 필요하기 때문에 현재 자산으로는 불가능하다고 못박습니다.</p><p>또한 비트코인과 주식 투자에 의존해 삶을 바꾸겠다는 기대는 매우 위험하다고 강하게 경고합니다. 지금 투자금 규모로는 수익이 나더라도 삶의 흐름을 바꿀 만한 금액이 되지 않으며, 오히려 심리적으로 힘든 상황에서 위험한 잡코인이나 선물투자 등 도박성 투자로 빠질 위험이 크다고 지적합니다. 고통을 회피하기 위해 변동성이 큰 자산에 의존하는 대신, 정면으로 구조적 문제(고정비 절감, 자산 분리, 어머니 분리)를 해결해야 한다고 강조합니다.</p><p>구체적으로는 보험료(특히 실비보험 중복 등)와 종교 헌금 등 고정비를 재검토하고, 언니와 동생의 자산과 생활비 계좌를 명확히 분리하며, 세대 분리를 통해 어머니가 국가 지원을 받을 수 있는지 주민센터 등에서 확인해볼 것을 권합니다. 이후 여유 자금을 시흥이 아닌 서울 서부권이나 인천 부평역 인근 등 재건축 가능성이 있는 지역의 구축 아파트에 대출을 받아 투자하는 방향이 현재 상황에서는 최선의 선택이라고 제안합니다. 다만 어머니를 설득하는 것이 쉽지 않을 것이며 실제로는 원래 살던 방식으로 돌아갈 가능성이 크다고 예상하면서도, 두 자매의 인생과 미래도 중요하다는 점을 강조하며 결단을 내려야 할 시점이라고 조언하며 상담을 마칩니다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=OjltPVNCb3I" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-6">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">부읽남</div>
+          <div class="title">&quot;덜 똘똘한 한 채 올라간다&quot; 전월세 소멸, 집값 상승 시작된다</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        <p>이번 영상은 최근 발표된 부동산 세제 개편안이 전월세 시장과 집값에 미칠 영향을 다루고 있다. 정부는 이번 종부세 개편에서 시가 20억까지는 종부세를 내지 않도록 기준을 조정했는데, 이 때문에 오히려 중간 가격대 서울 실거주자 중에는 세 부담이 줄어드는 사람도 생기는 반면, 원래도 규제 대상이었던 고가 주택 보유자들은 더 가혹하게 세금이 늘어나는 구조가 되었다. 즉 정부가 대상을 그룹별로 나누어 누구는 혜택을 보고 누구는 더 강하게 압박받는 정책을 낸 것이어서, 예상과 달리 여론이 단순히 조세 저항으로만 흐르지 않고 복잡하게 갈릴 수 있다고 본다. 특히 이번 개편은 주택 수가 아니라 거주 여부와 주택 가액을 중심으로 세금을 매기는 방식으로 바뀌어서, 과거처럼 다주택자만 규제하는 것이 아니라 1주택자라도 실거주하지 않으면 다주택자 수준의 높은 세율을 적용받게 되었다. 이 때문에 앞으로는 집을 보유한 사람 대부분이 실거주를 선택할 수밖에 없는 구조가 되며, 집값이 지금 당장 싸더라도 10년 뒤에는 크게 오를 수 있다는 학습 효과 때문에 다들 전월세를 주지 않고 직접 들어가 살려는 경향이 강해질 것이라고 설명한다. 매매 거래가 한 번 일어날 때마다 전세나 월세 매물이 하나씩 시장에서 사라지는 구조가 되는 것이다. 또한 세금 부담이 커지자 자녀에게 증여하는 방식을 택하는 사람들이 다시 늘어날 것으로 예상되는데, 이는 양도세보다 증여세, 상속세가 상대적으로 유리해질 수 있기 때문이다. 증여받은 자녀 역시 세제상 이유로 해당 주택에 실거주할 가능성이 높아 이런 주택들도 장기간 임대 매물로 나오지 않게 된다. 초고가, 고령 다주택자 중 일부는 절세를 위해 매도를 선택할 수 있지만, 이는 대략 50억 이상의 초고가 주택에 국한될 것으로 보이며 그 이하 가격대에는 큰 영향이 없을 것이라 본다. 이번 정책은 서민 주거 안정과는 거리가 멀고, 오히려 무주택자에게는 매우 불리한 상황을 만든다고 지적한다. 대출 규제는 완화되지 않을 방침이어서, 다주택자나 초고가 주택 보유자들이 매물을 내놓더라도 대출이 막혀 있는 일반 무주택자들은 이를 매수할 수 없고 결국 현금 부유층만 주택을 살 수 있는 구조가 이어진다는 것이다. 주택담보대출 이자에 대한 소득공제도 실거주자에게만 적용되는 등 각종 세제 혜택이 실거주 중심으로 재편되었고, 코인, 주식 등 다양한 분야에서 소소한 증세도 함께 이루어졌다. 재개발, 재건축을 통한 공급 확대에 대해서도 정부 다수 관계자들이 신중한 입장을 보이고 있어 향후 공급 측면에서도 낙관하기 어렵다고 진단한다. 세법이 지나치게 복잡해져서 세무사조차 계산이 어려운 수준이 되었으며, 이제는 세무 상담뿐 아니라 부동산 투자 상담까지 함께 이루어져야 실질적인 의사결정이 가능한 상황이 되었다고 설명한다. 종부세를 정확히 계산할 수 있는 국민은 전체의 5%도 되지 않을 것이라고 언급한다. 다만 이렇게 세부적으로 그룹이 쪼개져 있다 보니 정작 다수의 국민은 자신에게 큰 영향이 없다고 느껴 조세 저항이 예상보다 크지 않을 수도 있다고 분석한다. 시장에서는 이제 &#x27;가장 똘똘한 한 채&#x27;만 오르던 흐름에서 벗어나, 상대적으로 덜 똘똘한 15억에서 25억 사이 주택으로 수요가 이동하며 이 구간이 오히려 강세를 보일 가능성이 크다고 본다. 30억을 초과하는 초고가 주택은 변수가 많아 관망세가 나타날 수 있고, 그 이하 가격대의 주택은 지금도 오르고 있지만 앞으로 더 빠르게 상승할 가능성이 있다고 전망한다. 실거주 요건이 강화되면 전월세 매물이 급격히 줄어들 것이고, 이는 신규 입주 물량 감소와 맞물려 전월세 가격을 더욱 자극할 수 있다고 우려한다. 임대사업자들에 대한 세제 혜택도 종료되어 이들 역시 매물을 처분하도록 유도되는데, 이렇게 나온 매물을 매수하는 사람 역시 실거주를 택할 가능성이 높아 전월세 매물 감소는 더 가속화될 것으로 본다. 금융당국 수장은 대출 완화가 오히려 집값을 자극해 주거 사다리를 더 멀어지게 한다는 입장을 밝혔고, 이에 따라 대출 총량 규제는 내년에도 계속 유지될 가능성이 크다고 언급한다. 세제로는 매물을 팔라고 압박하면서 금융으로는 대출을 풀어주지 않는 상반된 정책 기조 속에서, 결국 현금이 많은 사람이 아니면 집을 사기 어려운 상황이 지속될 것이라는 우려를 제기한다. 이 때문에 최근에는 가족이나 지인에게 자금을 빌리는 이른바 사금융을 활용해서라도 내 집 마련에 나서는 사례가 늘고 있고, 서울 외곽의 15억 이하 아파트를 중심으로 매수세가 몰리며 신고가가 속출하고 있다고 전한다. 앞서 정부의 발언을 믿고 급매로 주택을 처분했던 다주택자들은, 이후 발표된 세제 개편안에서 내년부터 양도세를 오히려 완화해 매물을 유도하겠다는 방향이 나오면서 결과적으로 손해를 본 셈이 되었다고 지적한다. 전반적으로 이번 세제 개편이 국회를 통과할 경우 전월세 시장은 극단적인 상황까지 갈 수 있으며, 서울 전세가가 이미 2년 새 1억 가까이 오른 상황에서 앞으로 상승폭이 더 커질 가능성이 높다고 전망하면서, 향후 정책이 시장에 미치는 영향을 계속 지켜보고 전달하겠다는 말로 마무리한다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=jd9Nz0Plgzk" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-7">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">부읽남</div>
+          <div class="title">삼전 닉스 지금이라도 팔까요? 정말 솔직하게 말씀드립니다 [김현준 대표 1부]</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        <p>삼성전자와 SK하이닉스 주가가 크게 흔들리는 지금 상황에서 이 시장이 여전히 저평가된 상태인지, 아니면 하락의 초입인지 판단하기가 매우 어렵다는 진단으로 대화가 시작된다. 과거 이란 전쟁이나 코로나 시기처럼 명확한 매수 또는 매도 신호가 있던 아수라장과 달리, 지금은 반도체 업종에 대한 확신이 뚜렷하지 않은 애매한 국면이라는 점이 특징이다. 고점 대비 많이 내렸다고 보기보다는 저점 대비 얼마나 올랐는지를 봐야 하며, 삼성전자는 저점 대비 약 다섯 배, SK하이닉스는 거의 열 배 가까이 오른 상태이므로 단순히 많이 빠졌다고 해서 싸다고 판단할 수 없다는 점을 강조한다. 현재 주가 하락은 밸류에이션이 비싸서 발생한 것이 아니라, 고점에서도 PER이 5배에서 7배 수준으로 낮았던 상태였고, AI 메가트렌드와 반도체 사이클이 영원히 지속될 것인지에 대한 근본적인 의문이 전문 투자자들 사이에서 제기되기 시작했기 때문이라고 분석한다. 예전에는 AI 사이클이 2028년, 2029년까지 이어질 것이라는 낙관론이 지배적이었지만 최근에는 올해나 내년이 정점일 수 있다는 의견이 늘고 있으며, 이런 전문가들의 물음표 자체가 더 큰 문제라고 본다. 다만 이런 견해도 언제든 다시 바뀔 수 있다는 점을 인정하며, 사실관계 자체는 변한 것이 없으므로 각자의 판단에 따라 포지션을 유지하거나 줄이는 것 모두 합리적일 수 있다고 말한다. 개인 투자자들 중 상당수는 초반에 적은 금액으로 투자를 시작해 확신이 쌓인 뒤에야 시드를 크게 늘리는 경향이 있어, 결과적으로 고점에서 큰 비중을 갖게 되는 경우가 많다는 안타까움도 언급한다. 전문 투자자들은 반대로 확신이 쌓이기 전까지는 소규모로 정찰하듯 투자하고, 확신이 생긴 후에는 크게 베팅하되 절대 물리지 않는 것을 원칙으로 삼는다고 설명한다. 현재 삼성전자와 SK하이닉스의 실적 자체는 3분기에 2분기보다 크게 개선될 것이 거의 확실하지만, 문제는 이익 성장률이 가속화되는지 감속되는지를 보는 모멘텀 관점에서 시장이 실망하고 있다는 점이다. 좋다는 것은 이미 다 알고 있는 사실이고, 더 좋아질지 아니면 좋아지는 속도가 둔화될지가 관심사라는 것이다. 이 때문에 반도체가 아니더라도 아직 오르지 않은 다른 업종, 섹터, 국가에 얼마든지 기회가 있으며 그런 곳에서는 크게 오르지 않아도 크게 떨어질 위험도 적다고 본다. 단순히 PER이 낮다고 싸다고 판단하기보다는 이익 성장 속도가 가속화되는 업종을 선택하는 것이 더 중요하며, 흑자 전환이나 턴어라운드 국면에 있는 조선주 등이 실제로 큰 수익을 낸 사례로 소개된다. 심리적으로도 신고가를 경신하던 시기에는 포모 심리로 자산을 계속 유지하려는 경향이 강했지만, 한번 고점에서 30에서 50퍼센트 하락을 경험한 투자자들은 이후 본전 수준까지 회복되면 다행이라 여기고 매도하려는 경향이 강해질 가능성이 높다고 진단한다. 이런 이유로 반도체에 몰렸던 자금이 점차 다른 업종이나 국가, 자산군으로 옮겨갈 가능성이 높다고 보며, 이런 흐름에 미리 대비하는 전략을 취하고 있다고 밝힌다. 실제 포지션 공개에서는 삼성전자 보통주 비중은 거의 없는 상태이며, 대신 삼성전자 우선주로 상당 부분을 옮겼다고 설명한다. 그 이유로 우선주와 보통주는 법적으로 회사 파산 시 청산 순위나 배당액, 의결권에서 차이가 있지만 삼성전자나 SK하이닉스처럼 망할 가능성이 거의 없는 회사에서는 이런 차이가 실질적으로 의미가 없다고 본다. 이론적으로 두 주식의 가격은 비슷하게 움직여야 하는데 투자를 시작할 당시 괴리율이 크게 벌어져 있었기 때문에, 이 괴리율이 축소되면 주가가 올라도 우선주가 더 오르고 내려도 덜 내릴 수 있다는 기대로 우선주를 선택했다고 밝힌다. 실제로는 예상과 달리 보통주가 더 많이 내리고 우선주가 덜 내리는 방식으로 손실이 발생했지만, 여전히 과거 10년, 20년간의 평균 괴리율보다 현재 괴리율이 더 크게 벌어져 있어 우선주 투자의 기회가 남아있다고 판단한다. SK하이닉스는 우선주가 없는 대신 SK스퀘어 같은 지주회사나 삼성생명처럼 삼성전자 지분을 많이 보유한 종목, 혹은 일본의 키옥시아 같은 상대적으로 저평가된 프록시 투자처를 대안으로 고려할 수 있다고 제안한다. AI 투자 전반이 버블인지에 대해서는 빅테크들의 메모리 반도체 및 데이터센터 투자 축소 징후가 아직 전혀 없으며, 투자하면 반드시 수익이 난다는 확신을 가지고 있다는 점에서 아직 버블이라 단정하기는 어렵다고 본다. 그러나 올해와 내년 실적이 좋다는 것은 이미 시장에 반영된 이야기이며, 몇 년 후에도 계속해서 하이퍼스케일러들이 삼성전자, SK하이닉스, 마이크론 등 3강에게 가격과 상관없이 지속적으로 대규모 주문을 낼 것인지에 대한 고민이 필요한 시점이라고 결론짓는다. 결국 코스피가 향후 신고가를 경신할 가능성은 있지만 그것이 마지막 정점일 수 있으며, 반드시 삼성전자나 SK하이닉스에서 수익을 내야 하는 것은 아니라는 점, 그리고 어떤 종목으로 벌든 결국 순자산이 커지는 것이 중요하다는 투자 철학을 강조하며 마무리된다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=WG3AEZ0XTdU" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-8">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">SBS 교양이를 부탁해</div>
+          <div class="title">[지식뉴스] ※꼭 보셨으면 좋겠습니다※ &quot;지금 중요한 건 이익의 규모가 아닌 &#x27;이것&#x27;&quot;..도대체 삼전닉스는 왜 자꾸 흔들릴까, 반도체 사이클이 보내는 진짜 신호 / 교양이를 부탁해</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        <p>삼성전자와 SK하이닉스 주가가 계속 흔들리는 이유를 반도체 사이클 관점에서 설명하는 내용이다. 시장에서는 이번 사이클이 가격과 물량이 동시에 오르는 슈퍼사이클이 될 것으로 기대했지만, 실제로는 가격만 오르고 물량은 정체되는 순수한 P사이클이었다. 반도체 기업들, 특히 독점적 지위를 가진 회사들은 오히려 가격 상승 속도를 둔화시키고 물량을 늘려 시장 자체를 유지하고 키우려는 전략을 쓰고 있다. 이는 가격이 계속 오르면 중국 등 경쟁사들이 시장에서 밀려나지 않고 오히려 자금을 벌어 추격할 여력이 생기기 때문이다.</p><p>이익과 주가의 관계에 대한 오해도 짚었다. 많은 사람들이 이익이 줄면 주가도 무조건 떨어진다고 생각하지만, 실제 데이터를 보면 주가는 항상 이익보다 먼저 꺾이고 먼저 반등한다. 중요한 것은 이익의 절대 규모가 아니라 이익 증가 속도, 즉 마진 성장률의 변화다. 엔비디아의 사례를 들어, GP마진 성장 속도가 꺾이는 순간부터 주가가 시장 대비 힘을 쓰지 못했던 과거 패턴이 지금 삼성전자와 SK하이닉스에도 비슷하게 나타날 가능성이 있다고 진단했다.</p><p>SK하이닉스의 실적 미스 논란에 대해서는, 6월부터 이미 실적 둔화 신호가 있었지만 시장이 이를 무시하다가 뒤늦게 반영했다고 언급했다. 3분기에도 실적 상승 속도는 둔화될 것으로 예상하지만, 이것이 곧바로 이익 감소를 의미하지는 않는다고 설명했다. 다만 최근 장기계약(LT) 방식이 확대되면서 예전처럼 6개월 단위가 아니라 5년 단위로 계약이 고정되는 구조로 바뀌고 있어, 사이클의 진폭이 줄어들고 예측 가능성이 높아지는 긍정적 변화가 나타나고 있다고 강조했다. 재고 수준도 2주 정도로 매우 낮아 과거처럼 급격한 재고 조정이 일어날 가능성은 낮다고 봤다.</p><p>투자 판단의 선행 지표로는 재고 일수, 캐펙스(설비투자) 규모, 프리캐시플로우(FCF)를 꼽았다. 하이퍼스케일러들의 프리캐시플로우가 마이너스로 전환되었음에도 캐펙스 규모는 계속 늘고 있다는 점이 현재 국면의 핵심 관찰 포인트라고 설명했다.</p><p>중국 반도체 굴기에 대한 경계감도 언급했다. 디스플레이, TV, 배터리 시장에서 한국이 중국에 밀렸던 사례를 들며, 현재는 범용 메모리 위주인 중국 YMTC 등의 낸드 시장 점유율이 3월 기준 13%까지 올라왔다는 점을 지적했다. HBM 같은 첨단 기술 영역까지 중국이 따라잡을 확률은 낮지만 완전히 배제할 수는 없다고 봤다.</p><p>SK하이닉스가 HBM을 통해 오히려 마진을 낮추면서 장기계약으로 묶으려는 전략을 쓰는 이유는, 최태원 회장이 언급한 &#x27;토큰 경제&#x27; 구상과 연결된다. AI 활용과 피지컬 AI, 데이터 축적을 통해 거대한 수요 생태계를 만들려면 반도체 가격이 낮아져야 하며, 이를 통해 장기적으로 더 큰 시장을 형성하려는 의도라는 것이다. 새로운 기술이 자리 잡으려면 역설적으로 비용이 낮아져야 하며, 이 과정에서 혁신에 의한 단절이 일어나면 기존 비즈니스가 무너질 수 있다는 점도 지적했다.</p><p>결론적으로 반도체는 여전히 이번 사이클의 주인공이며 아직 주인공 교체를 논할 시점은 아니라고 봤다. 다만 현재는 고점을 확인한 이후 조정 내지 박스권 국면에 진입했을 가능성이 높고, 내년 상반기까지는 불안정하지만 하반기 이후 다시 고점 도전을 기대할 수 있다는 전망을 제시했다. 포트폴리오 전략으로는 반도체와 다른 자산을 균형 있게 가져가는 바벨 전략을 권했고, 비중은 반도체에 대한 확신 정도에 따라 조절하라고 조언했다. 투자와 관련해서는 잘 모르는 특이한 종목을 찾아 대박을 노리기보다는, 기업이 투자자와 소통을 잘하고 정보 비대칭성이 낮은 뻔하고 검증된 기업에 투자하는 것이 중요하다고 강조했다. 또한 투자는 각자의 속도가 다르므로 남의 속도를 따라가려 하지 말고 자신의 투자 성과를 스스로 점검하며 자기만의 속도를 찾아야 한다고 조언하며 마무리했다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=Xhk198zC8IM" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-9">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">SBS 교양이를 부탁해</div>
+          <div class="title">[일본경제상황] &quot;엔화 폭락에 미국까지 나섰는데..&quot; 다카이치는 도대체 무슨 생각일까...지금 빚내서라도 돈 풀자는 일본의 진짜 속내 / 교양이를 부탁해</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        <p>일본 경제 상황과 관련해 엔저 문제와 다카이치 정권이 추진하는 적극재정 정책의 논리를 설명하는 내용이다. 현재 엔화 가치가 심각하게 떨어져 있고, 국채 발행이 늘어나면 엔화가 휴지 조각이 될 수 있다는 우려도 나오고 있다. 하지만 더 근본적인 문제는 일본 기업들이 투자를 하지 않는다는 점이며, 이 때문에 정부가 나서서 재정 지출을 늘려 기업 투자를 유도하는 번개탄 역할을 해야 한다는 것이 적극재정파의 주장이다.</p><p>일본의 명목 GDP는 1992년 500조엔을 돌파한 이후 30년간 정체되어 있다가, 최근 2, 3년 사이 빠르게 늘어나 2024년 600조엔을 넘었고 올해는 700조엔에 가까워질 전망이다. 적극재정파는 이 파이를 키우는 것이 핵심이라고 본다. 일본 경제가 성장하지 못한 원인은 총공급 제약과 총수요 부족 두 가지로 설명되는데, 두 요인 모두 기업이 투자하지 않은 데서 비롯됐다. 인구 감소와 노동력 감소보다 더 중요한 것은 생산성 증가 속도의 둔화이며, 생산성이 높은 기업들은 해외로 빠져나가고 국내 기업들은 디지털 전환이나 설비 투자를 하지 않았다. 또한 기업이 임금을 올리지 않아 실질임금과 소득이 줄면서 소비도 위축되었다.</p><p>이런 현상은 버블 붕괴 이후 기업들이 불량채권을 떠안으며 부채를 최소화하는 방향으로 체질이 바뀐 데서 비롯됐다. 일본 상장기업의 60%가 무차입 경영을 하고 있으며, 이는 기업이 원래 돈을 빌려 투자해야 하는 주체임에도 오히려 저축을 하는 상황으로 변했음을 의미한다. 결국 돈을 빌려주려는 사람은 많은데 빌리려는 사람이 없는 불황이 지속되고 있다는 것이다.</p><p>이를 설명하는 핵심 개념이 순자금 수요로, 기업 저축률과 재정수지를 더한 값이다. 순자금 수요가 마이너스일수록 경제가 활발하게 돌아간다는 뜻이며, 적극재정파는 GDP 대비 -5% 정도가 적정하다고 본다. 이 경우 명목성장률 3%, 실질성장률 1%, 물가상승률 2%를 달성할 수 있다는 것이다. 그러나 일본의 순자금 수요는 1995년 이전 -5% 수준이었다가 이후 0 근처로 줄어들었다. 1995년 재정위기 선언 이후 정부가 균형재정에 집착하며 소비세를 인상하고 국채 발행을 억제해왔기 때문이다. 아베노믹스 역시 재정 확대보다는 금리 인하와 양적완화 등 통화정책 위주였고, 10년간 물가상승률 2% 목표를 달성하지 못했다. 반면 코로나19로 재정을 대폭 풀었을 때 오히려 일본 명목 GDP가 상승하고 기업 실적과 주가가 개선되면서, 우려했던 재정 파탄은 일어나지 않았다는 점이 적극재정파 주장의 근거가 되고 있다.</p><p>정부 투자가 기업 투자를 밀어내는 구축효과에 대해서는, 애초에 기업이 투자할 의지 자체가 없는 상황이므로 구축효과가 발생할 조건이 아니라고 설명한다. 오히려 정부가 먼저 투자해 고압경제를 만들면 수요가 공급을 초과하면서 기업의 투자를 유도할 수 있다는 것이다. 현재 GDP 대비 18%를 넘지 못하고 있는 일본 기업의 설비투자 비율을 넘기는 것이 목표이며, 최근 17%까지 올라온 상태다. 정부나 기업이 합쳐 30조엔 정도를 추가로 투자하면 명목 GDP가 3% 성장하고 세수도 늘어나 재정에도 문제가 없을 것이라는 전망이다.</p><p>이어서 국채와 재정에 대한 다섯 가지 오해를 지적한다. 첫째, 국채는 만기 시 원금을 상환하는 것이 아니라 신규 국채 발행으로 차환되며, 중요한 것은 이자 상환 능력이지 원금 상환 능력이 아니다. 일본의 60년 상환룰은 불필요하게 재정지표를 나쁘게 보이게 만드는 제도로, 이를 개선하면 국채 발행 여력이 커질 수 있다. 둘째, 일본의 재정 상태가 세계 최악이라는 평가는 총부채만 본 것이며, 순부채 기준으로 보면 GDP 대비 80% 수준으로 미국(110%)보다 양호하다. 셋째, 지출마다 재원을 명시해야 한다는 원칙 때문에 동일본대지진 복구 상황에서도 증세를 해야 했던 모순적 사례가 있었는데, 이런 균형재정 집착을 깨야 한다는 것이다. 넷째, 적극재정이 국채 폭락과 금리 급등을 부를 것이라는 우려에 대해서는, 2022년 영국 트러스 정부 사례와 달리 일본의 순자금 수요는 0 근처로 안정적이며, 연금기금 GPIF가 국내 채권 비중을 늘리는 방식으로 국채를 충분히 흡수할 수 있다고 반박한다. 다섯째, 국채 발행 증가가 엔화를 휴지조각으로 만들 것이라는 우려에 대해서는, 일본 국채의 90% 이상을 국내에서 보유하고 있으며, 전쟁이나 재해로 공급능력 자체가 파괴되는 극단적 상황이 아니라면 기술력과 인프라를 갖춘 일본에서 통화가치가 완전히 붕괴하는 일은 일어나기 어렵다고 설명한다.</p><p>결론적으로 적극재정파는 국내 투자를 통해 공급 능력을 확충하는 것만이 엔화 가치를 장기적으로 지키는 근본 해법이며, 금리 인상이나 외환 개입으로 환율을 잡으려는 접근은 비현실적이라고 주장한다. 국내 투자가 충분한 승산이 있다고 판단되면 해외로 나갔던 자금이 국내로 회귀하면서 엔저 문제도 자연스럽게 해결될 것이라는 전망을 제시하며 방송을 마무리한다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=OoZJnhopCmE" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-10">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">SBS 교양이를 부탁해</div>
+          <div class="title">느리게 부자가 되고픈 사람은 없다 대부분이 실패하는 결정적 이유 #교양이를부탁해 #노후준비 #마흔재테크 #인플레이션 #독하게돈공부</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        <p>찰리 멍거의 명언을 바탕으로 한 부자 되는 법에 대한 이야기입니다.</p><p>워런 버핏의 평생지기이자 투자 파트너였던 찰리 멍거는 세상에 느리게 부자가 되고 싶어 하는 사람은 아무도 없으며, 바로 그것이 대부분의 사람들이 부자가 되지 못하는 이유라고 말했습니다. 진짜 부자가 되는 가장 확실한 방법은 매일매일 차근차근 쌓아가며 긴 시간 동안 복리로 자산을 불려 나가는 것인데, 대부분의 사람들은 빠르게 부자가 되고 싶어 하기 때문에 이 방법을 쓰지 못하고, 결과적으로 부자가 되지 못한다는 것입니다.</p><p>이를 설명하기 위해 하나의 질문을 던집니다. 불확실한 수익률 100%와 확실한 수익률 10% 중 하나를 선택해야 한다면 무엇을 고르겠는가 하는 질문입니다. 많은 사람들, 특히 젊은 사람일수록 불확실한 100%를 선택하는 경향이 있습니다. 그 이유는 확실한 10% 수익이 나더라도 인생이 크게 바뀌지는 않기 때문입니다. 이번 달에 사고 싶은 것을 조금 더 살 수 있는 정도의 변화에 그치지만, 만약 100% 수익이 난다면 인생을 바꿀 수 있을 것 같은 기대감이 생깁니다. 가지 못했던 여행을 가거나 회사를 그만두고 다른 일을 할 수 있을 것 같은 상상을 하게 되므로, 성공 확률이 낮더라도 불확실한 100%에 베팅하게 되는 것입니다.</p><p>그러나 증권업계에서 약 25년간 일하며 지켜본 실제 부자들의 선택은 이와 달랐습니다. 대부분의 부자들은 불확실한 100%가 아니라 확실한 10%를 선택했습니다. 처음에는 이들이 이미 돈이 많아서 100%의 수익이 나지 않아도 여유롭게 살 수 있기 때문에 그런 선택을 한다고 생각했습니다. 하지만 실제로는 그렇지 않았습니다. 돈을 싫어하는 사람은 없으며, 부자들 역시 마찬가지입니다. 그럼에도 이들이 확실한 10%를 선택하는 이유는, 확실한 10%의 수익을 열 번 반복하면 결국 확실한 100%의 수익을 만들어낼 수 있다고 생각하기 때문입니다. 즉 부자들은 한 번에 큰 수익을 노리기보다, 작지만 확실한 수익을 꾸준히 반복해서 쌓아가는 방식으로 결국 더 큰 부를 이루어낸다는 것입니다.</p>
+        <a class="watch" href="https://www.youtube.com/shorts/2f_mT-VmGNs" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-11">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">SBS 교양이를 부탁해</div>
+          <div class="title">고물가에도 내 월급은 그대로... 케인즈가 말하는 &#x27;부의 이전&#x27; #교양이를부탁해 #노후준비 #마흔재테크 #인플레이션 #독하게돈공부</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        <p>케인즈는 인플레이션을 단순히 물가가 오르는 현상으로 보지 않고, 사회 안에서 부가 한쪽에서 다른 쪽으로 옮겨가는 장치라고 설명했다. 첫 번째로 인플레이션이 발생하면 돈을 빌려준 채권자보다 돈을 빌린 채무자가 유리해지는데, 이는 부가 채권자에서 채무자로 이동하는 현상이라고 케인즈는 말했다. 두 번째로 인플레이션은 월급쟁이에게서 기업가로 부를 이전시키는 행위이기도 하다. 월급은 물가가 오른다고 해서 쉽게 오르지 않고 대체로 고정되어 있는 반면, 기업은 계속해서 물품을 생산하고 그 판매가는 인플레이션에 따라 계속 상승하기 때문에 결과적으로 기업가는 이익을 얻게 된다. 세 번째로 인플레이션은 국민에게서 정부로 부를 이전시키는 행위이기도 하다. 결국 월급쟁이들은 받는 월급이 인플레이션 속도를 따라가지 못하고, 그 월급에서마저 세금을 많이 떼이면서 시간이 지날수록 실질적으로 점점 가난해지는 구조에 놓이게 된다. 화자는 이러한 케인즈의 통찰을 접하고, 인플레이션을 단순한 물가 상승 현상이 아니라 사회 구성원들 사이에서 부를 이전시키는 하나의 장치로 바라보게 되었다는 점에서 소름이 돋았다고 밝혔다.</p>
+        <a class="watch" href="https://www.youtube.com/shorts/hMejR1HWiUE" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-12">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">SBS 교양이를 부탁해</div>
+          <div class="title">&quot;그 정도 돈이 없는데...&quot; 오래 사는 게 리스크인 이유 #교양이를부탁해 #노후준비 #마흔재테크 #인플레이션 #독하게돈공부</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        <p>1970년대 이후에 태어난 사람들은 최대 140세까지 살 수 있다는 연구 결과가 있다. 이는 1970년대가 인간이 살아온 세대 중에서도 매우 독특한 특이점을 지닌 시기이기 때문인데, 어린 시절 자라난 환경이 인간의 수명에 큰 영향을 미치는 가운데 1970년대부터 사람들을 둘러싼 환경이 급격히 건강해지기 시작했기 때문이다. 그 결과 현재 사람들의 건강 상태는 예전 세대와 비교했을 때 약 20년 정도 젊어졌다고 볼 수 있으며, 140세까지 사는 것이 결코 허황된 이야기가 아니게 되었다. 만약 60세에 은퇴한다면 이후로도 80년을 더 살아야 한다는 뜻이다. 그런데 옛말에 돈 없이 늙어가는 것보다 고통스러운 일은 없다는 말이 있다. 실제로 140세까지 살 수 있다는 이야기를 들은 주변 사람들은 대부분 그 정도로 오래 살 만큼의 돈이 없다며 당혹스러워하는 반응을 보인다. 이는 개인의 문제에 그치지 않고 금융 산업 전반에도 큰 영향을 미친다. 생명보험사들은 생명표를 기준으로 삼아 자산 운용과 부채 만기를 결정하는데, 종신보험은 가입자가 사망해야 지급 의무가 끝나는 구조이기 때문에 통상 인간이 100세까지 산다는 전제로 경영 계획을 세운다. 그런데 만약 사람들이 실제로 140세까지 살게 된다면 이러한 전제가 무너지면서 생명보험사는 파산에 이를 수밖에 없다. 마찬가지로 국민 모두에게 연금을 지급하는 국민연금 제도 역시 수명 연장으로 인해 큰 곤란을 겪게 될 가능성이 높다. 결국 사람이 오래 사는 것은 개인 차원에서 노후 자금 부족이라는 문제를 일으킬 뿐만 아니라 보험 산업과 연금 제도 등 사회 전체에도 심각한 문제를 야기할 수밖에 없다는 것이다.</p>
+        <a class="watch" href="https://www.youtube.com/shorts/KQRO6dbV6j4" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-13">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">Money Comics</div>
+          <div class="title">나는 돈을 구조적으로 벌고 있나?</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        <p>이 영상은 개인 투자자가 어떻게 하면 구조적으로 돈을 벌 수 있는지에 대한 이야기를 다룬다. 시작은 몇 개의 종목을 보유하는 것이 적절한가라는 질문에서 출발한다. 흔히 계란을 한 바구니에 담지 말라는 격언이 있지만, 워런 버핏은 여기에 더해 바구니를 잘 감시하라고 조언했다는 점을 언급하며, 이는 개인 투자자가 어느 정도 종목을 압축해서 집중 투자할 필요가 있다는 의미로 해석된다. 다만 이는 몰빵을 의미하는 것이 아니라, 충분히 공부하고 지속적으로 관심을 갖고 관리할 수 있는 수준인 세 종목에서 많아야 다섯 종목 정도로 압축해서 투자하는 것이 바람직하다는 것이다. 반면 개인들이 흔히 하는 것처럼 수십 개, 백 개에 달하는 종목을 무분별하게 담는 것은 바람직하지 않다고 지적한다. 펀드에서는 상관관계를 고려해 리스크 대비 리턴이 최적화되도록 포트폴리오를 구성하지만, 개인 투자자가 이를 그대로 따라 하면 오히려 수익률이 만족스럽지 않은 경향이 있다는 점도 짚는다.</p><p>이어서 포트폴리오 분산에 대한 논의로 넘어가, 여러 자산군으로 세밀하게 나누는 것은 현실적으로 개인이 실천하기 어렵다고 말하며, 대신 위험자산인 주식과 안전자산인 예금 혹은 현금 두 가지로 나누는 것이 가장 현실적이고 실천 가능한 방법이라고 제안한다. 이 정도의 배분만으로도 평균적인 성과는 달성할 수 있다는 것이다.</p><p>핵심 주제는 구조적으로 돈을 버는 방법에 대한 것으로, 주식 투자의 기본 원리인 쌀 때 사서 비쌀 때 파는 것을 실제로 실천하는 것이 얼마나 어려운지를 강조한다. 시장은 오르고 내리는 사이클을 반복하는데, 이 사이클이 반복될 때마다 이익이 누적되어야 구조적으로 돈을 벌 수 있다는 것이다. 즉 주가가 올라갔다가 다시 원래 수준으로 돌아오더라도, 그 사이에 이익을 실현해서 지켜냈다면 실질적인 자산은 늘어나 있어야 한다. 그러나 많은 개인 투자자들은 반대로 상승 후 하락 시 오히려 손실이 누적되는 경우가 많다. 예를 들어 상승 시 1000만 원을 벌었다면 하락할 때 최소한 500만 원, 이상적으로는 700만 원 정도는 지켜야 하며, 이렇게 사이클마다 이익을 쌓아가는 것이 진정한 복리 효과라고 설명한다. 예금은 복리 효과를 얻기 쉽지만 주식 투자에서는 정확한 타이밍을 맞추려는 욕심 때문에 이것이 매우 어렵다고 지적한다.</p><p>이를 실천하는 방법으로 두 가지를 제시하는데, 첫 번째는 상승 시 욕심을 줄이는 것으로 이는 사실상 실천하기 매우 어려운 성인의 경지라고 표현한다. 실제로 많은 사람들은 보유 비중이 클 때일수록 조금이라도 더 벌고 싶은 욕심에 매도 타이밍을 놓치게 되고, 결국 상승 후 하락이 시작되어 반등이 나올 때가 되어서야 뒤늦게 손절하듯 물량을 줄이는 경우가 많다는 점을 지적한다. 이런 패턴이 반복되면 결국 손실이 누적되는 구조가 된다.</p><p>가장 중요하게 강조하는 개념은 시장이 하락할 때 투자자가 취해야 할 심리적 입장이다. 시장이 내려갈수록 언제 팔아야 할지를 고민하는 입장에 서 있다면 이는 위쪽에서 미리 충분히 비중을 줄이지 못했다는 신호이며, 구조적으로 돈을 벌기 어려운 상태라는 것이다. 반대로 하락이 진행될수록 언제 다시 매수할지를 고민하는 입장이 되어야 하며, 이런 입장에 설 수 있다면 이미 위쪽에서 충분히 이익을 실현하고 비중을 줄여놓았다는 뜻이므로 지속적으로 이익을 누적해나갈 수 있다고 설명한다. 즉 매도를 고민하는 사람과 매수를 고민하는 사람은 시장을 대하는 방향이 정반대이며, 이 차이가 구조적으로 돈을 벌 수 있는지 없는지를 가르는 핵심 요소라는 것이다.</p><p>마지막으로 개별 캔들이나 하루하루의 등락에 집착하기보다는 현재 시장이 상승 구간인지 하락 구간인지 횡보 구간인지를 판단하고, 지금이 비중을 줄여야 할 시기인지 늘려야 할 시기인지를 파악하는 안목이 중요하다고 강조한다. 결론적으로 투자에서 가장 중요한 두 가지는 첫째 자신이 구조적으로 이익이 누적되는 방식으로 운용하고 있는지 점검하는 것이고, 둘째 이것이 근본적으로 멘탈 게임이라는 점을 인식하고 쌀 때 살 수 있는 마인드와 비쌀 때 팔 수 있는 마인드를 갖추는 것이다. 많이 벌었을 때는 비중을 줄여볼까 생각하고 하락할 때는 비중을 늘려볼까 생각하는 정도의 습관만 들여도 주식 시장에서 큰 손실을 보고 떠나는 일은 피할 수 있을 것이라는 조언으로 마무리된다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=SRwkmrw2JW8" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-14">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">Money Comics</div>
+          <div class="title">8월7일ㅣ니황황 방송(니니의 시황) 방송</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        <p>이번 방송은 머니그라피 채널의 니황황 방송, 니니의 시황 코너로 진행되었으며 진행자 니니가 8월 7일 국내 증시 상황을 개인 투자자 관점에서 정리했다.</p><p>코스피는 이날 0.56% 하락한 6260선에서 마감했고 코스닥도 소폭 보합권에서 마무리됐다. 반도체 업종의 조정이 지수 하락의 주요 원인으로 지목됐다. 매매 동향을 보면 외국인은 최근 대량 매도세를 이어가며 8월 첫째 주 기준 약 7조원을 팔아치웠고 기관도 매도 우위를 보였다. 반면 개인 투자자들은 오히려 매수에 나서며 저점 매수를 시도하는 모습이었는데, 진행자는 이를 두고 개인들이 국내 증시에서 외국인에게 물량을 당하고 있다는 취지로 아쉬움을 표했다. 이날은 기관이 코스닥 쪽으로 유입되는 흐름이 관찰됐고, 외국인은 여전히 매도 우위를 지속했다.</p><p>SK하이닉스는 이날 약 5% 하락했는데, 이는 자회사 솔리다임의 나스닥 프리IPO 추진 소식이 악재로 작용한 것으로 분석됐다. 진행자는 회사가 주주와 충분한 소통 없이 대규모 투자 결정을 내리는 데 대해 소액주주로서 강한 불만을 표출했다. 주주환원 없이 사업 확장만 강조하는 회사 태도에 실망감을 드러냈고, 경쟁사 키옥시아 대비 하이닉스의 하락폭이 과도하다는 점, 반도체 업황 자체보다 개별 이슈(솔리다임 IPO)에 의한 하락이라는 점을 지적했다. 이와 관련해 산업통상부 장관이 삼성전자와 SK하이닉스의 성과급 지급에 앞서 주주 이익을 우선해야 한다는 취지의 발언을 한 것을 긍정적으로 평가하며, 반도체로 번 이익이 노동자 인센티브로만 쓰이기보다 주주환원으로도 이어져야 한다는 주장에 공감을 표했다.</p><p>삼성전자는 이날 23만1500원으로 보합권 마감했으며 별다른 상승 동력 없이 답답한 흐름을 이어갔다. 파운드리 실적 개선이나 대규모 주주환원 등 호재가 필요하다는 의견이 제시됐다. 반도체 업종 전반에 걸쳐 엔비디아의 신형 칩이 기존보다 적은 반도체를 필요로 할 수 있다는 루머, 창신메모리 관련 애플 공급설이 사실상 허위였다는 소식 등 잡음이 이어졌으나 반도체 수요 자체의 구조적 강세는 유지되고 있다는 평가도 나왔다.</p><p>한편 반도체 외 종목에서는 실적이 좋은 개별 종목들이 강세를 보였다. 정유주(S-Oil, SK이노베이션)가 정제마진 개선 기대와 외국인 수급 유입으로 급등했으며 이날 S-Oil은 10% 가까이 상승했다. 태양광, 2차전지, 조선(한화오션), 방산, 은행주(신한지주, 기업은행, 우리금융지주, 카카오뱅크 등을 외국인이 매수), 삼양식품 및 APR 같은 실적 우수 종목들도 좋은 흐름을 보였다. LG전자는 AI 및 로봇(액추에이터) 사업 기대감으로 반도체 대비 상대적으로 견조한 모습을 보였다. 진행자는 개인적으로 파마리서치 단타 매매로 소소한 수익을 냈다고 언급했고, 금 현물 및 구리 관련 관심도 표명했다. 야스(OLED 장비업체)는 반대매매로 인한 최대주주 지분율 급감 이슈로 화제가 되었으나 실적 자체는 견조하다고 평가됐다.</p><p>장 마감 기준 외국인은 1조원 넘게 매도했고 기관은 약 4700억원, 개인은 약 6000억원 매수하며 마감했다. 외국인은 조선과 은행주를 매수하고 반도체(삼성전자, SK하이닉스)와 네이버, 광통신 관련주를 매도했다. 미국 증시 관련해서는 구글의 채권 발행(약 36조원 규모) 소식, 마이크론 회복세, 일라이릴리 등 바이오주에 대한 관심이 언급됐으며 빅테크와 연계된 은행·증권주에 대한 긍정적 시각도 제시됐다. 방송 말미에는 진행자의 각종 매체 출연 소식(하나증권 고정 출연, 배텐 출연, 룩삼 라이브 예정 등)과 시청자들과의 소소한 대화가 이어지며 마무리됐다. 전반적으로 이날 국내 증시는 지수 자체는 큰 변화가 없었지만 SK하이닉스에 대한 개별 악재로 반도체 관련주가 상대적으로 소외되고, 실적이 견조한 개별 종목 중심의 종목장 성격이 강화되는 흐름을 보였다는 것이 이번 방송의 핵심 진단이다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=XMbr3wVEtSE" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-15">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">Money Comics</div>
+          <div class="title">슈카는 현대차가 밉다</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        <p>삼성전자가 로봇 사업을 본격화하면서 로봇 관련 종목들이 동반 상승했다는 시황을 전하며 방송이 시작된다. 진행자는 피지컬 AI가 실제로 현실화되고 있는지에 대한 논쟁을 다루는데, 한쪽에서는 공장에서 활용할 수 있을 정도의 피지컬 AI 수준까지는 도달할 것 같다고 평가하지만, 아직 본격적인 상용화 단계는 아니고 시장의 기대감이 가장 높은 시점이라고 진단한다. 이에 대해 로봇 산업 자체는 성장할 가능성이 높지만, 국내 증시 전반이 부진한 상황이라 로봇 관련주로 실제 수익을 낼 수 있을지에 대한 의문이 제기된다. 진행자는 로봇 산업이 잘될 것이라고 말한 것이지, 국내 상장된 특정 로봇 종목들이 잘될 것이라고 말한 적은 없다고 정정하며, 어떤 종목이 실제로 수혜를 볼지는 예측하기 어렵다는 점을 강조한다. 대화 중간에는 진행자가 평소 시황 방송을 할 때마다 특정 종목을 추천했다가 실패한 이력을 언급하며 서로 장난스럽게 놀리는 장면이 나온다. 이어서 진행자가 본인이 보유한 현대차 주식 상황을 확인하는 장면으로 넘어가는데, 현재 주가가 34만 8천 원 수준이며, 한때 80만 원까지 갔던 가격에서 크게 하락한 상태임을 언급한다. 그럼에도 나쁘지 않은 상황이라며 믿음을 갖고 계속 보유하겠다는 취지로 말하다가, 주가가 계속 밀리는 것에 대해 감정적으로 반응하며 밀지 말라고 하소연하듯 말한다. 이후 스스로도 흥분한 것을 자각하고 미안하다며 사과하는 유머러스한 마무리로 영상이 끝난다. 전체적으로 로봇 산업에 대한 시장 기대감과 실제 투자 성과 사이의 간극, 그리고 현대차 주가 하락에 대한 진행자의 개인적인 안타까움과 애정을 유머러스하게 풀어낸 내용이다.</p>
+        <a class="watch" href="https://www.youtube.com/shorts/VxH1j79uS3A" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+  </section>
+
+  <footer class="foot">
+    <b>Investment Digest</b> · generated automatically. Not financial advice — personal reading notes only.
+  </footer>
+</div>
+<script>
+(function() {
+  var h = window.location.hash;
+  if (h && h.indexOf("#vid-") === 0) {
+    var el = document.querySelector(h);
+    if (el && el.tagName === "DETAILS") {
+      el.open = true;
+      el.scrollIntoView({block: "start"});
+    }
+  }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026-08-09 — Investment Digest</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Mulish:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#FBF6EC">
+<script>(function(){
+  var t = localStorage.getItem('theme') || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  document.documentElement.setAttribute('data-theme', t);
+})();</script>
+<style>
+:root{
+  --paper:#FBF6EC; --paper-2:#F3EADA; --card:#FFFDF8;
+  --ink:#332C24; --ink-soft:#6E6456; --ink-faint:#9A8E7C;
+  --line:#E7DBC6; --line-strong:#D8C8AC;
+  --honey:#E8A33D; --honey-deep:#C27D14; --honey-soft:#FBEACB;
+  --dram:#2C8C7C; --dram-soft:#DCEFE9;
+  --ltram:#5A61B4; --ltram-soft:#E6E6F6;
+  --optane:#C0563B; --optane-soft:#F7E1D8;
+  --shadow-sm:0 1px 2px rgba(80,60,30,.06),0 2px 8px rgba(80,60,30,.05);
+  --shadow-md:0 6px 18px rgba(90,66,28,.10),0 16px 36px rgba(90,66,28,.08);
+  --radius:18px; --radius-sm:12px; --maxw:1500px;
+  --display:"Fraunces",Georgia,serif;
+  --body:"Mulish",-apple-system,system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,monospace;
+  /* status scale: buy (green) -> hold (neutral) -> sell (red). Never used alone --
+     every status also carries an icon glyph + text label. */
+  --buy:#1F7A4D; --buy-soft:#DDF0E3;
+  --buyhold:#6E9A3C; --buyhold-soft:#EAF2D8;
+  --hold:#8A7F6C; --hold-soft:#F3EADA;
+  --holdsell:#C27D14; --holdsell-soft:#FBEACB; --holdsell-text:#8A5A0E;
+  --sell:#B23D26; --sell-soft:#F7E1D8;
+}
+/* Dark theme -- same design tokens, re-tuned for a dark warm-charcoal background
+   instead of the light "paper" one. Applied via a data-theme attribute on <html>
+   (set before first paint by the inline init script in <head>, so there's no
+   flash of the wrong theme) rather than only prefers-color-scheme, so the
+   toggle button can override the system setting and remember the choice. */
+:root[data-theme="dark"]{
+  --paper:#181512; --paper-2:#211D18; --card:#221E19;
+  --ink:#EEE7D9; --ink-soft:#BBB09C; --ink-faint:#8C8172;
+  --line:#38332A; --line-strong:#4A4335;
+  --honey:#F0B85B; --honey-deep:#F5C878; --honey-soft:#3A2D16;
+  --dram:#4FC0A9; --dram-soft:#173129;
+  --ltram:#9098E8; --ltram-soft:#242850;
+  --optane:#E68A6B; --optane-soft:#3B241B;
+  --shadow-sm:0 1px 2px rgba(0,0,0,.35),0 2px 8px rgba(0,0,0,.3);
+  --shadow-md:0 6px 18px rgba(0,0,0,.45),0 16px 36px rgba(0,0,0,.4);
+  --buy:#5FCB93; --buy-soft:#173121;
+  --buyhold:#A9CC6D; --buyhold-soft:#262E16;
+  --hold:#BBB09C; --hold-soft:#2A2620;
+  --holdsell:#F0B85B; --holdsell-soft:#3A2D16; --holdsell-text:#F0B85B;
+  --sell:#EE8065; --sell-soft:#3A211A;
+}
+*{box-sizing:border-box} html{scroll-behavior:smooth}
+body{margin:0;font-family:var(--body);color:var(--ink);line-height:1.6;background:var(--paper);
+  background-image:radial-gradient(circle at 10% 6%,rgba(44,140,124,.06),transparent 42%),radial-gradient(circle at 90% 18%,rgba(90,97,180,.06),transparent 44%),radial-gradient(circle at 50% 120%,rgba(232,163,61,.07),transparent 55%);
+  -webkit-font-smoothing:antialiased;min-height:100vh;transition:background-color .25s,color .25s}
+:root[data-theme="dark"] body{
+  background-image:radial-gradient(circle at 10% 6%,rgba(79,192,169,.08),transparent 42%),radial-gradient(circle at 90% 18%,rgba(144,152,232,.08),transparent 44%),radial-gradient(circle at 50% 120%,rgba(240,184,91,.06),transparent 55%);
+}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 22px}
+.theme-toggle{position:fixed;top:18px;right:18px;z-index:30;display:inline-flex;align-items:center;justify-content:center;
+  width:42px;height:42px;border-radius:50%;border:1px solid var(--line-strong);background:var(--card);color:var(--ink-soft);
+  cursor:pointer;box-shadow:var(--shadow-sm);font-size:17px;line-height:1;padding:0;transition:border-color .2s,color .2s,transform .15s}
+.theme-toggle:hover{border-color:var(--honey);color:var(--honey-deep);transform:scale(1.06)}
+.theme-toggle .tt-sun,.theme-toggle .tt-moon{display:none}
+:root[data-theme="light"] .theme-toggle .tt-moon{display:inline}
+:root[data-theme="dark"] .theme-toggle .tt-sun{display:inline}
+@media(max-width:480px){.theme-toggle{top:12px;right:12px;width:38px;height:38px;font-size:15px}}
+:root[data-theme="dark"] .eyebrow{border-color:var(--line-strong)}
+a{color:var(--honey-deep);text-decoration:none;border-bottom:1.5px solid var(--honey-soft);transition:border-color .2s}
+a:hover{border-color:var(--honey)}
+h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.2;color:var(--ink);margin:0 0 .5em}
+.head{padding:52px 0 18px}
+.eyebrow{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--honey-deep);background:var(--honey-soft);padding:7px 14px;border-radius:999px;border:1px solid #F0DCB0;margin-bottom:18px}
+.eyebrow .dot{width:8px;height:8px;border-radius:50%;background:var(--honey);box-shadow:0 0 0 4px rgba(232,163,61,.2)}
+.head h1{font-weight:700;font-size:clamp(2.1rem,5.6vw,3.2rem);letter-spacing:-.015em;margin:0 0 .3em}
+.head p{font-size:clamp(1rem,2vw,1.1rem);color:var(--ink-soft);max-width:60ch;margin:0}
+.back{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:.85rem;color:var(--ink-soft);border-bottom:none;margin-bottom:18px}
+.back:hover{color:var(--honey-deep)}
+
+.sec{margin:30px 0 0}
+.sec-h{font-family:var(--display);font-weight:600;font-size:1.15rem;margin:0 0 14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
+a.cardlink{text-decoration:none;color:inherit;border-bottom:none}
+.gcard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px;box-shadow:var(--shadow-sm);
+  transition:transform .18s,box-shadow .18s,border-color .18s;height:100%;display:flex;flex-direction:column}
+.gcard:hover{transform:translateY(-4px);box-shadow:var(--shadow-md);border-color:var(--line-strong)}
+.gcard h2{font-size:1.18rem;letter-spacing:-.01em;margin:0 0 .3em}
+.gcard .date{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:10px}
+.gcard .counts{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 12px}
+.gcard .tickers{font-size:.88rem;color:var(--ink-soft);margin:0 0 12px;flex:1}
+.gcard .go{font-family:var(--body);font-weight:700;font-size:.88rem;color:var(--honey-deep);display:inline-flex;align-items:center;gap:6px}
+.gcard:hover .go{color:var(--ltram)}
+
+.status{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-weight:700;font-size:10.5px;letter-spacing:.03em;
+  text-transform:uppercase;padding:3px 9px;border-radius:999px}
+.status.buy{background:var(--buy-soft);color:var(--buy)}
+.status.buyhold{background:var(--buyhold-soft);color:var(--buyhold)}
+.status.hold{background:var(--hold-soft);color:var(--hold)}
+.status.holdsell{background:var(--holdsell-soft);color:var(--holdsell-text)}
+.status.sell{background:var(--sell-soft);color:var(--sell)}
+
+.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px 24px;margin:14px 0;box-shadow:var(--shadow-sm)}
+.panel.buy{border-left:4px solid var(--buy)}
+.panel.buyhold{border-left:4px solid var(--buyhold)}
+.panel.hold{border-left:4px solid var(--hold)}
+.panel.holdsell{border-left:4px solid var(--holdsell)}
+.panel.sell{border-left:4px solid var(--sell)}
+.panel h3{font-size:1.08rem;margin:0 0 12px;display:flex;align-items:center;gap:10px}
+.panel .empty{color:var(--ink-faint);font-style:italic;font-size:.94rem;margin:0}
+.pick{padding:10px 0;border-top:1px dashed var(--line)}
+.pick:first-of-type{border-top:none;padding-top:2px}
+.pick .ticker{font-weight:700;font-family:var(--display);font-size:1.02rem;margin-bottom:2px}
+.pick .rationale{font-size:.92rem;color:var(--ink-soft);margin:0}
+
+.tickerbar{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 6px}
+.tchip{font-family:var(--mono);font-weight:700;font-size:.82rem;background:var(--paper-2);color:var(--ink-soft);
+  border:1px solid var(--line-strong);border-radius:999px;padding:5px 12px}
+
+.vcard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius-sm);margin:12px 0;overflow:hidden}
+.vcard summary{list-style:none;cursor:pointer;padding:16px 20px;display:flex;gap:14px;align-items:flex-start}
+.vcard summary::-webkit-details-marker{display:none}
+.vcard .vmeta{flex:1;min-width:0}
+.vcard .channel{font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--honey-deep);margin-bottom:3px}
+.vcard .title{font-weight:700;font-size:1rem;color:var(--ink)}
+.vcard .chev{margin-left:auto;color:var(--ink-faint);transition:transform .25s;font-family:var(--mono);flex:0 0 auto}
+.vcard[open] summary .chev{transform:rotate(180deg)}
+.vcard .body{padding:0 20px 20px 20px;color:var(--ink-soft);font-size:.95rem}
+.vcard .body p{margin:0 0 12px}
+.vcard .watch{font-family:var(--mono);font-size:.82rem}
+
+.foot{margin:54px 0 40px;padding-top:20px;border-top:1px solid var(--line);font-size:.85rem;color:var(--ink-faint);font-family:var(--mono);line-height:1.7}
+.foot b{color:var(--ink-soft)}
+.empty-state{color:var(--ink-faint);font-style:italic;padding:24px 2px}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+.zchart-panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px 24px;box-shadow:var(--shadow-sm)}
+.zchart-asof{font-size:.86rem;color:var(--ink-faint);margin-bottom:14px;line-height:1.5}
+.zchart-grid{display:grid;grid-template-columns:1fr 300px;gap:22px;align-items:start}
+@media(max-width:820px){.zchart-grid{grid-template-columns:1fr}}
+.zrank-list{display:flex;flex-direction:column;border-left:1px solid var(--line);padding-left:18px}
+@media(max-width:820px){.zrank-list{border-left:none;border-top:1px solid var(--line);padding-left:0;padding-top:14px}}
+.zrank-row{display:grid;grid-template-columns:12px 1fr auto auto;align-items:center;gap:9px;padding:6px 0;border-top:1px dashed var(--line);font-size:.86rem}
+.zrank-row:first-of-type{border-top:none}
+.zrank-row.zrank-head{border-top:none;border-bottom:1px solid var(--line);padding-bottom:8px;margin-bottom:2px;
+  font-family:var(--mono);font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-faint);font-weight:700}
+.zrank-dot{width:10px;height:10px;border-radius:50%}
+.zrank-ticker{color:var(--ink);font-weight:600}
+.zrank-val{font-family:var(--mono);font-weight:700;font-size:.85rem;text-align:right}
+.zrank-val.pos{color:var(--buy)}
+.zrank-val.neg{color:var(--sell)}
+.zrank-alloc{font-family:var(--mono);font-weight:700;font-size:.85rem;text-align:right;color:var(--ink-soft);min-width:52px}
+.zchart-note{font-size:.85rem;color:var(--ink-faint);margin:16px 0 0}
+
+.date-groups{display:flex;flex-direction:column;gap:16px}
+.date-group{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px 24px;box-shadow:var(--shadow-sm);
+  transition:border-color .18s,box-shadow .18s}
+.date-group:hover{border-color:var(--line-strong);box-shadow:var(--shadow-md)}
+.date-group .dg-head{display:flex;align-items:baseline;flex-wrap:wrap;gap:10px 14px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.date-group .dg-date{font-family:var(--display);font-weight:600;font-size:1.25rem;color:var(--ink);border-bottom:1.5px solid var(--honey-soft)}
+.date-group .dg-date:hover{color:var(--honey-deep);border-color:var(--honey)}
+.date-group .dg-count{font-family:var(--mono);font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-faint)}
+.date-videos{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+.date-videos li{display:flex;flex-direction:column;gap:3px;font-size:.94rem}
+.date-videos .dv-row{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline}
+.date-videos .dv-channel{font-family:var(--mono);font-size:10px;letter-spacing:.04em;text-transform:uppercase;color:var(--honey-deep);
+  background:var(--honey-soft);border-radius:999px;padding:2px 9px;flex:0 0 auto}
+.date-videos .dv-title{color:var(--ink)}
+.date-videos .dv-summary{color:var(--ink-faint);font-size:.85rem;line-height:1.5;margin:0 0 0 2px}
+.date-videos a{color:var(--ink);border-bottom:1.5px solid var(--line-strong)}
+.date-videos a:hover{color:var(--honey-deep);border-color:var(--honey)}
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode" title="Toggle dark mode">
+  <span class="tt-sun">☀</span><span class="tt-moon">☾</span>
+</button>
+<script>function toggleTheme(){
+  var r = document.documentElement, next = r.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  r.setAttribute('data-theme', next); localStorage.setItem('theme', next);
+  var mc = document.querySelector('meta[name="theme-color"]'); if (mc) mc.content = next === 'dark' ? '#181512' : '#FBF6EC';
+}</script>
+<div class="wrap">
+  <header class="head">
+    <a class="back" href="../index.html">← All digests</a>
+    <span class="eyebrow"><span class="dot"></span>2026-08-09</span>
+    <h1>Daily Digest</h1>
+    <p>Executive read of today's finance &amp; investing videos, sorted by call.</p>
+    <div class="tickerbar">
+      <span class="tchip">버크셔 해서웨이</span>
+<span class="tchip">애플</span>
+<span class="tchip">아메리칸 익스프레스</span>
+<span class="tchip">코카콜라</span>
+<span class="tchip">뱅크오브아메리카</span>
+<span class="tchip">쉐브론</span>
+<span class="tchip">옥시덴탈</span>
+<span class="tchip">알파벳</span>
+<span class="tchip">처브</span>
+<span class="tchip">다비타</span>
+<span class="tchip">크래프트 하인즈</span>
+<span class="tchip">와일드베리스</span>
+<span class="tchip">나스닥 ETF</span>
+<span class="tchip">삼성전자</span>
+<span class="tchip">SK하이닉스</span>
+<span class="tchip">S&amp;P500</span>
+<span class="tchip">필라델피아반도체지수</span>
+<span class="tchip">러셀2000</span>
+<span class="tchip">현대차</span>
+<span class="tchip">도요타</span>
+<span class="tchip">폭스바겐</span>
+<span class="tchip">하이브</span>
+<span class="tchip">조선주</span>
+<span class="tchip">LS일렉트릭</span>
+<span class="tchip">효성중공업</span>
+<span class="tchip">네이버</span>
+<span class="tchip">엔비디아</span>
+<span class="tchip">TSMC</span>
+<span class="tchip">SK스퀘어</span>
+<span class="tchip">삼성물산</span>
+<span class="tchip">삼성생명</span>
+<span class="tchip">주식회사 SK</span>
+<span class="tchip">CXMT</span>
+    </div>
+  </header>
+
+  <section class="sec">
+    <div class="sec-h">Executive summary</div>
+    
+    <div class="panel buy">
+      <h3><span class="status buy">▲ Buy</span></h3>
+      <div class="pick">
+        <div class="ticker">나스닥 ETF</div>
+        <p class="rationale">반도체 업황보다 나스닥 지수 상승 확률이 높다고 보아 매수가 추천됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">네이버</div>
+        <p class="rationale">엔비디아의 지분투자로 AI 기업으로 재평가받을 가능성이 있어 매수 의견이 제시됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">삼성전자</div>
+        <p class="rationale">반기 결산 이후 특별 배당 및 자사주 매입 기대감으로 매수가 추천됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">SK하이닉스</div>
+        <p class="rationale">성과급을 자사주로 지급할 가능성이 높아 사전 매수가 추천됨.</p>
+      </div>
+    </div>
+
+    <div class="panel buyhold">
+      <h3><span class="status buyhold">◆ Buy / Hold</span></h3>
+      <div class="pick">
+        <div class="ticker">버크셔 해서웨이</div>
+        <p class="rationale">적정주가 이하 구간에서는 매수 관점으로 접근할 수 있다고 평가됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">애플</div>
+        <p class="rationale">산출된 적정주가 이하일 때 매수 가능한 우량주로 평가됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">알파벳</div>
+        <p class="rationale">적정주가 대비 매수 판단이 가능한 종목으로 제시됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">뱅크오브아메리카</div>
+        <p class="rationale">적정주가 산정을 통해 매수 구간이 제시됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">처브</div>
+        <p class="rationale">방어주 역할을 하며 적정주가 기준 매수 구간이 제시됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">현대차</div>
+        <p class="rationale">PBR이 장부가치 수준으로 매력적이며 장기적으로 매도보다 물타기가 권장됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">SK스퀘어</div>
+        <p class="rationale">할인율 축소 과정에서 상승 여력이 큰 대안 투자처로 제시됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">삼성물산</div>
+        <p class="rationale">삼성전자 연계 지주사로서 할인율 축소 시 상승 여력이 큰 대안으로 제시됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">삼성생명</div>
+        <p class="rationale">삼성전자 연계 종목으로 상승 여력이 있는 대안 투자처로 제시됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">주식회사 SK</div>
+        <p class="rationale">SK하이닉스 연계 지주사로 상승 여력이 있는 대안 투자처로 제시됨.</p>
+      </div>
+    </div>
+
+    <div class="panel hold">
+      <h3><span class="status hold">● Hold</span></h3>
+      <div class="pick">
+        <div class="ticker">조선주</div>
+        <p class="rationale">영업이익률 개선 여지는 있으나 이미 알려진 이슈라 신규 매수 타이밍은 아니라고 평가됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">LS일렉트릭</div>
+        <p class="rationale">밸류에이션이 이미 비싸져 차익매도가 나오는 국면으로 관망이 권장됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">효성중공업</div>
+        <p class="rationale">장기 상승으로 밸류에이션 부담이 있어 신규 매수보다 관망이 권장됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">엔비디아</div>
+        <p class="rationale">시가총액 1위를 탈환하며 견조하지만 특별한 매수 추천은 없이 긍정적 관망 대상으로 언급됨.</p>
+      </div>
+    </div>
+
+    <div class="panel holdsell">
+      <h3><span class="status holdsell">◇ Hold / Sell</span></h3>
+      <div class="pick">
+        <div class="ticker">삼성전자</div>
+        <p class="rationale">2027년 이내 단기 승부 목적의 신규 진입은 권하지 않는다는 신중론이 제시됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">SK하이닉스</div>
+        <p class="rationale">장기 보유 전제가 없다면 지금 신규 진입은 말리고 싶다는 신중론이 제시됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">하이브</div>
+        <p class="rationale">상장 초부터 기대감이 선반영되어 고평가되었으므로 신규 매수에 신중해야 한다는 의견이 제시됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">애플</div>
+        <p class="rationale">메모리 협상 이슈 등으로 주가가 부진해 AI관련주 중 상대적으로 부정적으로 평가됨.</p>
+      </div>
+    </div>
+
+    <div class="panel sell">
+      <h3><span class="status sell">▼ Sell</span></h3>
+      <p class="empty">No calls in this category today.</p>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="sec-h">Videos covered (5)</div>
+    
+    <details class="vcard" id="vid-0">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">Orlando Kim</div>
+          <div class="title">(버크셔 헤서웨이) 어떻게 워렌버펫은 쉽게 주식하나?</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        <p>버크셔 해서웨이의 최근 실적 발표를 보면 주당순이익은 예측치 5.13달러를 훌쩍 넘긴 6.02달러로 17퍼센트 서프라이즈를 기록했고 매출은 예측치 98.78빌리언에서 101.80빌리언으로 3퍼센트 초과했다. 전년 동기 대비로는 EPS가 16퍼센트, 매출이 10퍼센트 증가했으며 분기 기준으로는 각각 14퍼센트, 9퍼센트 증가하며 꾸준한 실적 개선세를 이어가고 있다. 버크셔의 매출 구조는 크게 보험 및 투자 부문과 철도 및 유틸리티 에너지 부문으로 나뉘며, 세일즈 앤 서비스는 보험과 철도를 제외한 다양한 제조 유통 서비스 사업부의 총수익을, 프리미엄 언드는 보험 기간 경과에 따라 실제 제공된 보험 서비스에 해당하는 수익을, 인베스트먼트 인컴은 주식 배당금과 채권 이자 수익을, 그 외 임대 자산에서 나오는 리스 수익 등이 있다. 순이익 마진은 25.21퍼센트를 기록했다.</p><p>영업이익은 전년 동기 110억 6천만 달러에서 16퍼센트 증가한 129억 8천만 달러를 기록했는데, 이는 에너지 철도 제조 부문의 호조가 보험 부문의 부진을 상쇄하고도 남았기 때문이다. 세부적으로 제조업 서비스 소매업 부문 영업이익은 24퍼센트 급증한 44억 7천만 달러, 철도회사 BNSF는 6퍼센트 증가한 15억 6천만 달러를 기록했으나, 에너지 부문은 27퍼센트 급감한 8억 9,100만 달러, 보험 인수 수익은 13퍼센트 감소한 17억 3천만 달러, 투자 수익은 9퍼센트 감소한 30억 6천만 달러를 기록하며 보험 부문이 부진했다.</p><p>가장 주목할 점은 워런 버핏과 그렉 아벨 CEO가 그동안 쌓아온 기록적인 현금 보유액을 본격적으로 자사주 매입과 주식 매수에 활용하기 시작했다는 것이다. 2분기 자사주 매입 규모는 45억 달러로 직전 분기 2억 3,500만 달러보다 크게 늘었으며, 기존의 주식 매도 우위 패턴을 뒤집고 약 200억 달러 규모의 순매수를 기록하며 순매수 기업으로 전환했다. 이 과정에서 테일러 모리슨 인수도 포함됐다. 현금 보유액은 6월 말 기준 3,655억 달러로 3개월 전 기록적이었던 3,974억 달러에서 다소 줄었다. 이는 95세의 워런 버핏이 지닌 인내심과 위험회피적 투자 성향, 즉 마땅한 저평가 대상을 찾지 못해 현금을 국채 등에 묶어두던 태도에서 벗어나 아벨 체제 하에서 적극적으로 자본을 투입하기 시작한 결과로 해석된다.</p><p>2분기 기준 버크셔 포트폴리오 비중은 애플 22퍼센트, 아메리칸 익스프레스 17.4퍼센트, 코카콜라 11.6퍼센트, 뱅크 오브 아메리카 9.5퍼센트, 쉐브론 6.6퍼센트, 옥시덴탈 6.5퍼센트, 알파벳 6.3퍼센트, 처브 4.2퍼센트, 다비타 4.1퍼센트, 크래프트 하인즈 2.8퍼센트 순이며 상위 5개 종목이 애플, 아메리칸 익스프레스, 코카콜라, 뱅크 오브 아메리카, 알파벳으로 구성되어 있다.</p><p>각 종목별 밸류에이션과 매수 시점 분석도 제시됐다. 버크셔 해서웨이는 직전 저점인 460달러 부근에서 PER 22배 정도로 매수가 유입되며 상승했고, 2027년 EPS 21.57달러에 5년 평균 배수 22.46배를 적용하면 적정주가는 약 484달러로, 이 가격 이하에서는 매수 관점으로 접근할 수 있다. 애플은 2분기 저점 대비 고점까지 약 40퍼센트의 수익률을 기록했으며 당시 PER은 28배 수준이었다. 2027년 EPS 9.51달러에 5년 평균 배수 30배를 적용하면 적정주가는 약 285달러로 산출된다. 알파벳은 3개월간 보유 시 약 18퍼센트 수익률을 기록했고 저점에서는 PER 22배 수준이었으며, 2027년 EPS 14.73달러에 배수 23.34배를 적용하면 적정주가는 약 343달러다. 뱅크 오브 아메리카는 저점 대비 고점까지 21퍼센트 상승했고 당시 PER은 10배 수준이었으며, 2027년 EPS 5.3달러에 5년 평균 배수 11.58배를 적용하면 적정주가는 약 61달러로 계산된다. 처브는 3개월간 약 8퍼센트 상승했고 PER 11배 수준에서 저점을 형성했으며, 2027년 EPS 29.11달러에 배수 12.73배를 적용하면 적정주가는 약 370달러다.</p><p>포트폴리오 구성의 중요성도 강조됐다. 6월부터 7월 말까지 나스닥 지수가 하락하는 구간에서도 처브 같은 보험주는 오히려 상승하며 방어주 역할을 했던 반면, 알파벳 같은 기술주는 나스닥과 동조하여 하락했다. 이는 반도체나 기술주에만 집중 투자할 경우 하락장에서 견디기 어렵고 큰 손실률을 견디지 못해 손절하게 되는 반면, 보험주나 제약주 등 방어주를 함께 보유하면 하락폭을 줄여 견딜 수 있다는 점에서 포트폴리오 분산의 중요성을 보여준다.</p><p>전체적으로 투자에서 중요한 것은 어렵고 생소한 종목을 찾기보다 이미 잘 알려진 우량 기업을 대상으로 밸류에이션을 계산하고, 주가가 크게 하락했을 때 분할 매수로 진입해 인내심을 갖고 장기 보유하는 전략이다. 정확한 저점이나 고점을 예측하기는 불가능하므로 분할 매수와 분할 매도를 병행하고, 포트폴리오를 기술주와 방어주로 분산시켜 변동성을 관리하며 꾸준히 투자하는 것이 결국 수익을 내는 정석적인 방법이라는 점을 강조하고 있다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=iAmQ7GUJQSQ" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-1">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">Schuka World (슈카월드)</div>
+          <div class="title">가장 쉽고 타격감 좋은 공급망 타격 작전</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        <p>전쟁 억지력이 사실상 사라진 시대에 각국이 군사 시설 대신 공급망을 타격하는 방식으로 전쟁을 수행하고 있다는 내용을 다룬다. 우크라이나 전쟁이 5년을 향해 가면서 젤렌스키 대통령은 러시아 본토 공격을 위해 스타링크의 글로벌 사용 허가를 트럼프 대통령에게 요청했다. 최근 우크라이나는 러시아의 군사 시설이 아니라 물류 창고와 정유 시설을 집중 공격하고 있다. 7월에는 러시아 최대 이커머스 기업인 와일드베리스의 물류 창고 여러 곳을 드론으로 동시 타격했는데, 이 회사는 러시아 물류업계 1위로 러시아 GDP의 8.5%를 차지하는 대기업이다. 이런 공격의 목적은 군수물자 차단보다 러시아 일반 국민들에게 전쟁의 실체를 체감시키는 데 있다. 그동안 러시아 국민들은 전쟁을 먼 곳의 일로 여겼으나, 옆 건물이 불타는 것을 보면서 인식이 달라지고 있다는 것이다. 이런 민간 물류 및 에너지 시설은 방어 시설이 없어 타격 효율이 매우 높다는 장점도 있다. 우크라이나는 나아가 러시아의 비밀 유조선과 화물선단, 즉 제재를 피해 은밀히 움직이는 선박들을 해상 드론으로 공격해 최근 몇 주간 약 200척을 타격했다. 이로 인해 러시아 해상 원유 수출의 일부가 중단되고 6월 해상 선적량이 전년 대비 21% 감소했으며, 정유 시설 타격으로 국내 휘발유 부족과 배급 사태까지 벌어지고 있다. 러시아 정부는 이를 가짜 뉴스로 규정하며 관련 보도 공유 시 최대 20년 징역형을 경고하는 등 검열에 나섰지만, 결국 2027년 1월까지 휘발유 수출을 금지하는 조치를 취했다. 곡물 수출선에 대한 공격도 이어져 100척 이상이 드론 공격을 받았고, 러시아의 7월 밀 수출량은 전년 대비 30% 감소해 지난 5년 평균의 절반에도 못 미쳤다. 이는 전 세계 밀 공급량의 15% 감소로 이어져 국제 밀 가격이 급등했으며, 이런 물가 상승은 각국 여론이 조속한 종전을 요구하게 만드는 효과를 낸다는 점에서 전쟁 당사국들이 의도적으로 노리는 전략이라는 분석이다. 중동에서도 비슷한 양상이 나타난다. 이라크 민병대가 사우디 석유 시설을 공격하면서 사우디가 보복을 천명해 참전 가능성이 커지고 있고, 예멘 후티 반군은 홍해를 지나는 상선을 공격하고 통행료 부과까지 검토하며 사실상 해상 봉쇄 효과를 내고 있다. 민간 선박은 방어 수단이 없어 소수의 공격만으로도 항로 전체가 봉�쇄되는 효과가 발생하며, 이 때문에 미 해군 전력의 40%가 이 지역에 투입돼 있음에도 후티의 활동을 막지 못하고 있다. 이런 홍해 위협으로 유가가 다시 85달러 선까지 올랐고, 홍해가 완전히 막히면 유럽행 물류는 아프리카를 우회해야 해 50일이 추가로 걸리게 된다. 감시가 느슨해진 틈을 타 한동안 사라졌던 소말리아 해적도 다시 출몰해 현재 선박 여섯 척이 나포된 상태다. 이런 상황의 배경에는 전쟁 억지력의 약화가 있다. UN 안전보장이사회 상임이사국 중 미국은 트럼프 대통령이 세계 경찰 역할을 하지 않겠다고 선언했고, 국방부 명칭을 전쟁부로 바꾸며 국방 예산을 50% 증액 요청하는 등 오히려 군사적 개입 성향이 강해졌다. 유럽 주요국인 영국, 프랑스, 독일 등은 각자 내부 문제로 여력이 없고, 미국과의 관세 갈등까지 겹쳐 전쟁 억지력을 행사하기 어려운 처지다. 러시아가 북한과 협력해 유럽 국가와 충돌하는 상황까지 벌어지는 등 과거에는 상상하기 어려웠던 구도가 현실화되고 있다. UN 역시 트럼프 대통령으로부터 공허한 말만 한다는 비판을 받았고, 미국은 취임 이후 세계보건기구를 비롯한 다수의 국제기구와 협약에서 탈퇴하며 국제기구의 실효성이 크게 약화된 상태다. 나토 탈퇴 가능성까지 언급되는 상황에서 전쟁 억지력은 실질적으로 소멸했다고 볼 수 있다. 이런 흐름 속에서 우크라이나, 중동, 아시아 등 여러 지역에서 동시에 긴장이 고조되고 있으며, 전쟁이 발생할 때마다 군사 시설보다 공급망과 에너지, 물류 인프라를 우선 타격하는 방식이 반복되면서 전 세계 물가 상승과 시장 불안으로 이어지고 있다는 점을 지적한다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=40r95kRLnsU" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-2">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">부읽남</div>
+          <div class="title">지금 현금 5천만 원 있다면 저라면 이렇게 투자합니다 [김현준 대표 4부]</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        <p>김현준 더퍼블릭자산운용 대표는 현재 현금 5천만 원이 있다면 반도체보다는 나스닥 ETF에 투자하겠다고 밝혔다. 삼성전자와 하이닉스가 2029년에서 2031년경 다음 반도체 업황 사이클 정점까지 올라갈 확률보다, 나스닥 지수가 상승할 확률이 훨씬 높다고 보기 때문이다. S&amp;P500도 나쁘지 않지만 S&amp;P500만 좋을 수는 없다고 설명했는데, 빅테크 비중이 S&amp;P500 내에서도 크기 때문에 빅테크가 잘 가야 지수도 좋고, 빅테크가 무너지면 미국 증시 전체와 한국 증시도 함께 무너진다는 논리다. 다만 S&amp;P500에는 테크주가 아닌 종목들도 포함돼 있는데 나이키나 룰루레몬처럼 많이 하락해 바닥을 다지고 있는 종목들이 있어 이런 비테크 종목들이 개선될 가능성도 있다고 언급했다. 필라델피아 반도체지수 같은 특정 섹터 ETF보다는 러셀2000 같은 미국 소형주 지수나 시가총액 기준의 광범위한 지수, 혹은 M7 등 빅테크 위주 ETF를 활용하는 것이 확률적으로 더 낫다고 조언했다. 결국 지금 전 세계에서 가장 돈이 많고 똑똑하며 데이터가 풍부한 빅테크 기업들이 수백조 원을 쏟아붓고 있는 상황에서, 그들이 투자한 돈 이상을 벌어낼 자신이 있기 때문에 그렇게 하고 있는 것이라는 믿음을 가지고 일부 자금을 빅테크 쪽으로 옮겨 그들의 수혜를 함께 누리는 것이 합리적이라고 설명했다.</p><p>국내 주식과 관련해서는 특정 업종보다는 원래 잘하는 기업인데 주가가 고점에서 빠진 곳을 선호한다고 밝혔다. 연평균 20에서 30퍼센트의 수익률을 목표로 하며, 이를 달성하려면 투자한 기업의 영업이익이 연 20에서 30퍼센트씩 증가해야 하는데 그런 기업은 최근 10년간 국내에 수십 개도 안 되고, 그중에서 반도체나 조선처럼 이미 주목받는 업종을 제외하면 몇 개 남지 않는다고 설명했다. 영업이익률 자체보다는 공헌이익률이 높아서 앞으로 영업이익률이 개선될 잠재력이 있는 기업을 선호한다고 밝혔으며, 현재 보유 중인 종목에는 소비재 업체와 헬스케어 업체가 포함되어 있다고 언급했다. 이들은 내수가 아니라 수출 중심의 기업으로, 국내 인구나 시장 규모보다 전 세계를 대상으로 한 잠재 도달 시장이 훨씬 크기 때문에 해외에서도 통할 수 있는 제품과 서비스를 가진 기업을 선호한다고 밝혔다. 반대로 한국전력처럼 국내에서만 사업하는 기업은 선호하지 않는다고 설명했다.</p><p>현대차에 대해서는 이미 수출 비중이 80퍼센트 이상으로 높은 편이라 신규 시장 개척의 여지가 크지 않으며, 자동차 시장에서 이미 강자 위치에 있지만 전 세계적으로 자동차를 점점 안 사는 추세이기 때문에 이익 성장이 쉽지 않은 업종이라고 진단했다. 다만 도요타, 폭스바겐 등 경쟁사에 비하면 상대적으로 잘하고 있는 기업이라고 평가했다.</p><p>코스닥과 소형주에 대해서는, 많이 오르지 않았고 최근 삼성전자와 하이닉스가 하락하면서 동반 하락한 상황이라 앞으로 좋아질 가능성은 있지만, 일반 투자자가 대형주에서 중소형주로, 혹은 코스피에서 코스닥으로 순환매를 노리고 이동하는 것은 권하지 않는다고 강조했다. 이는 전문 투자자의 영역이며, 일반 투자자가 돈을 벌기 가장 쉬운 방법은 과거에도 잘했고 앞으로도 잘할 기업을 꾸준히 보유하는 것이라고 말했다. 투자를 결정할 때 최소 10년치 재무제표를 보는데, 코스닥이나 중소형주는 대부분 지난 10년간 성장하지 못한 경우가 많아 앞으로 갑자기 잘할 것이라 가정하기 어렵고, 장기투자에 적합하지 않은 종목에서 개인 투자자가 한번 실패하면 복구가 어렵다는 이유로 개별 종목 투자를 권하지 않는다고 밝혔다.</p><p>조선주에 대해서는 영업이익률 개선 여지가 있지만 이미 많은 사람들이 알고 있는 이슈이기 때문에 지금은 한두 수 앞을 봐야 하는 시점이며, 오르고 있는 업종보다는 지금 빠지고 있거나 횡보하는 업종에서 답을 찾아야 한다고 언급했다.</p><p>하이브 주가에 대한 질문에는, BTS의 뉴욕 대규모 콘서트 같은 좋은 소식에도 주가가 부진한 이유는 하이브가 상장 때부터 이미 비쌌기 때문이라고 설명했다. 이익이 늘어날 것이라는 기대감이 이미 주가에 선반영되어 있었기 때문에, 잘하는 기업이라도 너무 비싸게 사면 주가가 내릴 수 있고 반대로 단순히 기대감만으로 오르는 주식을 노리고 투자하는 것도 지양해야 한다는 교훈으로 삼아야 한다고 조언했다. 결국 개인 투자자는 정석적인 투자를 해야 한다고 강조했으며, 이는 부동산에서 자기 동네 대장주를 꾸준히 장기 보유하는 것이 가장 좋은 성과를 내는 것과 같은 원리라고 비유했다.</p><p>삼성전자와 하이닉스 투자에 대해서는, 다음 사이클까지 기다릴 수 있다는 전제가 있다면 위험하지 않지만 2027년 이내에 승부를 보려는 목적으로 지금 진입하는 것은 말리고 싶다고 밝혔다. 2027년에서 2029년경 이 기업들이 반도체 생산라인을 증설하면 물량 증가와 가격 하락, 영업이익률 저하로 이어지는 국면이 언젠가 올 수 있는데, 그 전에 주가가 많이 오르면 좋겠지만 그렇지 않을 경우를 대비해야 한다는 의미다. 실제로 과거 삼성전자가 9만 원대였던 시기에 매수해 지금까지 보유한 사람이라면 결국 두세 배 수익을 거뒀겠지만, 중간에 매도했다면 반토막 손실을 확정했을 것이라며 장기 보유의 어려움을 지적했다. 현재 삼성전자나 하이닉스를 보유한 사람들 대부분은 2030년까지 기다릴 생각이 없고 어느 정도 오르면 매도하려는 생각이 강하기 때문에, 그런 태도라면 지금 신규로 진입하지 말 것을 권했다.</p><p>전반적인 시장 버블 위험에 대해서는, 유동성이 과도하게 풀려 있고 금리가 낮은 상태가 오래 지속되었다는 점에서 버블이 터질 가능성이 없지는 않다고 언급했다. 한국 증시는 실제 실적 개선을 바탕으로 오른 것이라 큰 걱정은 하지 않지만, 미국 증시는 계속 신고가를 경신하며 밸류에이션이 과거 대비 비싸진 상태이고, 미국 기업들은 꾸준히 돈을 벌기 때문에 밸류에이션 지표 자체가 의미는 있지만 비싸다는 점에서 무언가 계기가 생기면 크게 하락할 가능성도 있다고 밝혔다. 다만 이것이 확률이 높다는 근거나 힌트를 가지고 하는 말은 아니라고 덧붙였다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=WpNazHcA5ts" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-3">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">부읽남</div>
+          <div class="title">현대차 난리난 진짜 이유, 지금 안 팔면 &#x27;이렇게&#x27; 될 겁니다 [강관우 대표 3부]</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        <p>현대차와 국내 증시 전반에 대한 강관우 대표의 분석 내용이다. 최근 현대차 주가가 크게 빠졌지만 PBR은 여전히 1.0배 정도로 장부 가치 수준에 불과해 매력적인 구간에 진입했다고 평가한다. 다만 목표 주가는 내려오지 않고 있어 목표가와 현재 주가 간 괴리가 커진 상태이며, 관세 이슈와 인센티브 비용 부담이라는 당장의 펀더멘털 압박이 존재한다. 현대차 주가를 지지하는 핵심 서사는 보스턴 다이내믹스를 통한 로보틱스, 피지컬 AI에 대한 기대감인데, 아틀라스 로봇 투입은 2028년에야 이뤄질 예정이라 앞으로도 주가가 여러 차례 출렁일 수 있다고 본다. 보스턴 다이내믹스 상장은 올해는 어려워도 2027년 상반기에는 가능성이 높아질 것으로 전망하며, 소프트뱅크와의 계약 관련 소식이 하반기에 나올 수도 있다고 언급한다. 다만 보스턴 다이내믹스가 외부 고객을 확보했다는 구체적 사례가 아직 없어 시장과 소통할 스토리가 부족하다는 한계를 지적한다. 결론적으로 1년 단위로 보면 재미없을 수 있지만 3~4년의 장기 관점에서는 여전히 유효한 투자라고 평가하며, 보유자라면 매도보다는 물타기를 통해 평균 단가를 낮추는 전략을 권한다.</p><p>밸류에이션 관점에서는 PER보다 PBR을 기준으로 기업을 판단해야 한다고 강조한다. 하이닉스가 삼성전자보다 PBR이 높은 이유는 ROE가 더 높기 때문이며, 로봇주나 바이오주처럼 PER과 PBR 모두로 설명되지 않는 고평가 종목들은 장기 투자보다 트레이딩 관점에서 접근해야 한다고 조언한다.</p><p>하반기 시장 전략으로는 반도체 및 AI 관련주를 포트폴리오의 45~60% 수준으로 유지할 것을 권하며, 최근 대안으로 네이버를 주목한다. 엔비디아가 네이버에 10억 달러 유상증자로 출자하며 데이터센터 비즈니스에 진출하는 것을 계기로 네이버가 기존 인터넷 플랫폼 기업에서 AI 기업으로 재평가받을 가능성이 있다고 본다. 시장의 밸류에이션 시각은 극과 극으로 갈려 있으며, 낙관적 시나리오에서는 기업가치가 19조원까지 늘어날 수 있다는 평가도 있다고 소개한다. 나머지 30~40%는 경기민감주나 가치주, 방어주 중 밸류에이션이 매력적인 종목으로 채우는 것을 권한다. 전력 인프라 관련주(LS일렉트릭, 효성중공업 등)는 이미 오랜 기간 상승해 밸류에이션이 비싸졌기 때문에 최근 주가가 빠지는 것은 먼저 산 사람들의 차익 매도 때문이라고 설명한다.</p><p>현금 비중에 대해서는 기존에 20% 이상 보유를 권했던 것과 달리, 최근 시장이 많이 빠진 지금은 현금을 오히려 적극적으로 써야 하는 시점이라며 현금 비중을 5% 이하로 낮출 것을 권한다. 공포에 질려 있을 때가 종목을 발굴할 시점이라는 컨트래리언 관점을 강조한다.</p><p>국내 증시를 떠나 미국 시장으로 이동하는 것에 대해서는 반대 입장을 명확히 한다. 일드갭(주식과 채권의 기대수익률 차이) 개념을 통해, 미국은 S&amp;P500 선행 PER이 21~22배로 기대수익률이 약 4.6%인데 10년물 국채 수익률이 4.7%를 넘어서 주식과 채권의 기대수익률 차이가 거의 없거나 마이너스인 상황이라고 지적한다. 반면 한국은 10년 평균 PER이 10배 수준으로 기대수익률이 10%에 달하고, 국채 수익률 4%를 감안해도 에퀴티 리스크 프리미엄이 약 6%로 미국보다 훨씬 크다고 설명한다. 여기에 최근 원화 강세로 환율 효과까지 고려하면 미국 자산으로 이동하는 것이 오히려 손해일 수 있다고 주장한다.</p><p>주가가 많이 빠진 이유는 할인율(자기자본비용, 코스트 오브 에퀴티) 상승 때문이라고 설명한다. 선행 PER의 역수가 할인율에 큰 영향을 미치는데, PER이 급격히 낮아지면 할인율이 급등해 밸류에이션이 크게 낮아진다는 논리다. 향후 전망에 대해서는 애널리스트 추정치 기준으로 급격한 버블 붕괴보다는 실적이 옆으로 눕는(성장 정체) 형태로 시장이 잠잠해질 가능성이 크다고 본다. 다이나믹한 장은 2027년 1~2분기까지 이어질 수 있으나 그 이후에는 변동성이 줄어들며 가치주화될 가능성이 있다고 전망한다. 엔비디아를 비롯한 빅테크들의 순환 투자(자전거래) 논란에 대해서는 지분을 확보하는 것 자체는 나쁘지 않은 전략이라고 평가하며, 자산을 싸게 살 수 있다면 오히려 긍정적이라는 시각을 제시한다.</p><p>마지막으로 개인 투자자들에게는 이번 하락장에서 시장을 떠나지 말고 분할 매수 전략으로 꾸준히 참여할 것을 권하며, 부동산을 살 때처럼 여러 시기와 상황에서 충분히 살펴보고 신중하게 투자 결정을 내려야 한다고 조언한다. 국민연금이나 외국인 투자자들은 이미 리밸런싱을 상당 부분 마쳤고 오히려 매수 여력이 있는 상황이므로, 개인들이 공포에 질려 시장을 떠나는 것과는 반대로 움직이는 컨트래리언 전략이 유효할 수 있다고 강조한다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=WNksQnpY7OQ" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-4">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">부읽남</div>
+          <div class="title">지금 개미들만 모르고 있어요, 삼성전자 앞으로 무서울 겁니다 [강관우 대표 2부]</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        <p>8월 현재 시점에서 삼성전자와 SK하이닉스를 매수해야 한다는 의견을 강관우 대표가 제시한다. 12월까지 몇 달 남지 않았고 반기 결산이 지나간 시점에서 특별 배당이나 자사주 매입 같은 주주 환원 이벤트가 나올 가능성이 있다는 점을 근거로 든다. 특히 하이닉스는 영업이익의 10.5퍼센트를 떼어 삼성전자 하이닉스 등 종업원들에게 성과급으로 지급하기로 되어 있는데, 이를 현금이 아닌 자사주로 지급할 가능성이 높다고 본다. 회사 입장에서는 낮은 단가에 자사주를 매입해 종업원에게 지급하면 회사와 종업원 모두에게 이득이 되므로, 자사주 매입 발표가 나오기 전에 미리 주식을 사둬야 한다고 강조한다. 최근 루머로 성과급을 자사주로 지급하면서 일정 기간 전매 제한을 걸 수 있다는 이야기도 나오는데, 이는 해외 기업들도 흔히 쓰는 방식으로 인재 이탈을 막는 효과가 있어 큰 문제가 아니라고 설명한다.</p><p>최근 반도체 버블론과 실적 우려에 대해서는, AMD 등 개별 기업의 실적 발표에 따라 주가가 출렁이는 현상 자체가 오히려 고점 부근에서 나타나는 불안 심리로 해석될 수 있다는 우려가 있지만, 최근 하이퍼스케일러들의 실적 발표와 가이던스가 좋게 나오면서 이런 불안감이 상당 부분 해소되고 있다고 말한다. 엔비디아가 다시 시가총액 1위를 탈환한 반면 CXMT와 메모리 협상을 시도했던 애플 주가는 반대로 부진한 점을 들어, AI 관련주 중에서도 실제로 돈을 버는 회사 중심으로 주가가 재편되고 있다고 진단한다. 이를 통해 AI 투자 대비 효율성, 즉 ROI에 대한 두려움이 점차 완화되고 있다고 본다.</p><p>실적 추정과 관련해서는 다수 증권사 애널리스트들의 이익 추정치가 여전히 상향되고 있어 실적 자체를 크게 걱정할 필요는 없다고 하면서도, 최근 원달러 환율이 100원 이상 하락한 부분이 아직 실적 추정에 충분히 반영되지 않았을 수 있다는 점은 변수로 지적한다. 다만 이는 AI 사이클 자체가 꺾였다는 의미는 아니라고 선을 긋는다. 향후 반도체 주가 방향성을 예측하는 데 가장 중요한 지표로는 실적에 앞서 반도체 고정 거래 가격, 특히 수요 강도에 따른 가격 협상력을 꼽는다. 최근 PC와 스마트폰 업체들이 사양을 낮추는 등 수요가 다소 위축된 조짐이 있고, 삼성전자의 스마트폰 사업부 실적이 부진한 것도 메모리 가격 상승의 영향으로 설명한다. 과거에는 반도체가 부진할 때 스마트폰 사업부가 삼성전자를 지탱했지만, 지금은 반대로 메모리 가격 상승이 스마트폰과 같은 완제품 업체들의 원가 부담으로 작용하고 있으며, 애플 팀 쿡이 메모리 공급 부족을 &quot;100년 만의 대홍수&quot;라 표현한 것도 결국 과거 공급업체를 지나치게 압박해 투자 여력을 줄인 결과라는 해석을 내놓는다.</p><p>일부 증권사, 예를 들어 BNK증권 등에서 목표주가를 크게 낮추며 반도체 이익이 과거 사이클처럼 급격히 꺾일 것이라는 전망을 내놓았지만, 강관우 대표는 이런 시각에 대해 이제는 단순 PER이 아니라 2026년부터 2030년까지의 이익 추이를 보고 정상화된 이후 유지 가능한 ROE 수준을 파악한 뒤, 이를 근거로 목표 PBR 멀티플을 산정하는 방식으로 접근해야 한다고 주장한다. 2026년 이후 이익이 정점을 찍고 2027년에 다소 조정된 뒤 2028년경 횡보하거나 소폭 등락하는 흐름을 예상하며, 이 정도로 마무리된다면 나쁘지 않은 시나리오라고 본다. 이익이 계속해서 급증하기만 한다면 오히려 메모리를 구매하는 빅테크 등 수요처들이 감당하기 어려워질 것이라는 점도 지적한다. 현재 빅테크들이 벌어들인 돈을 메모리 등 설비 투자로 돌리고 있고 유상증자나 회사채 발행 등으로 자금을 조달하는 상황도 이런 흐름을 뒷받침한다고 본다. 다만 캐펙스 대비 매출 증가가 감가상각 수준은 커버하고 있지만, 시장을 완전히 안심시키려면 매출 증가 속도가 더 가속화되는 모습을 보여줄 필요가 있으며, AI 서비스 요금이 통신비처럼 앞으로 지속적으로 인상될 가능성이 있다는 전망도 덧붙인다.</p><p>메모리 업종이 앞으로 TSMC처럼 사이클 없는 장기 우상향 구조로 갈 수 있을지에 대해서는, TSMC의 영업이익률이 50%대로 삼성전자나 하이닉스보다 낮음에도 불구하고 선행 PER이 22배에 달하는 반면 국내 메모리 기업들은 3.5배에서 4배 수준에 불과하다는 점에서 코리아 디스카운트가 존재한다고 지적한다. 이런 저평가를 해소하려면 결국 주주 환원 정책이 뒷받침되어야 하며, 현재는 아직 주주 환원이 충분하지 않은 상황이라고 평가한다.</p><p>최근 주가 조정과 관련해서는 지난 금요일과 수요일에 거래량이 폭발적으로 증가한 점을 근거로 이를 바닥권 신호로 해석하며, 손절 물량과 숏커버, 롱머니 유입이 뒤섞이면서 거래량이 급증했다고 분석한다. 신규 투자자에게는 성향에 따라 종목을 선택할 것을 권하는데, 하이닉스는 베타가 1.7에서 1.8 수준으로 변동성이 크기 때문에 공격적인 투자자에게 적합하고, 삼성전자는 베타가 1.2에서 1.3 수준으로 상대적으로 방어적이라 위험 회피 성향의 투자자에게 적합하다고 설명한다. 하이닉스는 HBM을 중심으로 한 메모리 전문 기업으로서 순수하게 반도체에 베팅하는 성격이 강한 반면, 삼성전자는 반도체 외에도 스마트폰, 가전, 통신, 디스플레이 등 다양한 사업을 보유한 종합 IT 기업이기 때문에 상대적으로 무겁게 움직인다고 설명한다. 실제로 자신이 과거 몸담았던 증권사에서 하이닉스에 대해 지나치게 비관적인 리포트를 냈던 시점이 오히려 바닥이었던 경험을 언급하며, 이번에도 유사한 흐름이 나타날 수 있다고 본다.</p><p>포트폴리오 확장 관점에서는 레버리지 ETF보다 지주사나 관계사를 활용한 투자를 대안으로 제시하는데, SK하이닉스와 연계된 SK스퀘어, 삼성전자와 연계된 삼성물산, 삼성생명, 그리고 SK 지분을 보유한 주식회사 SK 등을 예로 들며 이들 종목이 할인율 축소 과정에서 오히려 더 큰 상승폭을 보일 수 있다고 설명한다. 다만 단기간인 8월 내에 급등이 나오기보다는 바닥을 다지는 시간이 필요할 것으로 보이며, 최근 물린 투자자들의 실망 매물과 사이클 종료를 우려하는 여론이 있지만 거래량이 줄어든다고 해서 주가 상승 여력이 사라지는 것은 아니며, 매도 물량이 소진되면 거래량이 줄면서도 가격은 오히려 상승할 수 있다는 전망으로 마무리한다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=vxcuVbjyX5o" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+  </section>
+
+  <footer class="foot">
+    <b>Investment Digest</b> · generated automatically. Not financial advice — personal reading notes only.
+  </footer>
+</div>
+<script>
+(function() {
+  var h = window.location.hash;
+  if (h && h.indexOf("#vid-") === 0) {
+    var el = document.querySelector(h);
+    if (el && el.tagName === "DETAILS") {
+      el.open = true;
+      el.scrollIntoView({block: "start"});
+    }
+  }
+})();
+</script>
+</body>
+</html>

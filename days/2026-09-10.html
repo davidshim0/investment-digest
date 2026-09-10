@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026-09-10 — Investment Digest</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Mulish:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#FBF6EC">
+<script>(function(){
+  var t = localStorage.getItem('theme') || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  document.documentElement.setAttribute('data-theme', t);
+})();</script>
+<style>
+:root{
+  --paper:#FBF6EC; --paper-2:#F3EADA; --card:#FFFDF8;
+  --ink:#332C24; --ink-soft:#6E6456; --ink-faint:#9A8E7C;
+  --line:#E7DBC6; --line-strong:#D8C8AC;
+  --honey:#E8A33D; --honey-deep:#C27D14; --honey-soft:#FBEACB;
+  --dram:#2C8C7C; --dram-soft:#DCEFE9;
+  --ltram:#5A61B4; --ltram-soft:#E6E6F6;
+  --optane:#C0563B; --optane-soft:#F7E1D8;
+  --shadow-sm:0 1px 2px rgba(80,60,30,.06),0 2px 8px rgba(80,60,30,.05);
+  --shadow-md:0 6px 18px rgba(90,66,28,.10),0 16px 36px rgba(90,66,28,.08);
+  --radius:18px; --radius-sm:12px; --maxw:1500px;
+  --display:"Fraunces",Georgia,serif;
+  --body:"Mulish",-apple-system,system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,monospace;
+  /* status scale: buy (green) -> hold (neutral) -> sell (red). Never used alone --
+     every status also carries an icon glyph + text label. */
+  --buy:#1F7A4D; --buy-soft:#DDF0E3;
+  --buyhold:#6E9A3C; --buyhold-soft:#EAF2D8;
+  --hold:#8A7F6C; --hold-soft:#F3EADA;
+  --holdsell:#C27D14; --holdsell-soft:#FBEACB; --holdsell-text:#8A5A0E;
+  --sell:#B23D26; --sell-soft:#F7E1D8;
+}
+/* Dark theme -- same design tokens, re-tuned for a dark warm-charcoal background
+   instead of the light "paper" one. Applied via a data-theme attribute on <html>
+   (set before first paint by the inline init script in <head>, so there's no
+   flash of the wrong theme) rather than only prefers-color-scheme, so the
+   toggle button can override the system setting and remember the choice. */
+:root[data-theme="dark"]{
+  --paper:#181512; --paper-2:#211D18; --card:#221E19;
+  --ink:#EEE7D9; --ink-soft:#BBB09C; --ink-faint:#8C8172;
+  --line:#38332A; --line-strong:#4A4335;
+  --honey:#F0B85B; --honey-deep:#F5C878; --honey-soft:#3A2D16;
+  --dram:#4FC0A9; --dram-soft:#173129;
+  --ltram:#9098E8; --ltram-soft:#242850;
+  --optane:#E68A6B; --optane-soft:#3B241B;
+  --shadow-sm:0 1px 2px rgba(0,0,0,.35),0 2px 8px rgba(0,0,0,.3);
+  --shadow-md:0 6px 18px rgba(0,0,0,.45),0 16px 36px rgba(0,0,0,.4);
+  --buy:#5FCB93; --buy-soft:#173121;
+  --buyhold:#A9CC6D; --buyhold-soft:#262E16;
+  --hold:#BBB09C; --hold-soft:#2A2620;
+  --holdsell:#F0B85B; --holdsell-soft:#3A2D16; --holdsell-text:#F0B85B;
+  --sell:#EE8065; --sell-soft:#3A211A;
+}
+*{box-sizing:border-box} html{scroll-behavior:smooth}
+body{margin:0;font-family:var(--body);color:var(--ink);line-height:1.6;background:var(--paper);
+  background-image:radial-gradient(circle at 10% 6%,rgba(44,140,124,.06),transparent 42%),radial-gradient(circle at 90% 18%,rgba(90,97,180,.06),transparent 44%),radial-gradient(circle at 50% 120%,rgba(232,163,61,.07),transparent 55%);
+  -webkit-font-smoothing:antialiased;min-height:100vh;transition:background-color .25s,color .25s}
+:root[data-theme="dark"] body{
+  background-image:radial-gradient(circle at 10% 6%,rgba(79,192,169,.08),transparent 42%),radial-gradient(circle at 90% 18%,rgba(144,152,232,.08),transparent 44%),radial-gradient(circle at 50% 120%,rgba(240,184,91,.06),transparent 55%);
+}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 22px}
+.theme-toggle{position:fixed;top:18px;right:18px;z-index:30;display:inline-flex;align-items:center;justify-content:center;
+  width:42px;height:42px;border-radius:50%;border:1px solid var(--line-strong);background:var(--card);color:var(--ink-soft);
+  cursor:pointer;box-shadow:var(--shadow-sm);font-size:17px;line-height:1;padding:0;transition:border-color .2s,color .2s,transform .15s}
+.theme-toggle:hover{border-color:var(--honey);color:var(--honey-deep);transform:scale(1.06)}
+.theme-toggle .tt-sun,.theme-toggle .tt-moon{display:none}
+:root[data-theme="light"] .theme-toggle .tt-moon{display:inline}
+:root[data-theme="dark"] .theme-toggle .tt-sun{display:inline}
+@media(max-width:480px){.theme-toggle{top:12px;right:12px;width:38px;height:38px;font-size:15px}}
+:root[data-theme="dark"] .eyebrow{border-color:var(--line-strong)}
+a{color:var(--honey-deep);text-decoration:none;border-bottom:1.5px solid var(--honey-soft);transition:border-color .2s}
+a:hover{border-color:var(--honey)}
+h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.2;color:var(--ink);margin:0 0 .5em}
+.head{padding:52px 0 18px}
+.eyebrow{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--honey-deep);background:var(--honey-soft);padding:7px 14px;border-radius:999px;border:1px solid #F0DCB0;margin-bottom:18px}
+.eyebrow .dot{width:8px;height:8px;border-radius:50%;background:var(--honey);box-shadow:0 0 0 4px rgba(232,163,61,.2)}
+.head h1{font-weight:700;font-size:clamp(2.1rem,5.6vw,3.2rem);letter-spacing:-.015em;margin:0 0 .3em}
+.head p{font-size:clamp(1rem,2vw,1.1rem);color:var(--ink-soft);max-width:60ch;margin:0}
+.back{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:.85rem;color:var(--ink-soft);border-bottom:none;margin-bottom:18px}
+.back:hover{color:var(--honey-deep)}
+
+.sec{margin:30px 0 0}
+.sec-h{font-family:var(--display);font-weight:600;font-size:1.15rem;margin:0 0 14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
+a.cardlink{text-decoration:none;color:inherit;border-bottom:none}
+.gcard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px;box-shadow:var(--shadow-sm);
+  transition:transform .18s,box-shadow .18s,border-color .18s;height:100%;display:flex;flex-direction:column}
+.gcard:hover{transform:translateY(-4px);box-shadow:var(--shadow-md);border-color:var(--line-strong)}
+.gcard h2{font-size:1.18rem;letter-spacing:-.01em;margin:0 0 .3em}
+.gcard .date{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:10px}
+.gcard .counts{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 12px}
+.gcard .tickers{font-size:.88rem;color:var(--ink-soft);margin:0 0 12px;flex:1}
+.gcard .go{font-family:var(--body);font-weight:700;font-size:.88rem;color:var(--honey-deep);display:inline-flex;align-items:center;gap:6px}
+.gcard:hover .go{color:var(--ltram)}
+
+.status{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-weight:700;font-size:10.5px;letter-spacing:.03em;
+  text-transform:uppercase;padding:3px 9px;border-radius:999px}
+.status.buy{background:var(--buy-soft);color:var(--buy)}
+.status.buyhold{background:var(--buyhold-soft);color:var(--buyhold)}
+.status.hold{background:var(--hold-soft);color:var(--hold)}
+.status.holdsell{background:var(--holdsell-soft);color:var(--holdsell-text)}
+.status.sell{background:var(--sell-soft);color:var(--sell)}
+
+.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px 24px;margin:14px 0;box-shadow:var(--shadow-sm)}
+.panel.buy{border-left:4px solid var(--buy)}
+.panel.buyhold{border-left:4px solid var(--buyhold)}
+.panel.hold{border-left:4px solid var(--hold)}
+.panel.holdsell{border-left:4px solid var(--holdsell)}
+.panel.sell{border-left:4px solid var(--sell)}
+.panel h3{font-size:1.08rem;margin:0 0 12px;display:flex;align-items:center;gap:10px}
+.panel .empty{color:var(--ink-faint);font-style:italic;font-size:.94rem;margin:0}
+.pick{padding:10px 0;border-top:1px dashed var(--line)}
+.pick:first-of-type{border-top:none;padding-top:2px}
+.pick .ticker{font-weight:700;font-family:var(--display);font-size:1.02rem;margin-bottom:2px}
+.pick .rationale{font-size:.92rem;color:var(--ink-soft);margin:0}
+
+.tickerbar{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 6px}
+.tchip{font-family:var(--mono);font-weight:700;font-size:.82rem;background:var(--paper-2);color:var(--ink-soft);
+  border:1px solid var(--line-strong);border-radius:999px;padding:5px 12px}
+
+.vcard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius-sm);margin:12px 0;overflow:hidden}
+.vcard summary{list-style:none;cursor:pointer;padding:16px 20px;display:flex;gap:14px;align-items:flex-start}
+.vcard summary::-webkit-details-marker{display:none}
+.vcard .vmeta{flex:1;min-width:0}
+.vcard .channel{font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--honey-deep);margin-bottom:3px}
+.vcard .title{font-weight:700;font-size:1rem;color:var(--ink)}
+.vcard .chev{margin-left:auto;color:var(--ink-faint);transition:transform .25s;font-family:var(--mono);flex:0 0 auto}
+.vcard[open] summary .chev{transform:rotate(180deg)}
+.vcard .body{padding:0 20px 20px 20px;color:var(--ink-soft);font-size:.95rem}
+.vcard .body p{margin:0 0 12px}
+.vcard .watch{font-family:var(--mono);font-size:.82rem}
+
+.foot{margin:54px 0 40px;padding-top:20px;border-top:1px solid var(--line);font-size:.85rem;color:var(--ink-faint);font-family:var(--mono);line-height:1.7}
+.foot b{color:var(--ink-soft)}
+.empty-state{color:var(--ink-faint);font-style:italic;padding:24px 2px}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+.zchart-panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px 24px;box-shadow:var(--shadow-sm)}
+.zchart-asof{font-size:.86rem;color:var(--ink-faint);margin-bottom:14px;line-height:1.5}
+.zchart-grid{display:grid;grid-template-columns:1fr 300px;gap:22px;align-items:start}
+@media(max-width:820px){.zchart-grid{grid-template-columns:1fr}}
+.zrank-list{display:flex;flex-direction:column;border-left:1px solid var(--line);padding-left:18px}
+@media(max-width:820px){.zrank-list{border-left:none;border-top:1px solid var(--line);padding-left:0;padding-top:14px}}
+.zrank-row{display:grid;grid-template-columns:12px 1fr auto auto;align-items:center;gap:9px;padding:6px 0;border-top:1px dashed var(--line);font-size:.86rem}
+.zrank-row:first-of-type{border-top:none}
+.zrank-row.zrank-head{border-top:none;border-bottom:1px solid var(--line);padding-bottom:8px;margin-bottom:2px;
+  font-family:var(--mono);font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-faint);font-weight:700}
+.zrank-dot{width:10px;height:10px;border-radius:50%}
+.zrank-ticker{color:var(--ink);font-weight:600}
+.zrank-val{font-family:var(--mono);font-weight:700;font-size:.85rem;text-align:right}
+.zrank-val.pos{color:var(--buy)}
+.zrank-val.neg{color:var(--sell)}
+.zrank-alloc{font-family:var(--mono);font-weight:700;font-size:.85rem;text-align:right;color:var(--ink-soft);min-width:52px}
+.zchart-note{font-size:.85rem;color:var(--ink-faint);margin:16px 0 0}
+
+.date-groups{display:flex;flex-direction:column;gap:16px}
+.date-group{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px 24px;box-shadow:var(--shadow-sm);
+  transition:border-color .18s,box-shadow .18s}
+.date-group:hover{border-color:var(--line-strong);box-shadow:var(--shadow-md)}
+.date-group .dg-head{display:flex;align-items:baseline;flex-wrap:wrap;gap:10px 14px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.date-group .dg-date{font-family:var(--display);font-weight:600;font-size:1.25rem;color:var(--ink);border-bottom:1.5px solid var(--honey-soft)}
+.date-group .dg-date:hover{color:var(--honey-deep);border-color:var(--honey)}
+.date-group .dg-count{font-family:var(--mono);font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-faint)}
+.date-videos{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+.date-videos li{display:flex;flex-direction:column;gap:3px;font-size:.94rem}
+.date-videos .dv-row{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline}
+.date-videos .dv-channel{font-family:var(--mono);font-size:10px;letter-spacing:.04em;text-transform:uppercase;color:var(--honey-deep);
+  background:var(--honey-soft);border-radius:999px;padding:2px 9px;flex:0 0 auto}
+.date-videos .dv-title{color:var(--ink)}
+.date-videos .dv-summary{color:var(--ink-faint);font-size:.85rem;line-height:1.5;margin:0 0 0 2px}
+.date-videos a{color:var(--ink);border-bottom:1.5px solid var(--line-strong)}
+.date-videos a:hover{color:var(--honey-deep);border-color:var(--honey)}
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode" title="Toggle dark mode">
+  <span class="tt-sun">☀</span><span class="tt-moon">☾</span>
+</button>
+<script>function toggleTheme(){
+  var r = document.documentElement, next = r.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  r.setAttribute('data-theme', next); localStorage.setItem('theme', next);
+  var mc = document.querySelector('meta[name="theme-color"]'); if (mc) mc.content = next === 'dark' ? '#181512' : '#FBF6EC';
+}</script>
+<div class="wrap">
+  <header class="head">
+    <a class="back" href="../index.html">← All digests</a>
+    <span class="eyebrow"><span class="dot"></span>2026-09-10</span>
+    <h1>Daily Digest</h1>
+    <p>Executive read of today's finance &amp; investing videos, sorted by call.</p>
+    <div class="tickerbar">
+      <span class="tchip">로빈후드</span>
+<span class="tchip">스트래티지</span>
+<span class="tchip">비트마인</span>
+<span class="tchip">블룸에너지</span>
+<span class="tchip">인텔</span>
+<span class="tchip">비스트라</span>
+<span class="tchip">컨스텔레이션에너지</span>
+<span class="tchip">마이크론테크놀로지</span>
+<span class="tchip">TSMC</span>
+<span class="tchip">SK하이닉스</span>
+<span class="tchip">삼성전자</span>
+<span class="tchip">AMD</span>
+<span class="tchip">엔비디아</span>
+<span class="tchip">브로드컴</span>
+<span class="tchip">샌디스크</span>
+<span class="tchip">스카이웍스솔루션</span>
+<span class="tchip">마이크로칩테크놀로지</span>
+<span class="tchip">온세미컨덕터</span>
+<span class="tchip">퀄컴</span>
+<span class="tchip">아메텍</span>
+<span class="tchip">코닝</span>
+<span class="tchip">KLA</span>
+<span class="tchip">웨스턴디지털</span>
+<span class="tchip">시게이트</span>
+<span class="tchip">코어위브</span>
+<span class="tchip">메타</span>
+<span class="tchip">구글</span>
+<span class="tchip">알파벳</span>
+<span class="tchip">아마존</span>
+<span class="tchip">애플</span>
+<span class="tchip">마이크로소프트</span>
+<span class="tchip">델</span>
+<span class="tchip">아이온큐</span>
+<span class="tchip">리게티</span>
+<span class="tchip">디웨이브</span>
+<span class="tchip">컨티뉴엄</span>
+<span class="tchip">글로벌파운드리스</span>
+<span class="tchip">모나크퀀텀</span>
+<span class="tchip">JP모건</span>
+<span class="tchip">프리포트맥모란</span>
+<span class="tchip">오라클</span>
+<span class="tchip">팔란티어</span>
+<span class="tchip">테슬라</span>
+<span class="tchip">오픈AI</span>
+<span class="tchip">소프트뱅크</span>
+<span class="tchip">롤스로이스</span>
+<span class="tchip">RTX</span>
+<span class="tchip">노스롭그루먼</span>
+<span class="tchip">제너럴다이내믹스</span>
+<span class="tchip">익스팬드에너지</span>
+<span class="tchip">EQT</span>
+<span class="tchip">레인지리소시스</span>
+<span class="tchip">코어런트</span>
+<span class="tchip">우버</span>
+<span class="tchip">웨이모</span>
+<span class="tchip">앤트로픽</span>
+<span class="tchip">창신메모리</span>
+<span class="tchip">유니트리</span>
+<span class="tchip">양쯔메모리</span>
+<span class="tchip">마벨테크놀로지</span>
+    </div>
+  </header>
+
+  <section class="sec">
+    <div class="sec-h">Executive summary</div>
+    
+    <div class="panel buy">
+      <h3><span class="status buy">▲ Buy</span></h3>
+      <div class="pick">
+        <div class="ticker">블룸에너지</div>
+        <p class="rationale">데이터센터 전력 공급 대장주로 꼽히며 매수 의견이 제시됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">비스트라</div>
+        <p class="rationale">고점 대비 크게 조정된 저평가 전력주로 매수가 추천됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">컨스텔레이션에너지</div>
+        <p class="rationale">내부자 매수와 저평가를 근거로 매수 의견이 제시됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">마이크론테크놀로지</div>
+        <p class="rationale">메모리 슈퍼사이클 수혜와 기관 선호로 매수 의견이 제시됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">TSMC</div>
+        <p class="rationale">ASIC 수요 확대로 지속 성장할 선호 종목으로 매수 의견이 제시됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">SK하이닉스</div>
+        <p class="rationale">메모리 수요 확대와 저평가를 근거로 매수 의견이 제시됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">삼성전자</div>
+        <p class="rationale">메모리 수출 호조와 반도체 수요 확대 수혜주로 매수 의견이 제시됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">프리포트맥모란</div>
+        <p class="rationale">구리 가격 상승 수혜와 저평가를 근거로 매수 의견이 제시됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">스페이스X</div>
+        <p class="rationale">목표주가 220달러로 48% 상승 여력이 있다며 매수 추천됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">알파벳</div>
+        <p class="rationale">10년 보유 선호 M7 종목 1위로 긍정적으로 평가됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">메타</div>
+        <p class="rationale">뮤즈 흥행으로 주가가 급등하며 긍정적으로 평가됨.</p>
+      </div>
+    </div>
+
+    <div class="panel buyhold">
+      <h3><span class="status buyhold">◆ Buy / Hold</span></h3>
+      <div class="pick">
+        <div class="ticker">인텔</div>
+        <p class="rationale">정치인 매수와 규제완화 기대감으로 긍정적이나 불확실성이 남아있음.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">로빈후드</div>
+        <p class="rationale">암호화폐 신사업 확대 기대로 긍정적으로 언급됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">스트래티지</div>
+        <p class="rationale">비트코인 매집 재개로 긍정적으로 언급됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">비트마인</div>
+        <p class="rationale">이더리움 적극 매집 소식으로 긍정적으로 언급됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">샌디스크</div>
+        <p class="rationale">기술적 삼각수렴 돌파 패턴으로 반등 기대가 제시됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">오라클</div>
+        <p class="rationale">오픈AI향 대규모 컴퓨팅 계약으로 실적 기대가 제시됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">롤스로이스</div>
+        <p class="rationale">방산 수요 확대로 낙관적 전망이 제시됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">RTX</div>
+        <p class="rationale">방산 수요 확대로 낙관적 전망이 제시됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">노스롭그루먼</div>
+        <p class="rationale">방산 수요 확대로 낙관적 전망이 제시됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">제너럴다이내믹스</div>
+        <p class="rationale">방산 수요 확대로 낙관적 전망이 제시됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">익스팬드에너지</div>
+        <p class="rationale">전력 수요 증가에 따른 천연가스 수혜 기대가 제시됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">EQT</div>
+        <p class="rationale">전력 수요 증가에 따른 천연가스 수혜 기대가 제시됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">레인지리소시스</div>
+        <p class="rationale">전력 수요 증가에 따른 천연가스 수혜 기대가 제시됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">리게티</div>
+        <p class="rationale">정부와의 1억 달러 계약 체결로 긍정적 모멘텀이 부각됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">디웨이브</div>
+        <p class="rationale">정부와의 1억 달러 계약 체결로 긍정적 모멘텀이 부각됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">컨티뉴엄</div>
+        <p class="rationale">정부와의 1억 달러 계약 체결로 긍정적 모멘텀이 부각됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">코닝</div>
+        <p class="rationale">쌍바닥 패턴 형성으로 기술적 반등 조짐이 긍정적으로 평가됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">코어런트</div>
+        <p class="rationale">쌍바닥 패턴 형성으로 기술적 반등 조짐이 긍정적으로 평가됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">소프트뱅크</div>
+        <p class="rationale">오픈AI에 대규모 투자한 관련주로 긍정적으로 언급됨.</p>
+      </div>
+    </div>
+
+    <div class="panel hold">
+      <h3><span class="status hold">● Hold</span></h3>
+      <div class="pick">
+        <div class="ticker">엔비디아</div>
+        <p class="rationale">주요 지지선 돌파 여부를 지켜봐야 하는 관망 국면으로 평가됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">브로드컴</div>
+        <p class="rationale">지지선 이탈 여부에 따라 방향성이 갈리는 관망 대상으로 평가됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">아이온큐</div>
+        <p class="rationale">투자자데이에서 구체적 수치 부재로 실망 매물이 나와 관망세로 평가됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">아마존</div>
+        <p class="rationale">빅테크 중 상대적으로 부진하나 뚜렷한 매도 신호는 없어 관망세로 평가됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">애플</div>
+        <p class="rationale">신제품 기대감이 크지 않아 단기적으로 관망 대상으로 평가됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">테슬라</div>
+        <p class="rationale">로봇택시 기대감은 있으나 규제 승인 불확실성으로 관망이 필요하다고 평가됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">앤트로픽</div>
+        <p class="rationale">오픈AI와의 경쟁 심화로 목표 밸류에이션 달성이 불확실해 관망 대상으로 평가됨.</p>
+      </div>
+    </div>
+
+    <div class="panel holdsell">
+      <h3><span class="status holdsell">◇ Hold / Sell</span></h3>
+      <div class="pick">
+        <div class="ticker">스카이웍스솔루션</div>
+        <p class="rationale">펀드매니저 보유 비중이 가장 낮아 소외되고 있다고 평가됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">마이크로칩테크놀로지</div>
+        <p class="rationale">펀드매니저들의 비중 축소 대상으로 지목됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">온세미컨덕터</div>
+        <p class="rationale">펀드매니저들의 비중 축소 대상으로 지목됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">퀄컴</div>
+        <p class="rationale">펀드매니저들의 비중 축소 대상으로 지목됨.</p>
+      </div>
+    </div>
+
+    <div class="panel sell">
+      <h3><span class="status sell">▼ Sell</span></h3>
+      <p class="empty">No calls in this category today.</p>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="sec-h">Videos covered (29)</div>
+    
+    <details class="vcard" id="vid-0">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">somong</div>
+          <div class="title">조용히 미국에서 돈 빼기 시작한 주요국들, 거대한 자금 이동에 주목 받는 수혜주들</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        <p>지난 한 주간 주요국들이 미국에서 자산을 빼는 움직임이 두드러지며 투자자들의 관심을 끌었다. 먼저 금 관련 이슈로, 세계 12위권 금 보유국인 네덜란드 중앙은행이 미국 은행에 보관 중이던 금 중 약 30퍼센트인 86톤을 절반가량 런던으로 재배치했다. 네덜란드 중앙은행 총재는 지정학적 불안정성 때문에 위기 대응력을 높이고 거래 가능성을 개선하기 위해 올해 3월부터 8월까지 나눠서 이동했다고 공식 발표했다. 이미 프랑스는 올해 초까지 미국에 보관하던 금을 전량 회수했으며, 세계 2위 금 보유국인 독일도 전체 보유량의 약 37퍼센트를 미국에 보관 중인데 이를 회수해야 한다는 논의가 계속 제기되고 있다. 이러한 흐름의 배경에는 미국 재무부의 강력해지는 금융 제재가 있다. 미국은 8월 24일 이란에 대한 경제적 왕따, 추방 작전을 선언하며 이란뿐 아니라 이란을 돕는 국가의 은행까지 제재 대상으로 확대했다. 실제로 이집트의 2위 은행과 튀르키예 주요 은행이 이란과 거래했다는 이유로 미국 내 자산 동결과 거래 중단 조치를 당했다. 2022년 러시아우크라이나 전쟁 발발 직후 러시아 중앙은행과 주요 은행의 미국 내 자산이 즉시 동결된 사례가 이러한 불안감의 시발점이었다. 미국 재무장관은 G20에서도 이란을 돕는 국가에 대한 제재를 경고했고, 최근에는 이란에서 중국으로 향하는 원유 공급이 끊기고 있다는 그래프를 직접 공개하며 압박을 노골화했다. 이는 사실상 9월 시진핑 방문을 앞둔 중국에 대한 압박이라는 해석도 나온다. 이와 함께 트럼프 행정부는 실질적인 영토 확장 행보도 보이고 있다. 캐나다와 미국 접경의 온타리오 호수를 아메리카 호로, 멕시코만을 걸프 오브 아메리카로 공식 명칭을 변경했으며, 그린란드에 대해서도 계속 소유 의지를 밝히고 있어 유럽연합이 그린란드는 유럽 소유라며 3억 원 규모의 지원을 발표하는 등 외교적 긴장이 이어지고 있다. 캐나다를 미국의 51번째 주로 만들자는 발언도 반복되고 있다. 이러한 금융 제재와 영토 확장 움직임이 겹치면서 유럽 국가들은 미국 자산에 대한 의존도를 낮추려는 심리적 대비를 하고 있는 것으로 해석된다. 채권 시장에서도 비슷한 흐름이 나타난다. 세계 최대 국부펀드인 노르웨이 국부펀드는 최근 포트폴리오 조정안에서 미국 채권 비중을 34.1퍼센트에서 21.9퍼센트로 크게 낮추겠다고 밝혔으며, 공식적으로는 리밸런싱이라 설명하지만 실질적으로 미국채 축소로 해석된다. 유럽 최대 연기금을 운용하는 네덜란드도 최근 1년간 미국채 보유를 84퍼센트 줄인 것으로 나타났다. 현재 미국채를 가장 많이 보유한 국가는 일본이며, 중국은 이미 지속적으로 미국채를 매도하고 있다. 이처럼 미국채 매수 주체가 줄어드는 현상은 자산배분의 대가 레이 달리오가 경고해온 문제로, 매수자 감소는 미국 금리에 상승 압력을 가하는 부정적 신호로 평가된다. 이러한 달러 신뢰 약화와 재정 불안 우려 속에서 대안 자산으로 금과 암호화폐가 주목받고 있다. 미국 정부 역시 암호화폐 시장을 정책적으로 육성해 미국채 수요를 창출하려는 움직임을 보이고 있으며, 증권거래위원회 위원장은 관련 법안이 통과되지 않아도 자체 권한으로 규제 완화를 추진하겠다고 밝혔다. 이런 흐름 속에서 로빈후드는 암호화폐 거래와 예측 시장 등 신사업으로 주목받고 있고, 비트코인을 대량 보유한 스트래티지는 다시 매집을 시작했으며, 이더리움을 모으는 비트마인도 8월 말 공시를 통해 적극적인 매집 소식을 알렸다. 단기적으로는 9월 9일 재무부의 채권 바이백 확대에 따른 금리 안정과 유동성 기대, 9월 중순 예상되는 암호화폐 관련 법안 통과나 증권거래위원회의 규제 완화 발표가 금과 암호화폐 관련주에 호재로 작용할 수 있다. 아울러 최근 AI 인프라 관련 호재로 메모리와 반도체 업종의 반등 가능성도 함께 주목할 필요가 있으며, 전반적으로 금, 은, 암호화폐 관련주를 자산배분 관점에서 분산 투자하는 전략이 유효해 보인다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=GMpIu3c-kVc" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-1">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">somong</div>
+          <div class="title">피터 틸, 낸시 펠로시에 내부자까지 조용히 사모으기 시작? 강력한 힌트일까</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        <p>피터틸, 낸시 펠로시, 그리고 관련 업계 내부자들이 최근 공통적으로 전력 관련주를 매수한 사실이 확인되면서 시장에서 강력한 시그널로 주목받고 있다는 내용을 다룬다. 먼저 낸시 펠로시는 미국 정치권에서 뛰어난 주식 수익률로 주식의 여왕이라 불리는 인물로, 바이든 행정부 시절 하원 의장으로 권력 서열 3위까지 올랐던 경력을 가지고 있으며 정보력에 대한 의혹이 항상 제기되어 온 인물이다. 그녀는 8월 24일 공시를 통해 남편 명의 계좌로 전력 대장주인 블룸에너지와 인텔 두 종목을 매수한 것으로 확인되었다. 블룸에너지는 주식과 콜옵션에 절반씩 나누어 약 500만 달러, 한화로 약 670억 원 규모를 투자했으며 매수 시점이 정확히 저점 구간이었던 것으로 나타났다. 매수 이후 한 달도 되지 않아 블룸에너지가 S&amp;P500 지수에 편입된다는 소식이 나오면서 추가 상승 기대감이 커졌고, 이 때문에 미국 커뮤니티에서는 내부 정보를 알고 미리 매수한 것이 아니냐는 의혹이 다시 제기되고 있다. 블룸에너지는 데이터센터 옆에 90일 만에 설치 가능한 초고속 연료전지 전력 공급원으로 주목받으며 과거 테마주에서 대형 우량주 지수 편입 종목으로 성장한 사례로 소개된다. 인텔의 경우 고점 대비 약 40% 하락한 시점에 약 130만 달러, 약 15억 원 규모로 매수했으며, 스페이스X의 파운드리 위탁이나 트럼프 행정부의 규제 완화 등 추가 호재 기대감이 커뮤니티에서 확산되고 있다.</p><p>두 번째로 전력 발전 대장주로 꼽히는 비스트라와 컨스텔레이션 에너지의 CEO 및 이사 등 내부자들이 8월과 9월 사이에 잇따라 자사주를 매수한 사실이 소개된다. 비스트라는 2024년 S&amp;P500 전체 수익률 2위를 기록하며 데이터센터발 전력 수요 붐의 수혜주로 주목받았던 종목이나, 이후 전기요금 상한제 우려 등으로 최근 1년간 고점 대비 30% 이상 하락하며 소외되어 있었다. 그런데 최근 CEO의 3연속 매수 공시가 나오면서 추가 매수 가능성까지 점쳐지고 있다. 컨스텔레이션 에너지 역시 원전 기준 1위 발전사로 마이크로소프트와 20년 독점 계약을 맺는 등 2024년 91% 상승했던 주도주였으나 최근 고점 대비 30% 하락한 가운데 8월 11일 내부자 이사의 매수가 공시되었다. 발표자는 피터 린치의 내부자가 자사주를 사는 것보다 확실한 긍정 신호는 없다는 말을 인용하며, 다만 내부자 매수가 곧 저점을 의미하는 것은 아니라고 강조한다.</p><p>마지막으로 페이팔과 팔란티어 공동창업자이자 스페이스X, 페이스북, 앤트로픽 등에 초기 투자해 성공을 거둔 피터 틸이 소개된다. 그는 벤스 부통령과 데이비드 삭스를 요직에 앉힌 것으로 알려진 트럼프 행정부의 숨은 실세로 불리는 인물이다. 그의 공개 포트폴리오인 틸 매크로 펀드는 전체 자산의 일부에 불과하지만, 작년 말 모든 상장 주식을 매도했던 그가 올해 2분기에 다시 매수한 8개 종목 중 6~7개가 전력 및 에너지 관련주였으며 여기에 비스트라도 포함되어 있어 다시 한번 전력주 사이클에 대한 기대감을 키우고 있다.</p><p>발표자는 이러한 매수 흐름이 단순한 우연이 아니라 최근 G20 혁신 회의에서도 공통적으로 전력 부족 문제가 핵심 화두로 다뤄졌다는 점과 연결된다고 설명한다. 일론 머스크는 각국 정상들에게 전력에 투자하라고 반복적으로 강조했고, 앤트로픽 공동창업자도 전력과 인력 부족으로 데이터센터 건설에 어려움을 겪고 있다고 언급했다. 젠슨 황은 AI를 도로나 인터넷과 같은 경제 인프라로 표현했고 샘 알트만은 AI 도입이 선택이 아닌 필수라고 강조했으며, 미국 상무장관 역시 AI를 전 세계로 수출하겠다는 정책 의지를 밝혔다. 아울러 워런 버핏의 후계자인 버크셔 해서웨이 신임 CEO가 일본 출장에서 일본 5대 상사에 대한 장기 투자 매력을 긍정적으로 평가하면서, AI 투자를 승자 기업인 알파벳과 AI 인프라 확충이라는 투트랙으로 접근하고 있으며 그 인프라 투자의 핵심으로 전력의 기회를 언급했다고 전한다. 발표자는 전력 대장주로는 블룸에너지를, 상대적으로 소외된 저평가 종목으로는 비스트라와 컨스텔레이션 에너지를 꼽으며, 관련 종목들이 대체로 고점 대비 20에서 30% 가까이 동반 조정을 받은 상태라고 설명하고, 블룸에너지, 버티브, 비스트라, 컨스텔레이션 에너지 등이 포함된 전력주 테마 ETF도 함께 소개하며 참고할 만하다고 마무리한다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=dGLEg3d6wdw" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-2">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">Orlando Kim</div>
+          <div class="title">(관심종목) 왜 선수들은 이러한 반도체 주 들을 많이 담아가나?</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        <p>오렌지 킴 채널의 반도체 관심종목 영상 요약이다.</p><p>인공지능 수요 급증으로 메모리 칩 판매가 반도체 시장을 주도하고 있으며 공급 부족 쇼티지가 계속되고 있다. AI 인프라 투자 확대에 따라 메모리 반도체가 전체 반도체 매출의 절반 이상을 차지할 것으로 분석되며, 과거 20에서 30퍼센트 수준이던 매출 비중이 50에서 55퍼센트까지 상승했다. 디램과 낸드 플래시 가격의 급격한 상승세는 당분간 지속될 전망이다. 올해 전 세계 반도체 산업 매출은 1조 5천억 달러로 전망되며 이는 지난해의 두 배에 해당하는 수치로, 메모리가 이 매출 성장의 핵심 동력이다. 7월 글로벌 반도체 출하량과 평균판매단가 데이터를 보면 메모리가 전체 매출의 50에서 55퍼센트를 차지해 과거 대비 크게 늘었다. AI 데이터센터 중심으로 메모리 수요가 급증했지만 공급이 따라가지 못해 가격이 빠르게 오르고 있으며, 올해 3분기 디램 평균가격은 50퍼센트 상승하고 4분기에는 추가로 20퍼센트 오를 것으로 예상된다. 낸드 플래시는 상승폭이 더 커서 3분기 60퍼센트, 4분기 25퍼센트 추가 상승이 전망된다. 메모리를 제외하면 반도체 산업 전체의 가격 상승세는 더 완만했을 것이며, HBM과 데이터 저장용 낸드 수요 증가로 메모리의 높은 비중은 당분간 지속될 것으로 보인다.</p><p>노무라 자료에 따르면 2030년 글로벌 메모리 매출은 3조 7천억 달러에 달할 것으로 예상되며 이 중 약 83퍼센트가 데이터센터에서 발생할 것으로 보이는데, 이는 현재 대비 약 3.5배 증가한 수치다. 디램과 낸드 모두 영업이익과 영업이익률이 계속 상승 중이며 2016년에서 2018년 사이 영업이익률이 70에서 75퍼센트 이상 수준을 유지하고 있다.</p><p>골드만삭스는 2028년까지 디램, HBM, 낸드 공급이 안정세를 유지하기 어려울 것으로 보며, HBM 생산능력에 대한 압박은 2028년까지 지속될 수 있다고 밝혔다. 전체 디램 웨이퍼 생산량에서 HBM이 차지하는 비중은 2010년 19퍼센트에서 2028년 28퍼센트로 증가할 전망이며, GPU 및 관련 수요로 2027년 약 1억 9,600만 개의 HBM이 필요할 것으로 추산되지만 HBM4가 12하이 구조로 채택될 경우 공급량은 1억 5,200만 개에 그쳐 약 4,300만 개의 부족분이 발생할 수 있다. HBM 웨이퍼 생산능력은 2026년 41만 4천 개, 2027년 57만 9천 개, 2028년 73만 5천 개로 추산된다. HBM 기가바이트당 평균 가격은 2026년 1.5달러에서 2027년 3달러로, HBM4는 2.2달러에서 4.16달러로 상승할 것으로 예측되며 HBM 가격이 HBM4보다 약 20퍼센트 높은 프리미엄이 붙을 것으로 추정된다.</p><p>AI 병목현상과 관련해 낸드 시장 전망은 고객의 경제성에 달려있으며, 사용자 수, 사용 빈도, 사용 목적이라는 세 가지 요인이 플래시 메모리 수요를 계속 증가시킬 것으로 예상된다. 텍스트 중심이던 사용이 이미지, 애니메이션, 비디오로 확대되면서 데이터 양이 늘어나고 있고 생산능력 확충에는 시간이 걸린다. 클라우드 기업들은 AI 수익화를 위해 검색, 연산 처리 능력, 저장 공간에 대한 투자를 지속해야 한다.</p><p>UBS에 따르면 메모리 매출 감소로 7월 반도체 판매가 전월 대비 9.8퍼센트 감소했으며 메모리 매출은 16.3퍼센트 감소한 반면 메모리를 제외한 집적회로 판매는 0.9퍼센트 증가했다. 메모리 부문 감소는 출하량 감소가 주도했으며 디램과 낸드 판매 가격은 오히려 8.3에서 9.8퍼센트 상승했다. 3분기 DDR 가격은 전분기 대비 22퍼센트, 낸드 계약가격은 20퍼센트 상승이 예상되며 UBS는 디램과 낸드 모두 2027년까지 공급 부족이 지속될 것으로 전망한다. 반도체 업황 사이클은 초고성장 국면에서 보다 지속 가능한 확장 국면으로 이동 중이며, 로직 판매는 2.2퍼센트 증가한 370억 달러로 사상 최고치를 기록했다. UBS는 미국 시장에서 마이크론 테크놀로지를, 해외에서는 TSMC, SK하이닉스, 삼성전자를 선호 종목으로 꼽았다. 글로벌 반도체 매출은 2026년 1조 6,300억 달러로 2025년 대비 18퍼센트 증가할 것으로 예상되며 업황 상승 사이클은 적어도 2028년까지 이어질 것으로 전망된다. 성장률 자체는 2026년 중반 정점을 찍을 것으로 예상되지만 파운드리 가동률, 조립 장비 수요, 메모리 수익성 등의 선행지표는 장기 사이클을 계속 뒷받침하고 있다.</p><p>뱅크오브아메리카 자료에 따르면 미국 액티브 펀드매니저들의 반도체 업종 보유 비중에서 엔비디아와 브로드컴의 보유 폭이 가장 넓고 마이크론과 AMD의 보유 비중이 크게 늘어났다. 반도체 업종의 상대 비중은 1.25배로 소프트웨어 0.92배, IT 0.99배보다 높으며 이는 5월 1.08배에서 상승한 수치이자 2023년 4월 챗GPT 열풍 당시 고점인 1.18배에 근접한 수준이다. 엔비디아와 브로드컴은 S&amp;P500에서 가장 폭넓게 보유된 종목이며 AMD도 51퍼센트의 보유 비중을 기록했다. 반면 스카이웍스솔루션은 보유 비중이 3퍼센트로 가장 낮고 마이크로칩테크놀로지와 온세미컨덕터도 각각 6, 7퍼센트로 낮은 편이다. 펀드매니저들은 아메텍, 코닝, KLA, 웨스턴디지털 등에서 가장 큰 비중 확대 포지션을 취했고 스카이웍스, 온세미, 마이크로칩, 퀄컴은 비중 축소 대상이 되고 있다. 보유 비중 중 컴퓨팅 메모리와 반도체 장비 분야가 각각 74퍼센트, 43퍼센트로 집중되어 있으며 메모리는 전월 대비 612베이시스포인트 늘어 가장 큰 증가폭을 기록했고 반도체 장비도 324베이시스포인트 증가했다. 반면 소비자 부문은 121베이시스포인트 하락했다. 마이크론테크놀로지 보유 비중은 전월 대비 608베이시스포인트 증가한 50퍼센트로 네 번째로 많이 보유된 반도체주가 됐으며 AMD도 51퍼센트, 엔비디아 보유 비중은 82퍼센트로 상승했다. 샌디스크 보유 비중도 897베이시스포인트 급증해 24퍼센트를 기록했다. 인텔은 보유 비중이 전월 대비 205베이시스포인트 늘어난 21퍼센트가 됐지만 시가총액 기준 5위임에도 보유 순위는 19위에 그쳤다. 엔비디아와 브로드컴은 스팩 및 신규 자금 조달에서 가장 많이 매도된 반도체 종목이기도 했지만 전반적으로 가장 급등세를 보이는 것은 메모리 관련주다.</p><p>골드만삭스는 메모리 반도체주가 여름철 조정 국면에서 벗어나 반등 조짐을 보이고 있다고 밝혔다. 마이크론테크놀로지, 샌디스크, 아이셰어스 MSCI 사우스코리아 ETF인 EWY, 라운드힐 메모리 ETF인 디램 등이 유사한 기술적 패턴을 보이며 여름철 조정에서 벗어나기 시작했지만 아직 초기 단계다. 이러한 상향 돌파는 투자자 포지셔닝이 가벼워지고 내재변동성이 낮아진 가운데 나타나고 있다. 골드만삭스 프라임브로커리지 데이터에 따르면 미국 펀더멘털 롱숏 헤지펀드의 총 레버리지는 지난 1년 기준 하위 27퍼센타일, 순 레버리지는 하위 4퍼센타일 수준으로 매우 가볍다. CBOE 반도체 ETF 변동성지수로 측정한 내재변동성은 7월 65에서 36으로 거의 반토막이 나며 2010년대 초 수준에 가까워졌다. 골드만삭스의 기술주 롱숏 모멘텀 팩터는 올해 7퍼센트 반등했음에도 6월 말 고점 대비 50퍼센트 낙폭을 유지하고 있어 뚜렷한 약세 편향은 아직 형성되지 않았다.</p><p>한국 증시와 관련해 골드만삭스는 최근 자금 유입이 전적으로 기업들의 자사주 매입에 의해 뒷받침되고 있으며 나머지 투자자들은 순매도 상태였다고 밝혔다. 이는 향후 개인 매도가 마무리되면 폭넓은 투자자 참여가 유입될 여지가 있음을 시사한다. 마이크론테크놀로지 차트는 삼각수렴 패턴을 보이다 상방으로 돌파하는 모습을 나타냈고 샌디스크와 EWY 역시 동일한 삼각수렴 후 상방 돌파 패턴을 보이고 있어 추가 상승 가능성이 높은 것으로 해석된다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=uCtdu5Yq80c" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-3">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">Orlando Kim</div>
+          <div class="title">(시황분석) 금리와 유가를 이기는 반도체에 집중하자!!!</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        <p>오늘 미국 증시는 대부분 하락 마감했다. S&amp;P500, 나스닥, 다우가 모두 내렸고 러셀2000은 1.36% 하락하며 낙폭이 가장 컸다. 10년물 국채금리가 4.8%를 넘어 최고치를 경신했고, 브렌트유는 2.16% 상승한 101.53달러로 100달러를 완전히 돌파하며 직전 고점 수준까지 올라왔다. 후티 반군의 홍해 장악 시도와 미국-이란 갈등 등 두 곳에서 전쟁 리스크가 이어지며 유가 상승을 부추기고 있고, 이로 인해 금리도 동반 상승하고 있다. 30년물 금리도 5.29%를 돌파했다. 재무부가 10년~20년 만기 국채를 최대 60억 달러까지만 매입하겠다고 발표하면서 시장 기대치인 100억 달러에 못 미치자 국채 매도세가 강해지며 수익률이 급등했고, 이는 증시와 채권이 동반 하락한 배경이 됐다. 베센트 재무장관은 이번 조치가 채권시장의 과열을 진정시키기 위한 것이라며 균형 회복을 시도했지만 뜻대로 되지 않았다고 언급했다. 채권시장 매도세의 배경으로는 유가 급등에 따른 인플레이션 우려, AI 인프라 구축을 위한 기업들의 대규모 부채 조달 불안, 미국 국가부채 증가 우려 등이 복합적으로 작용하고 있다. CME 페드워치에 따르면 9월 16일 연준의 금리 인상 확률이 60%로 높아졌으며, 이번 주 발표되는 PPI와 CPI 지표가 향후 금리 경로에 중요한 변수가 될 전망이다.</p><p>이런 거시 환경 악화에도 불구하고 반도체 지수는 상승세를 이어가고 있다. 마이크론, AMD, 인텔, 마벨테크놀로지, 샌디스크 등 메모리와 CPU 관련 종목들이 강세를 보였으며, 이는 AI 인프라 확장에 대한 기대와 실적 개선이 뒷받침하고 있기 때문으로 분석된다. 메타는 개인용 AI 에이전트 뮤즈를 발표하며 6.5% 급등했고, 구글도 2.28% 상승한 반면 아마존, 엔비디아, 애플 등 다른 빅테크는 대체로 부진했다. 애플은 가격 인상 우려로 신제품 기대감이 크지 않았다. 마이클 버리는 엔비디아와 코어위브 등의 장기 AI 계약 체결로 구형 반도체 가치가 예상보다 천천히 하락하고 있다며 공매도 포지션을 일부 청산하고 있다고 밝혔다.</p><p>기술주는 여름 동안 힘든 시기를 보냈지만 9월 들어 연준 금리 결정, 트럼프-시진핑 회담, 애플 신제품 발표 등 굵직한 이벤트를 지나며 반등 기대가 커지고 있다. 특히 QQQ, SMH, M7과 달리 사이버보안, 소프트웨어, 메모리 관련주가 여름 동안 크게 상승했으며, 투자를 놓쳤던 투자자들의 매수세 유입(캐치업 트레이드)이 예상된다. 러셀2000 등 소형주는 강한 이익 성장세를 바탕으로 대형주를 능가하는 성과를 내고 있으며, 금리 인하 시 주택 관련주와 리모델링 수요 확대가 기대된다. 모건스탠리는 금과 비트코인 등으로 포트폴리오를 분산할 것을 권고했고 구리 등 원자재에도 상승 여력이 있다고 밝혔다. 초고액 자산가 대상 설문에서는 10년 보유 M7 종목으로 알파벳(42%), 아마존(21%), 엔비디아(13%), 애플(10%) 순으로 선호도가 높았다. 전력 수요 증가에 따라 전력 생산 관련주(익스팬드에너지, EQT, 레인지리소시스 등)와 천연가스 관련주에도 관심이 필요하다는 의견이 나왔고, 방산주(롤스로이스, RTX, 노스롭그루먼, 제너럴다이내믹스)에 대한 낙관적 전망도 제시됐다.</p><p>HSBC는 한국 메모리 반도체, 대만 반도체, 중국 본토 반도체 장비 및 전력 인프라 분야가 밸류에이션 대비 수요가 강한 유망 투자처라고 평가했다. 한국 메모리 업체들은 주가 조정을 겪었지만 펀더멘털이 견고하고 주주환원도 개선되고 있다고 밝혔으며, TSMC를 비롯한 대만 반도체는 GPU를 넘어 맞춤형 ASIC 수요 확대로 지속 성장할 것으로 전망했다. 차트 분석상 XLK 기술주 섹터는 하락 추세선을 돌파하며 상승 전환 가능성이 커지고 있고, 소프트웨어 대비 반도체 비율은 과거 조정 국면과 유사한 수준까지 하락한 뒤 반등 조짐을 보이고 있다. 샌디스크와 디램 관련 ETF는 쌍바닥 패턴을 형성하며 저점을 높여가고 있어 추가 상승 여력이 있다는 분석이다.</p><p>애플은 이번 주 수요일 신제품 발표에서 폴더블 아이폰을 공개할 것으로 예상되지만, 과거 사례를 보면 신제품 발표 직후 단기적으로는 주가가 하락하는 경향(뉴스에 팔기)이 있었고 장기적으로는(60일 이후) 상승세를 보인 경우가 많았다. 메모리 가격 상승과 첨단 공정 공급 제약으로 폴더블 아이폰 가격은 2000~2500달러 수준으로 예상되며, HSBC는 마진 유지를 위해 최소 100달러 이상의 가격 인상이 필요하다고 분석했다. 스페이스X는 하락 추세를 벗어나 쌍바닥을 형성하며 195달러까지 상승 여력이 있다는 전망이 나왔고, 과거 애플의 40여년간 장기 수익률 사례를 들어 장기 투자의 중요성이 강조됐다.</p><p>구리 관련해서는 AI와 데이터센터, 전력망 확장에 따른 수요 증가로 구리 가격이 사상 최고치를 경신하고 있으며, 신규 광산 개발에 최대 10년이 걸려 공급 부족이 지속될 것으로 전망된다. 구리 생산업체 프리포트맥모란은 구리 가격 상승의 수혜를 직접적으로 받을 수 있는 기업으로, 2027년 예상 실적 기준 PER이 19배로 10년 평균 대비 저평가돼 있으며 인도네시아 그라스버그 광산의 생산 재개가 주요 촉매로 꼽히고 있다. 전반적으로 금리와 유가 상승이라는 거시적 역풍 속에서도 반도체를 중심으로 한 AI 관련 인프라 섹터가 시장을 주도하고 있으며, 이 흐름을 이길 수 있는 강한 섹터에 집중 투자하는 전략이 필요하다는 결론이다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=Ts_1_zNQt6Q" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-4">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">Orlando Kim</div>
+          <div class="title">(아이온큐) 8%이상 상승 후 하락한 이유는?</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        <p>아이온큐 관련 종목이 오늘 인베스트데이 발표 이후 8퍼센트 이상 상승했다가 다시 하락하는 흐름을 보였다. 같은 날 양자 관련주인 리게티, 디웨이브, 컨티뉴엄이 미국 정부와 각각 1억 달러 규모의 계약을 체결했다는 소식으로 함께 상승했다. 리게티는 초전도 양자 연구개발 가속을 위해 칩스법 자금을 받아 극저온 처리 용량 확대와 고유결성 칩 아키텍처 개발 등 세 가지 프로젝트에 투입할 예정이며, 대표는 상업적으로 실행 가능한 양자컴퓨팅을 위한 로드맵 가속을 자랑스럽게 생각한다고 밝혔다. 디웨이브 역시 칩스법을 통해 1억 달러를 지원받아 초전도 어닐링과 게이트모델 기술 개발에 사용하며, 정부에 감사를 표하면서 미국의 양자 리더십 확보에는 획기적 연구뿐 아니라 기술을 확장하고 상용화 제조할 수 있는 능력이 필요하다는 점을 강조했다. 컨티뉴엄도 칩스법 자금을 핵심 연구개발과 미국 내 양자 반도체 제조 지원에 사용할 계획이며, 차세대 이온트랩과 제어 전자장치 제조를 위해 파운드리 업체 글로벌파운드리스, 레이저 및 광학 부품 개발을 위해 모나크퀀텀과 협력하고 있다. 세 회사 모두 자금 지원 조건으로 정부가 소수 지분을 받게 되며, 공통적으로 강조되는 핵심은 제조 능력이라는 점이다.</p><p>아이온큐는 스카이워커 테크놀로지 인수를 완료하면서 재무 가이던스를 상향 조정하고 투자자데이에서 다수의 발표를 내놓아 시장의 주목을 받았다. 스카이워커 매출을 포함한 올해 매출은 4억5천만에서 4억6천만 달러로 예상되는데, 이는 시장이 기대했던 5억 달러 이상보다 낮은 수치였다. 최고재무책임자는 통합 조직으로서 처음 발표한 공동 가이던스가 양사 결합의 재무 및 운영상 강점을 보여주는 중요한 단계라고 언급했으나, 실제 시너지 효과는 시간을 두고 지켜봐야 하는 상황이다. 아이온큐는 쇼어 알고리즘 실행을 위한 최초의 완전한 엔드투엔드 오류 내성 자원 추정치를 공개했고, 트랩 이온 양자컴퓨터에 특화된 애플리케이션 구현 방안을 제시하는 연구 논문도 발표했다. 또한 6세대 양자 플랫폼인 아이온큐 스페리온256을 공개했는데, 이는 스카이워커에서 처음 제조된 칩으로 제조 속도 향상을 보여주며 현재 주문을 받고 있고 고객 인도는 내년부터 시작될 예정이다.</p><p>투자자데이 발표 내용을 보면 아이온큐는 1995년부터 2018년까지 개척자 단계를 지나 수직 통합을 이루며 매출이 원밀리언 수준에서 2020년 3억 달러 수준까지 성장했다. 2015년부터 2020년 사이 매출은 약 5배 증가했고, 연간 성장률도 크게 개선되는 추세를 보이고 있다. 기술적으로는 데이터 처리 속도가 이전보다 약 4배 빨라졌고, 스카이워커 파운드리를 통해 스페리온256 칩이 계속 생산되고 있으며 양자 오류율도 약 9배 개선되었다. 다르파와의 협력을 통해 세 개의 주요 프로그램이 진행 중이고, 퀀텀메드 프로그램을 통해 최고 논문상을 네 차례 수상했다.</p><p>보안 관련해서는 현재 암호화 기술이 두 가지 위험에 노출되어 있다고 설명했다. 첫째는 양자컴퓨터 발전으로 RSA2048과 같은 대표적 암호체계가 10년 안에 깨질 수 있다는 것이고, 둘째는 포스트 양자 알고리즘조차 기존의 고전 AI에 의해 취약점이 발견되고 있다는 것이다. 이에 대한 대응으로 양자를 방패로 사용하는 방식이 필요하다고 강조했다. 아이온큐는 실시간 위험 감지 체계, 차세대 양자 암호인 PQC, 그리고 QKD를 결합해 다중으로 빈틈없는 방어체계를 구축하겠다는 보안 프로그램을 설명했다. 정부가 자금을 지원하며 양자 산업을 키우는 근본적인 이유도 현재의 암호체계가 뚫리면 금융 시스템 전체가 위험해질 수 있다는 우려 때문이라는 점이 강조됐다. JP모건 역시 양자 분야에 관심을 갖고 있으나 시간이 걸릴 것으로 보고 있다는 내용도 소개됐다. 아이온큐는 2만 개의 물리 큐비트를 활용해 기존 256비트 타원곡선 암호 키를 26일 만에 해독할 수 있는 성능을 시뮬레이션으로 증명했다고 밝혔다.</p><p>스카이워커의 수직 계열화 효과로 연간 학습 주기가 100회 이상으로 늘어났고, 칩 생산 주기는 9개월에서 2개월로 단축되었으며, 큐비트당 생산 비용은 330배 절감되었다. 아이온큐는 스카이워커와 협력해 미네소타, 플로리다, 텍사스 등의 시설을 결합함으로써 세계에서 유일하게 신뢰할 수 있는 미국 기반의 안전한 양자 반도체 생산 기지를 구축하겠다는 계획을 밝혔다. 이를 통해 빠른 개발 속도, 고객 맞춤형 유연성, 축적된 양자 전문성을 앞세워 시장 수요에 대응하겠다는 전략이다.</p><p>시장 규모 전망과 관련해서는 2040년 기준으로 양자컴퓨팅 시장이 약 1480억 달러, 양자 네트워킹과 사이버보안 시장이 약 360억 달러, 센싱 시장이 약 310억 달러 규모로 성장할 것으로 예상된다고 밝혔다. 아이온큐의 매출은 2015년 이후 크게 증가해왔고 스카이워커 매출까지 더해지면서 전체 매출 성장이 가속화될 것으로 설명됐다. 실제 계산으로 보면 아이온큐의 자체 매출 가이던스는 2억8천만에서 2억9천만 달러 수준이며, 스카이워커의 8월부터 12월까지 순수 매출 약 240만 달러와 내부거래 조정분 약 70만 달러를 반영하면 통합 매출은 약 4억5천만에서 4억6천만 달러 수준으로 산출된다.</p><p>아이온큐는 2023년 이후 네트워킹, 컴퓨팅, 메모리 순으로 시장을 확장해나가는 로드맵을 그리고 있으며, 2015년에는 템포, 6세대 제품은 슈퍼히리온 클라우드로 발전해가고 있다고 설명했다. 키스킷, 펜닐레인, 엔비디아 쿠다퀀텀 등 다양한 양자 프로그래밍 프레임워크가 널리 사용되고 있으며, 고객은 퍼블릭 클라우드, 프라이빗 데이터센터, 보안과 국가 기밀을 완벽히 통제할 수 있는 주권형 플랫폼 등 세 가지 방식 중에서 배치 환경을 선택할 수 있다고 밝혔다.</p><p>양자컴퓨터의 활용 사례로는 분자 시뮬레이션 분야에서 고전 컴퓨터로 연간 약 3억 달러가 소요되는 문제를 양자컴퓨터로는 하루에서 일주일 정도면 해결할 수 있다는 점이 소개됐다. 다만 이를 위해서는 논리 큐비트 1300개에서 5000개, 그리고 4억에서 10억 개 이상의 톨플리게이트 연산이 필요한 것으로 설명되어 아직 쉬운 과제는 아니라는 점도 언급됐다. 이 같은 이점 덕분에 신약 개발과 신소재 연구 분야의 연구개발 비용을 대폭 절감할 수 있다는 설명이 이어졌다. 금융, 통신, 헬스케어, 산업, 에너지, 소재 등 거의 모든 산업 분야에서 양자 기술과 관련된 활동에 참여하는 기업 비율이 높아지고 있으며 특허 보유 기업과 벤처 투자도 활발하게 이뤄지고 있다고 설명했다. 구체적인 활용 사례로는 기존 방식보다 20배 빠른 신약 개발 및 화학반응 시뮬레이션에 엔비디아와 AWS가 참여하고 있다는 점, 아미노산 12개로 구성된 단백질 구조의 복잡한 분자 모델을 성공적으로 시뮬레이션해 단백질 접힘 연구에 돌파구를 마련한 사례, 제약 생산과 공급망 관리 및 물류 최적화에 양자 기술이 활용되는 사례, 그리고 양자와 머신러닝 및 AI 기술을 결합해 MRI나 fMRI 같은 의료 영상에서 희귀 이벤트를 정확히 식별하는 사례 등이 소개됐다.</p><p>전체적으로 이번 투자자데이에서는 적자 축소 시점이나 흑자 전환 시기 등 구체적인 수치 제시는 없었고 매출과 관련된 부분적인 숫자만 공개되어 시장에서 다소 실망 매물이 나온 것으로 보인다. 이로 인해 주가는 장중 크게 올랐다가 다시 하락하는 모습을 보였다. 전반적으로 시장은 고점과 고점이 낮아지고 저점과 저점이 높아지는 형태로 방향성을 탐색하는 관망세를 이어가고 있으며 좀 더 지켜봐야 하는 국면으로 평가된다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=5LBf0v-K1zk" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-5">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">Orlando Kim</div>
+          <div class="title">(시황분석) 유가가 결국 시장을 망치나?</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        <p>9월 10일 미국 증시는 유가 급등의 영향으로 전반적으로 하락 마감했다. S&amp;P500이 0.58%, 나스닥이 0.32%, 다우가 1.18%, 러셀이 0.45% 하락했으며 장 막판으로 갈수록 낙폭이 커졌다. 하락의 주된 원인은 유가 상승으로 인한 금리 상승 우려, 즉 인플레이션 압력이었다. 브렌트유는 1.83% 상승하며 99달러까지 올라 100달러 돌파 가능성이 제기되었고, 직전 고점인 101달러를 넘어설 경우 시장에 상당한 부담이 될 것으로 전망된다. 이란과의 협상이 타결되지 않고 있는 점도 유가 상승 배경으로 지목됐다. WTI 원유는 3.13% 상승한 94달러로 직전 고점을 돌파했다. 10년물 금리는 0.17% 상승했고 30년물 금리는 5.24%를 기록했으며, 유가가 계속 오르면 금리도 동반 상승해 시장에 부담을 줄 것으로 보인다.</p><p>업종별로는 11개 섹터 중 에너지, 유틸리티, 산업재, 기술, 기초소재 등 5개 섹터가 상승했고 헬스케어, 금융, 소비재 등 6개 섹터는 하락했다. 반도체 장비, AMD, 인텔, 델 등 CPU 관련주와 웨스턴디지털, 시게이트 등은 상승한 반면 마이크론은 하락하는 등 반도체 내에서도 종목별로 엇갈린 흐름을 보였다. 브로드컴은 상승했고 오라클도 반등했으나 팔란티어 등 소프트웨어주는 하락했다. 빅테크는 테슬라(3.98% 상승)를 제외하고 메타, 아마존, 구글, 엔비디아(2% 이상 하락), 마이크로소프트, 애플이 모두 하락했다. 다우 지수는 유가와 연관된 종목 비중이 커서 낙폭이 특히 컸다.</p><p>S&amp;P500과 나스닥 지수는 고점이 세 차례 낮아지며 박스권에 갇힌 모습이다. 유가가 안정되지 않는 한 박스권 상단 돌파는 어려울 것으로 보이나, 급락 가능성보다는 시간과 기간 조정이 이어질 가능성이 높다. 달러엔 환율은 154엔까지 하락했고 달러 지수는 98.85로 소폭 하락했다. 이는 미국이 자국 국채 안정을 위해 달러 약세를 유도하는 것으로 해석된다. 비트코인과 금은 각각 0.96%, 0.53% 하락했는데, 이는 10년물 금리 상승의 영향으로 분석된다. 반도체 지수(SOX)는 유가 상승과 금리 민감도로 인해 상승 탄력을 받지 못하는 모습이다.</p><p>이번 주 시장은 목요일 생산자물가지수(PPI)와 금요일 소비자물가지수(CPI) 발표에 주목하고 있으며, 연준의 0.5%포인트 금리 인상 확률은 58%로 나타났다. 모건스탠리의 마이크 윌슨은 시장 주도권이 AI 기술 도입 지원 기업에서 실제 AI 기술을 도입하는 중견 기업으로 이동할 가능성이 있으며, 소프트웨어, 금융서비스, 보험 업종이 그 수혜를 받을 것으로 전망했다. HSBC는 S&amp;P500 목표주가를 7650에서 8100으로 상향 조정했는데, 이는 연초 대비 8% 상승, 금요일 종가 대비 5% 상승을 의미한다. 근거는 기업 실적 호조로, 2026년 상반기 주당순이익 증가율이 40%, 하반기에는 25%에 달할 것으로 예상된다. 다만 9월 계절적 약세, 인플레이션, 규제 이슈 등이 변동성 요인으로 지목됐다. 야데니는 연말까지 유가 상승, 금리·채권수익률 상승, 중간선거라는 세 가지 장애물을 극복하면 추가 상승이 가능하다고 보았으며, 연말 목표치를 2만8400으로 제시해 약 9%의 상승 여력이 있다고 밝혔다. CNBC 설문 전략가들의 S&amp;P500 목표치 중간값은 8000선이다. 중간선거에서 민주당이 상하원을 모두 차지할 경우 11월 말 일시적 하락 후 반등할 가능성이 언급됐다.</p><p>오픈AI의 신모델 아스트라 출시가 반도체 및 관련주 전반에 강세를 이끌었다. 아스트라는 이전 모델 대비 성능이 향상되고 비용 효율성이 크게 개선되어 경쟁사 앤트로픽의 모델과 유사한 성능을 절반 이하 비용으로 제공한다고 알려졌다. 이에 따라 소프트뱅크(오픈AI에 640억 달러 이상 투자), 오라클, 마이크로소프트, 코어위브, 브로드컴, 엔비디아, AMD 등 오픈AI 관련 기업들의 주가가 동반 상승했다. 특히 메모리 수요 증가로 마이크론, SK하이닉스, 삼성전자가 수혜를 받을 것으로 전망됐다. 오라클은 오픈AI와 5년간 3000억 달러 규모의 컴퓨팅 파워 구매 계약을 맺고 있어 오픈AI의 성공에 사업 전망이 크게 연동되어 있으며, 목요일 실적 발표에서 클라우드 매출 성장과 자본지출 규모가 주목받을 예정이다.</p><p>기술적으로 코닝과 코어런트 등 광학 관련주는 쌍바닥 패턴을 형성하며 반등 조짐을 보이고 있다. 코어런트는 350달러, 코닝은 10주선 돌파 여부가 관건이다. 엔비디아는 235달러, 브로드컴은 350달러 지지선이 시장 방향성을 가늠할 주요 관전 포인트로 제시됐다. 엔비디아가 235달러를 돌파하지 못하면 220~230달러 박스권에 머물 가능성이 있고, 브로드컴이 350달러 지지선을 이탈하면 320~325달러까지 밀릴 수 있어 전체 시장에 부담이 될 수 있다. 피보탈 리서치는 스페이스X에 대해 목표주가 220달러, 48% 상승 여력을 제시하며 매수 추천했는데, 핵심은 스타십의 재사용 성공 여부로, 이것이 해결되면 비용 절감과 스타링크 확장, 궤도 데이터센터 구축 등에서 독점적 지위를 확보할 수 있다고 분석했다. 전반적으로 이번 주 시장은 유가 흐름과 인플레이션 지표, 오픈AI발 반도체 모멘텀이 방향성을 좌우할 것으로 예상된다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=sJqINTxYQFA" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-6">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">The Rich (김단테)</div>
+          <div class="title">코스피 죽었다 살아난 이유 #코스피 #하이닉스 #TSMC</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        <p>코스피가 오늘 장중 크게 흔들렸지만 다시 회복한 배경을 설명하는 내용이다. 오늘은 이른바 네마녀의 날로 각종 선물과 옵션의 만기일이자 ETF 리밸런싱이 이루어지는 날이라 변동성이 커질 수밖에 없는 날이었다. 특히 ETF 리밸런싱 과정에서는 비중이 높은 종목을 팔고 비중이 낮은 종목을 사들이는 흐름이 나타나는데, 삼성전자와 SK하이닉스의 비중이 매우 높아 대기 매도 물량이 많았다. 이 매도 물량이 장 초반에 쏟아지면서 삼성전자와 하이닉스를 중심으로 코스피가 크게 하락했다. 그러나 코스피가 일정 수준 이상 떨어지자 매도 물량이 대부분 소진된 것으로 판단한 투자자들이 저가 매수에 나서면서 시장이 반등하기 시작했다. 이런 흐름 속에서 파운드리 업계의 강자인 TSMC가 월간 매출을 발표했는데, 전년 대비 53퍼센트 증가라는 서프라이즈 실적을 보여주었다. 이는 TSMC의 실적이 좋다는 것을 넘어 AI 반도체 수요에 여전히 이상이 없다는 신호로 해석되며 코스피 회복에 결정적인 힘을 더했다. 다만 오늘 특이했던 점은 전날 미국 증시에서 거래된 SK하이닉스 ADR이 신고가를 기록했음에도 그 상승 효과가 국내 본주에는 반영되지 않았다는 것이다. 그 결과 ADR과 본주 간의 괴리율이 40퍼센트를 넘는 수준까지 벌어졌는데, 통상 ADR 상장 이후 평균 괴리율은 34퍼센트 정도라고 알려져 있다. 따라서 앞으로 이 괴리율이 다시 좁혀질 가능성이 있을 것으로 기대해볼 수 있는 상황이다.</p>
+        <a class="watch" href="https://www.youtube.com/shorts/AR89XGntILc" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-7">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">The Rich (김단테)</div>
+          <div class="title">지상 최고의 AI Agent 나왔다</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        <p>오픈AI의 GPT-6급 신모델 아스트라와 메타의 신규 개인 에이전트 뮤즈가 동시에 화제가 된 하루의 시장 흐름을 정리한 영상이다. 나스닥은 0.63퍼센트 하락했고 주요 지수도 대부분 내렸는데, 미국과 이란의 갈등이 계속되며 브렌트유가 100달러를 다시 넘어섰다. 골드만삭스는 선박 공격이 격화되면 브렌트유가 120달러까지 갈 수 있다고 경고했지만 기본 시나리오는 여전히 우회로를 통한 수출 회복이라고 본다. 재무부 장관 베센트가 국채 바이백 규모를 기존의 세 배인 최대 60억 달러로 늘렸지만 시장이 기대했던 70에서 80억 달러에 못 미쳐 실망하면서 미국 10년물 금리가 52주 신고가를 기록했고, 물가와 금리 상승이 증시에 부담을 주고 있다. 오늘 히트맵에서는 에너지주와 반도체주가 강세를 보였는데, 이는 아스트라 열풍으로 인한 AI 케펙스 확대 기대감 때문이다.</p><p>오늘의 주인공은 메타와 알파벳이다. 알파벳은 2퍼센트 넘게 하락했고 메타는 6퍼센트 가까이 상승했는데, 그 이유는 메타가 새로 출시한 개인형 AI 에이전트 뮤즈의 초기 사용량이 예상을 열 배 초과했기 때문이다. 뮤즈는 현재 미국 앱스토어 4위에 올라 있으며, 사용자에 대한 모든 정보를 기억하는 개인 비서 역할을 한다. 아침 일정 안내, 영화 예매, 항공권 가격 모니터링 후 알림, 미수령 수표 찾기 등 실제로 일을 대신 처리해주는 기능을 갖췄다. 이런 기능이 가능한 이유는 사용자마다 24시간 365일 가동되는 전용 가상 머신이 뒷단에 있어서 핸드폰을 꺼도 계속 작동하기 때문이며, 스트라이프 결제 서비스와 연동되어 결제까지 대리 수행한다. 또한 밤에도 사용자 정보를 바탕으로 스스로 학습하고 선제적으로 제안을 하는데, 예로 저커버그가 딸과 문명 게임을 한 것을 인지하고 게임 가이드와 역사 공부 콘텐츠를 스스로 만들어 제안한 사례가 소개됐다.</p><p>업계에서는 이를 일반인용 오픈인터프리터로 부르는데, 기존에는 맥 컴퓨터를 직접 구입해야 했던 개인 에이전트를 메타가 클라우드에서 무료로 대량 제공한 것이 파격적이다. 일론 머스크의 그록봇도 유사한 기능을 먼저 선보였지만 월 300달러의 고가 요금제가 필요했던 반면, 메타는 주당 최대 1억 토큰까지 무료로 풀었고 그 이상은 파워 요금제와 맥시멈 요금제로 과금할 계획이다. 이는 메타가 풍부한 컴퓨팅 파워와 저렴한 자체 모델을 보유하고 있어 가능했던 전략으로 분석된다. 광고 모델은 아직 없으며, 저커버그는 뮤즈가 사용자의 돈을 벌어주고 아껴줄 것이라는 수익 논리를 제시했다. 당근마켓 흥정 대행처럼 비용을 절감해주는 기능뿐 아니라 에이전트가 대신 수행하는 거래에서 소액 수수료를 받는 방식도 언급되며, 이는 커머스가 뮤즈의 실질적인 사업 모델이 될 수 있음을 시사한다. 나아가 소상공인을 위한 비즈니스 에이전트도 베타로 운영 중인데, 인스타그램 등에서 고객 문의와 예약, 판매 응대를 대신 처리해 인건비를 대체하는 시장으로 확장하려 하고 있다. 전 세계 광고 시장이 연 1조 달러, 광고와 관련된 커뮤니케이션 시장은 그보다 세 배 큰 규모로 추정되는데, 메타가 이 시장까지 노리고 있다는 해석이다. 다만 메타에 대한 소비자 신뢰가 높지 않아 개인정보와 결제 정보를 맡기는 것에 대한 우려도 존재하며, 메타는 시그널 창업자를 영입해 보안을 강조하고 있다. 모건스탠리 등 투자은행들은 소비자 에이전트 시장까지 포함하면 전체 시장 규모가 30조 달러에 이를 수 있다고 긍정적으로 평가하면서도 실제 사용량과 수익화 여부를 지켜봐야 한다는 단서를 달았다.</p><p>오픈AI 관련해서는 아스트라에 대한 수요가 폭발적이어서 오픈AI 직원이 신규 프로 구독을 일시 중단해야 할 수도 있다고 언급할 정도로 화제라는 소식이 전해졌다. 90년간 미해결이던 나비에-스토크스 방정식을 아스트라의 다음 세대 모델이 풀었다는 소식도 있었다. 오픈AI 직원은 과거 O3 모델이 아크 AGI 1 테스트에서 87.5퍼센트를 기록하는 데 50만 달러가 들었지만 아스트라는 20달러로 더 높은 점수를 낸다며 AI 비용이 급격히 낮아지고 있음을 강조했고, 2026년 국제수학올림피아드 금메달 수준의 문제를 월 20달러 요금제로 누구나 풀 수 있을 것이라 전망했다. 또한 코드 저장소 기트허브에서 오픈AI 코덱스로 작성된 커밋과 코드 라인 수가 경쟁 서비스보다 훨씬 많다는 지표도 오픈AI에 긍정적인 신호로 제시됐다. 다만 결제 서비스 기업 램프의 조사에 따르면 AI 지출 상위 1퍼센트 기업들의 지출이 다소 감소한 것으로 나타났는데, 이는 지출 부담이나 모델 경쟁 심화에 따른 저렴한 경량 모델로의 이동일 수 있다는 우려도 함께 제시됐다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=knGTxa-K9zQ" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-8">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">The Rich (김단테)</div>
+          <div class="title">GPT-6 전지전능? 허접? 팩트체크</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        <p>오픈AI의 GPT6 아스트라 공개 이후 시장에서 나온 다양한 평가와 반응을 정리한 내용이다. GPT6 아스트라는 출시된 지 며칠이 지나 실제 사용 사례들이 축적되면서 성능이 검증되고 있는데, 사용해본 결과 토큰 소모량이 매우 커서 개인 용도로만 써도 사용량이 금방 바닥나 추가 실험이 어려웠다는 점을 언급한다. 일부에서는 전지전능한 모델이라는 평가가 나오지만 실제로는 어설픈 부분도 분명히 존재한다.</p><p>먼저 화제가 된 사례들을 살펴보면, 캘린더 기능으로 마이클 잭슨 사진을 만든 사례가 작은 바이럴을 일으켰고, 한 사용자는 일주일간 GPT6 아스트라를 시켜 언리얼 엔진 내에서 뉴욕 맨해튼을 재현했다. 인터넷에서 사진과 자료를 찾아 거리와 건물, 스카이라인까지 구현했는데 이는 사람이 혼자 하기 불가능한 작업량이다. 이는 GPT6가 시각적 업무에 매우 뛰어나다는 것을 보여주는데, 컴퓨터 사용 능력은 결국 화면의 어느 픽셀에 어떤 기능이 있는지 정확히 인식하는 능력과 직결되기 때문에 눈이 좋다는 것이 컴퓨터 사용 능력과 이어진다는 분석이다. 또한 한국의 한 사용자는 43분 만에 경복궁, 여의도, 반포한강공원 등이 포함된 서울을 그럴싸하게 구현하기도 했다.</p><p>현존 최강 모델로 알려진 클로드 페이블 5.1과의 비교도 이루어졌다. 시각적으로는 GPT6 아스트라가 페이블보다 훨씬 선명하고 고해상도로 세상을 인식하는 것으로 나타났다. 코딩 대결에서는 유튜브 채널 코드 팩토리의 실험이 인용되었는데, GTA와 유사한 게임을 만들어달라는 프롬프트에 대해 GPT6 아스트라는 25분, 페이블 5.1은 1시간 25분이 걸렸다. 시간 면에서는 아스트라가 압도적으로 빨랐고 그래픽 퀄리티도 더 뛰어났지만, 실제 게임을 플레이해보면 아스트라가 만든 GTA에는 행인을 때리거나 경찰이 등장하거나 총을 사는 등 GTA다운 핵심 기능들이 빠져 있었다. 반면 페이블 5.1은 그래픽은 상대적으로 조악했지만 경찰 등장, 총격, 행인 타격 등 사용자 의도를 더 세밀하게 구현했다. 즉 아스트라는 겉모습은 그럴싸하지만 사용자 의도를 이해하고 실행하는 면에서는 아쉬움이 있었고, 페이블이 원샷 구현력에서는 더 나은 모습을 보였다. 다만 아스트라는 작업 속도가 훨씬 빨라 반복 시행을 통해 개선될 여지가 크다는 점에서 긍정적으로 평가된다.</p><p>컴퓨터 사용 능력 비교에서는 그림판으로 사진을 보고 똑같이 그리는 미션이 테스트되었는데, 이는 붓 굵기 설정, 좌표 인식, 낯선 프로그램 기능 습득 등이 필요한 어려운 과제임에도 불구하고 GPT6 아스트라가 페이블보다 훨씬 뛰어난 결과물을 만들어냈다. 다만 컴퓨터 사용 시 토큰 소모가 매우 크다는 점은 실사용상 아쉬운 부분으로 지적된다.</p><p>한 X 이용자는 아스트라 출시 이후 API 토큰 가격 비교가 무의미해졌다고 언급했다. 아스트라는 백만 토큰 출력당 50달러로 중국의 키미(15달러), GLM(4.4달러)보다 훨씬 비싸 보이지만, 실제 작업 성공률이 높고 완수 속도가 빨라 작업당 실질 비용은 오히려 아스트라가 더 낮다는 것이다. 성능이 떨어지는 모델은 시행착오가 많아 토큰을 더 많이 소모하기 때문에, 결국 중요한 것은 단가가 아니라 작업당 비용이라는 교훈을 준다. 이는 그동안 저렴한 가성비를 앞세운 중국 오픈소스 모델들이 결국 승리할 것이라는 서사가 무너졌다는 평가로 이어진다.</p><p>또한 GPT6를 사용하기 시작한 사용자층의 변화도 주목할 만한데, 과거 코딩 모델 출시 때는 프로그래머만 열광했지만 이번에는 건축가, 3D 모델러, 영상 편집자 등 비개발직군도 적극적으로 사용하기 시작했다. 이는 AI가 이제 오토캐드, 파이널컷 등 기존 전문 소프트웨어를 직접 조작할 수 있게 되면서, 도구 숙련도를 진입장벽으로 삼던 여러 전문직의 업무 방식도 프로그래머들이 지난 1년간 겪었던 것과 유사한 재편을 겪을 가능성이 높아졌다는 의미다. 이로 인해 AI가 대체할 수 있는 시장 규모도 기존 코딩 시장(전 세계 프로그래머 임금과 소프트웨어 지출 합계, 약 1조 달러 규모) 수준을 넘어 전체 지식노동 시장, 즉 코딩 시장의 약 10배 규모로 확대될 수 있다는 전망이 나온다. 결국 핵심은 코딩이 바뀌는 것이 아니라 인류가 컴퓨터를 사용하는 방식 자체가 바뀐다는 점이다.</p><p>GPT6가 갑자기 좋아진 배경에 대한 분석도 소개된다. 오픈AI 공동창업자 그렉 브록먼의 타임지 인터뷰에 따르면, 오픈AI는 2024년 4월 GPT-4.5 발표 이후 사실상 같은 프리트레이닝 기반 모델을 계속 개선하며 사용해왔다. 프리트레이닝을 처음부터 다시 하는 것은 전사적 역량과 막대한 에너지가 소요되는 작업이라 기존 모델을 조금씩 개선하는 방식을 택해온 것이다. 그러나 2025년 들어 앤트로픽의 급부상에 위기감을 느끼면서 밑바닥부터 프리트레이닝을 새로 하기로 결정했고, 그 결과물이 바로 아스트라라는 것이다.</p><p>앤트로픽과 오픈AI의 발전 전략 차이도 설명된다. 앤트로픽은 당장 매출로 이어지는 코딩 분야에 집중적으로 투자해 빠르게 성과를 냈고 매출도 급증했다. 반면 오픈AI는 처음부터 그림, 음성, 영상을 함께 이해하는 멀티모달 다재능함을 추구했다. 코딩이 핵심 경쟁 지표였던 시기에는 이런 전략이 앤트로픽에 뒤처지는 것처럼 보였지만, 컴퓨터 사용이라는 새로운 과제에서는 화면 인식, 영상 편집, 음악 이해 등 멀티모달 능력이 총동원되어야 하기 때문에 오픈AI의 그동안 축적된 멀티모달 역량이 오히려 강력한 장점으로 작용하게 되었다는 분석이다.</p><p>결론적으로 GPT6 아스트라는 올초 등장한 오픈클로에 비견될 만한 게임체인저로 평가된다. 오픈클로가 인간과 AI 에이전트 간 소통 방식을 정의했다면, GPT6 아스트라는 인간이 부여하는 과제 단위의 업무를 실질적으로 수행할 수 있는 기반을 만들었다는 것이다. 컴퓨터 사용을 제대로 해내는 첫 AI, 쓸 만한 눈을 가진 첫 AI, 장시간 작업을 지속할 수 있는 첫 AI라는 세 가지 특징을 갖추면서 진짜 에이전트 시대가 성큼 다가왔다고 평가한다. 앞으로는 AI 회사들이 코딩 성능 자랑에서 벗어나 컴퓨터 사용 능력에 집중하게 될 것이며, 6개월에서 1년 뒤에는 AI가 더 적은 토큰으로 컴퓨터를 훨씬 더 잘 다루게 될 것으로 전망된다. 이러한 변화와 함께 최근 이틀간 반도체 및 메모리 관련 주가가 상승했는데, AI 케펙스 투자 재개 기대감이 반영된 것으로 보이며 메모리 주가에 대한 구체적인 견해는 추후 다룰 예정이라는 언급으로 마무리된다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=91pC1w0TxZ8" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-9">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">Schuka World (슈카월드)</div>
+          <div class="title">일본 국채 금리 3% 돌파, 아베노믹스는 끝났는가</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        <p>일본 국채 금리가 최근 급등하며 3퍼센트를 돌파했는데 이는 1996년 이후 30년 만에 최고치이며 상승 각도 또한 미국보다 가파른 상황이다. 이 이야기를 이해하려면 먼저 전 세계적인 금리 상승 배경을 짚어야 한다. 최근 시장의 최대 화두는 금리이며 미국 국채 10년물 금리가 4.8퍼센트, 30년물이 5.3퍼센트에 이르러 모기지 금리는 7퍼센트에 가까워졌다. 그 배경에는 미국 빅테크 기업들의 대규모 인프라 투자가 있다. AI 데이터센터 건설을 위해 막대한 자금이 필요해지면서 그동안 채권 발행을 거의 하지 않던 빅테크들이 장기채 발행을 급격히 늘리고 있는데, 2025년 7월 130억 달러 수준이던 발행액이 8월에는 1452억 달러로 역대 최고치를 찍었고 9월에는 2500억 달러에 달할 것으로 전망된다. 금리가 더 오르기 전에 서둘러 자금을 조달하려는 움직임과, 데이터센터 투자 수익률이 조달 금리보다 훨씬 높을 것이라는 기대가 맞물린 결과다. 실제로 메타는 20년 만기 채권을 7.5퍼센트라는 높은 금리로 125억 달러 발행했다. 파월 연준 의장은 현재를 저축의 시대에서 전 세계적인 투자 급증의 시대로 정의했다.</p><p>문제는 이런 금리 상승이 정부 재정에도 큰 부담을 준다는 점이다. 미국 정부 부채는 40조 달러를 넘어섰고 연간 이자 비용만 1.27조 달러, 평균 이자율은 3.49퍼센트에 달하며 금리가 더 오르면 이자율이 4퍼센트대를 찍어 연간 이자 부담이 2000조원 수준까지 늘어날 수 있다. 금리 부담은 개인의 주택 구입난, 기업의 조달 비용 증가, 정부의 재정 부담으로 이어지며 트럼프 대통령의 중간선거 리스크로도 연결된다. 이에 트럼프 대통령은 파월 의장을 향해 금리 인하를 노골적으로 압박하고 있으며, 심지어 연준이 자신들을 제대로 대우하지 않는다면 낮은 금리를 적용받는 국가들과 무역을 줄이겠다는 취지의 발언까지 내놓았다. 베센트 재무장관은 부채를 반드시 갚아야 하냐는 화두를 던지며, 빚을 급하게 갚기보다는 경제 성장을 통해 부채 비율을 낮추자는 논리를 제시했다. 이는 최근 글로벌 트렌드로 자리잡고 있으며, 특히 미국에서는 AI가 생산성을 높여 실질적으로 부채 문제를 해결해줄 것이라는 기대가 강하게 자리잡고 있다.</p><p>이런 흐름에서 한술 더 뜨는 나라가 일본이다. 일본은 GDP 대비 정부 부채 비율이 250퍼센트에 가까워 미국의 124퍼센트를 훨씬 웃도는데, 금리가 오르면 이자 부담이 더욱 커질 수밖에 없는 구조다. 그런데도 일본 정부는 내년도 예산안으로 역대 최대 규모인 143조엔을 편성했으며 이는 전년 대비 17퍼센트 증가한 수치다. 다만 일본은 연말에 추가경정예산을 습관적으로 편성해왔기 때문에 이번에는 이를 본예산에 통합 반영한 측면이 있어 실질 증가폭은 이보다 작다는 반론도 있다. 그럼에도 이 예산안은 아직 확정된 것이 아니며 방위비 등 항목에서 추가 증액 가능성이 남아있다. 다카이치 총리는 강하고 풍요로운 일본을 위한 투자가 필요하다며 AI, 반도체, 로봇, 에너지, 방위 분야에 대한 투자로 14조엔 규모를 별도 편성했다고 밝혔다.</p><p>문제는 금리 상승으로 국채 원리금 상환 비용이 36.6조엔에 달해 전체 예산의 약 26퍼센트를 차지한다는 점이다. 이는 강하고 풍요로운 일본을 위한 투자 예산의 세 배가 넘는 규모다. 한미일 세 나라의 예산 대비 국채 상환 비중을 비교하면 한국은 약 5퍼센트, 미국은 14에서 15퍼센트, 일본은 24에서 25퍼센트로 압도적으로 높다. 그럼에도 일본은행은 금리 인하가 아닌 인상 스탠스를 유지하고 있으며 엔저 대응 차원에서도 금리 인상 압력을 받고 있다. 실제로 베센트 재무장관은 G20 회의에서 일본은행이 올바른 조치를 취할 것을 기대한다며 사실상 금리 인상을 압박했고, 더 나아가 경기 부양 정책이었던 아베노믹스는 이제 끝났다고 생각한다는 발언까지 내놓았다. 물가 목표 2퍼센트 달성 등 아베노믹스의 목표가 이미 이루어졌으니 이제는 흐름을 되돌릴 시점이라는 취지다.</p><p>일본은행은 9월 17일과 18일 금리 결정 회의를 앞두고 있으며 시장은 금리 인상 가능성을 80퍼센트 수준으로 반영하고 있다. 현재 기준금리 1퍼센트에서 0.25포인트 인상되면 1.25퍼센트가 되며 연내 추가 인상 가능성도 거론되고 있다. 그러나 여자 아베라는 별명을 가진 다카이치 총리가 정치적 기반을 고려할 때 아베노믹스를 실제로 종료하고 긴축으로 전환하기는 쉽지 않을 것으로 보인다. 실제로 긴축과 구조조정을 추진했던 이시바 전 총리는 지지율 폭락으로 취임 1년 만에 실각한 전례가 있다. 이에 대해 일본 경제재정 담당상은 예산 개혁을 통해 강한 경제와 재정 건전성을 동시에 달성하겠다고 답했는데, 이는 결국 빚을 갚기보다 경제 성장으로 부채 문제를 해결하겠다는 미국식 논리와 유사하다. 그러나 20년간 제로금리에 익숙했던 일본이 이제 금리 상승기를 맞아 이런 전략이 실제로 통할지는 미지수다. 금리가 3퍼센트에서 멈추지 않고 계속 오른다면 아베노믹스가 남긴 청구서가 본격적으로 날아올 수 있으며, 그렇게 되면 일본은 금리 안정을 위해 상당한 노력을 기울이거나 결국 긴축이 불가피한 시점을 맞이할 수 있다는 우려가 제기되고 있다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=ub6p8js1ED0" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-10">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">Schuka World (슈카월드)</div>
+          <div class="title">과연 테슬라 주가는 화성 갈 것인가</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        <p>테슬라가 2025년 9월 3일 텍사스 오스틴에서 로봇 택시 사이버캡 서비스를 정식으로 출시하면서 테슬라 주주들 사이에서 큰 기대감이 형성되고 있다는 내용을 다룬 영상이다. 사이버캡은 2024년 10월 컨셉트카로 처음 공개되었고, 이후 모델 Y 기반의 로봇택시가 먼저 운영되다가, 이번에 실제 사이버캡 차량이 출시되어 텍사스 오스틴에서 제한적으로 서비스를 시작했다. 2인승 사이버캡과 4인승 모델 Y 두 종류가 무인 택시로 운행되고 있으며, 가장 큰 특징은 핸들과 페달이 전혀 없다는 점이다. 목적지를 앱으로 입력하면 차량이 알아서 이동하는 구조로, 운전에 필요한 장치가 아예 없는 것이 소비자들에게 충격을 주고 있다.</p><p>가격 경쟁력 면에서 사이버캡은 우버 대비 약 50% 저렴하고 모델 Y도 약 19% 저렴한 것으로 나타났다. 이는 운전기사 인건비가 빠지기 때문이며, 대량 생산이 이루어질 경우 규모의 경제로 가격이 더 내려갈 가능성이 있다. 구글의 웨이모와 비교해도 사이버캡의 마일당 비용이 훨씬 낮은데, 이는 웨이모가 중국산 전기차를 수입해 개조하는 방식이라 관세와 개조 비용이 추가되는 반면, 테슬라는 미국에서 직접 생산하고 핸들, 페달 등 불필요한 장치를 아예 빼버려 원가를 크게 절감했기 때문이다. 안전성 우려에 대해서는 스페이스X의 스타링크를 통한 상시 데이터 연결로 대응하겠다고 밝혔다.</p><p>이러한 기대감에 힘입어 사이버캡 출시 발표 이후 테슬라 주가는 8%, 이어 5.4% 상승했으나, 바로 다음날인 금요일에 6% 하락하며 상승분을 반납했다. 그 이유는 크게 두 가지로, 첫째는 구체적인 가격, 생산 속도, 규제 승인 등에 대한 정보 부족에 대한 투자자들의 불만이고, 둘째는 실제 등록된 사이버캡 차량이 텍사스에서 단 45대에 불과하다는 점이다. 이는 미국 도로교통안전국의 정식 승인 신청조차 아직 접수되지 않았기 때문으로, 페달과 핸들이 없는 차량은 기존의 자동차 안전 기준 자체를 통과하기 어려운 구조적 문제가 있다. 결국 실험적 성격의 최소 규모 운영 지침에 따라 연간 최대 2500대 수준으로만 운영이 허가된 상태이며, 이는 머스크가 주장했던 전 세계 최다 판매 차량이라는 비전과는 거리가 먼 수치다.</p><p>영상은 이어서 미국 외 다른 시장에서의 확장 가능성을 짚어본다. 중국은 규제가 느슨해 자율주행 시장이 더 빠르게 성장하고 있지만, 차량 호출 서비스 가격이 이미 매우 저렴하고 정부 지원을 받는 자국 기업들과의 가격 경쟁이 치열해 사이버캡이 경쟁력을 갖기 어렵다. 유럽은 친환경 정책으로 전기차 비중이 높지만 규제 통과 절차가 매우 느리며, 테슬라와 머스크에 대한 유럽 정치권의 시선이 우호적이지 않아 일각에서는 2020년대 안에 승인이 어려울 것이라는 전망도 나온다. 인도는 인건비가 기계나 AI보다 저렴한 구조여서 무인 택시의 경제성이 오히려 떨어진다는 점이 걸림돌이다. 한국과 일본은 머스크에 대한 이미지가 나쁘지 않고 신기술 수용도도 높은 편이지만, 외국 기업의 시장 진입 장벽이 높은 특성상 우버조차 안착하지 못했던 전례를 볼 때 사이버캡의 진출도 쉽지 않을 것으로 예상된다.</p><p>결국 현재 사이버캡이 직면한 가장 큰 장애물은 기술력이나 생산력이 아니라 규제 문제이며, 이를 해결하기 위해 머스크는 최근 다시 정치 자금을 투입해 중간선거에 개입하고 있다. 특히 테슬라 본사가 있는 텍사스 상원의원 선거에 집중 투자하며 최소 1억 달러 이상을 투입할 계획인 것으로 알려졌다. 다만 트럼프 대통령의 지지율이 최저치로 하락하고 있는 상황에서 이러한 정치적 접근이 과거만큼 효과를 낼 수 있을지는 불확실하며, 결국 기술적 문제는 몇 년 내 해결될 가능성이 높지만 규제 승인이라는 정치적, 제도적 장벽을 얼마나 빨리 넘어설 수 있을지가 테슬라 사이버캡 사업의 성패를 좌우할 핵심 변수로 지목되고 있다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=Us890Q2m3Tg" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-11">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">부읽남</div>
+          <div class="title">삼전 닉스 지금 안 팔고 버티면 결국 &#x27;이렇게&#x27; 될 겁니다 [안유화 교수 3부]</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        <p>삼성전자와 SK하이닉스 주가에 대한 안유화 교수의 3부 인터뷰 내용을 정리하면 다음과 같다. 삼성전자와 하이닉스 주가는 특정 종목만으로 방향을 예측하기 어렵지만, AI 시대가 커질수록 산업 현장에서 메모리 반도체 수요는 더 커질 수밖에 없으므로 큰 방향성 자체는 정해져 있다고 본다. AI가 사무실을 벗어나 현실 산업 현장으로 나가는 휴머노이드 시대가 본격적으로 시작되는데, 사무실 AI 경쟁에서는 미국이 강하지만 산업 현장에서는 경쟁력의 기준이 바뀐다. 휴머노이드를 얼마나 싸게 만들 수 있는지가 첫 번째 해자이고, 이 부분에서 중국이 가장 앞서 있다. 두 번째는 현장 데이터를 학습시킬 수 있는지인데, 제조업 부가가치가 가장 큰 나라인 중국이 압도적으로 유리하다. 전 세계 제조업 부가가치 규모는 중국이 5조 달러 이상, 미국이 2.3조 달러, 한국이 약 5000억 달러, 일본이 1조 달러, 독일과 인도가 각각 약 8000억 달러 수준이다.</p><p>공급망이 미국과 중국으로 쪼개져 있는 것이 한국에는 다행스러운 요소다. 만약 세계 공급망이 하나로 통합되어 있었다면 한국은 이미 밀려났을 것이다. 미국이 중국과 거래하는 국가를 제재하기 때문에 한국은 중국보다 비싸도 미국 및 우방국 시장에 계속 공급할 수 있다. 다만 창신메모리 같은 중국 메모리 기업이 세계 4위로 이미 10%가량의 점유율을 차지했고, HBM 격차도 결국 시간 문제일 뿐 따라잡힐 것으로 본다. 한국이 지금까지 거쳐온 다른 산업들도 결국 중국에 따라잡혔던 것처럼, 메모리도 같은 길을 갈 가능성이 크다는 것이다.</p><p>그럼에도 한국의 미래 자체에 대해서는 의심하지 않는다고 강조한다. 다만 전제 조건은 폐쇄적이지 않아야 한다는 것이다. 국적, 종교, 과거 이력을 따지지 않고 능력 있는 사람을 전 세계에서 받아들이는 개방성이 필요한데, 최근 한국 사회에 국수주의적 성향이 강화되는 것은 아쉬운 부분이라고 지적한다. 한국, 중국, 일본이 잘 사는 것은 근면하고 조직력이 강한 민족성 때문이라고 본다.</p><p>자산 가격은 결국 미국 금리가 결정하는 할인율에 좌우되기 때문에 개별 기업의 주가를 단정적으로 말하기는 어렵지만, 메모리 반도체 수요 확대라는 방향성은 확실하다고 본다.</p><p>휴머노이드 경쟁에서 완전한 상용화까지는 오랜 시간이 걸릴 것으로 본다. 산업 현장에서는 단 한 번의 사고도 허용되지 않기 때문에 안전성이 완벽해지기까지 오랜 시간이 필요하고, 우선은 가격 경쟁력이 관건이다. 관절 감속기 등 부품 공급망은 일본, 두뇌 관련 기술은 미국 등 여러 국가에 분산되어 있어 한국이 이 모든 것을 종합해 경쟁력을 가져갈 수 있느냐가 과제다. 반면 중국은 자체 공급망을 모두 갖추고 있어 원천적으로 더 싸게 만들 수 있고, 데이터 학습 속도도 민주주의 국가와 달리 제도적 제약 없이 빠르게 진행할 수 있다는 점에서 유리하다. 결국 이는 기술 문제가 아니라 제도의 문제이며, AI 발전 속도에서는 민주주의 체제가 상대적으로 불리하다고 본다. 유럽처럼 규제가 강한 지역이 기술 격차를 좁히려면 5년에서 10년 정도 시간이 필요할 것으로 예상하며, 2030년경에는 지금과 완전히 다른 판도가 될 것이라 전망한다. 중국 청년들의 압도적인 노동 강도와 정부의 지속적인 정책·자금 지원, 유니트리 같은 로봇 기업이 매년 새로 등장하는 속도를 감안하면 한국이 이 경쟁에서 이기기는 어렵다고 본다.</p><p>이런 상황에서 한국이 취해야 할 전략으로 인재정책을 강조한다. 미국이 비자 발급을 까다롭게 하면서 인재를 밀어내는 지금이 한국에는 기회이며, 전 세계 최고의 과학자들에게 최고 연봉과 좋은 교육 환경을 제공해 데려와야 한다고 주장한다. 한국은 무비자로 거의 모든 국가에 갈 수 있는 강한 여권과 작은 국토로 인한 높은 삶의 편의성 등 매력적인 요소를 갖춘 나라라는 점도 강점으로 짚는다. 실제로 TSMC 출신 인재가 삼성전자를 거쳐 이후 중국 SMIC 계열 파운드리 CEO로 이동한 사례를 들어, 핵심 인재 한 명의 영향력이 크다는 점을 강조한다.</p><p>반도체 외 영역에서는 문화산업을 한국의 새로운 성장 동력으로 제시한다. 할리우드가 자동차 산업보다 더 많은 수출을 만들어내는 것처럼, 물리적 제품 수출이 관세로 막히는 시대에는 콘텐츠와 지식재산권(IP) 같은 무형 자산으로 나가야 한다고 본다. K팝과 K콘텐츠가 이미 잠재력을 증명했으므로, 문화 콘텐츠 분야에서 삼성전자급 기업이 나와야 한다고 강조한다.</p><p>마지막으로 창업가 정신의 부재를 한국 경제의 문제로 지적한다. 중국 칭화대와 베이징대 졸업생들은 대부분 창업을 희망하는 반면 한국 스카이 대학 졸업생들은 대기업 취업을 선호하는 조사 결과를 비교하며, 자본주의 사회에서 노동자보다 자본가가 되어야 한다는 것이 자신의 확고한 신념이라고 밝힌다. 안정적인 직장이나 전문직을 선호하는 최근 한국 청년들의 경향에 강하게 반대하며, 앞으로 근로자라는 개념 자체가 사라지고 창업자만이 살아남는 시대가 올 것이라고 전망한다.</p><p>투자자에게는 한국과 중국 두 나라 주식에 모두 투자해 각 시장의 성장에 올라타는 전략을 제안한다. 인류의 미래 비전을 실현하는 기업에는 단기 주가와 상관없이 인내심을 갖고 투자해야 하며, 이런 태도가 결과적으로 기업의 성공과 주가 상승, 국가 발전으로 이어져 투자자에게도 이익이 돌아온다고 강조한다. 노동소득만으로는 부족하며 자산소득 곡선을 만들어야 인생의 전환점을 넘어설 수 있다고 조언하며 인터뷰를 마무리한다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=hlzelB2Qz48" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-12">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">부읽남</div>
+          <div class="title">대책 나왔는데 더 꼬였다? 앞으로 집값 이렇게 됩니다 [박원갑 위원 풀버전]</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        <p>이번 방송은 부동산 전문가 박원갑 KB국민은행 위원과 함께 최근 발표된 8.13 부동산 세제 개편 확정안과 서울 및 수도권 부동산 시장 흐름을 심도 있게 분석한 내용이다.</p><p>박원갑 위원은 이번 세제 개편안을 2005년 노무현 정부의 8.31 대책에 비견하며, 21년 전에는 다주택자 규제에 초점을 맞췄다면 이번에는 초고가 주택, 즉 똘똘한 한 채에 직접적인 타격을 가한 것이 핵심 차이라고 설명했다. 이로 인해 강남권에서는 매물이 나오고 가격이 조정받는 반면, 비강남 지역은 오히려 신고가를 경신하는 극단적인 시장 분절화 현상이 나타나고 있다고 진단했다. 이러한 강남의 상대적 위축은 여러 제도가 분리 시행되는 2028년 전까지, 즉 내년 말까지는 이어질 것으로 전망했으며, 당분간 똘똘한 한 채 전략보다는 직주근접과 가성비가 균형을 이루는 중간 가격대 주택, 이른바 미들코어 주택이 부상할 것으로 내다봤다.</p><p>세제 개편 수정안에 대해서는 초기안보다 다소 완화된 형태이나 몸통을 흔드는 수준이 아닌 미세 조정 정도라고 평가했다. 1주택자 종부세 기본 공제와 관련해 단독명의는 거주 시 공시가격 기준 12억에서 14억으로, 부부 공동명의는 거주 시 18억을 유지하되 비거주 시 12억으로 낮아지는 구조로 바뀌었다고 설명했다. 그는 이러한 수정안 때문에 이미 나온 매물이 회수되는 일은 없을 것이라고 단언했는데, 그 이유는 종부세 기준 완화보다 양도세 공제 한도가 2028년부터 20억에서 10억으로 낮아지는 캡 규정과 종부세 세액공제 한도가 800만원에서 600만원으로 축소되는 점이 매도 결정에 더 큰 영향을 미치기 때문이라고 분석했다.</p><p>비거주 1주택자의 예외 인정 범위, 즉 자녀 교육이나 부모 돌봄 등을 이유로 한 비거주 인정 문제에 대해서는 현재 시군 단위로 한정되고 고등학교와 대학교 진학만 인정되는 초안에 대해 아쉬움을 표하며, 오히려 돌봄이 더 필요한 중학교 시기를 포함하는 등 네거티브 방식으로 유연하게 접근해야 한다고 주장했다. 현대 사회를 신유목 사회로 정의하며 주거 이동의 자유를 지나치게 제한하는 것은 시대 흐름에 맞지 않는다는 견해도 밝혔다.</p><p>매물 출회와 관련해서는 3파동 이론을 제시했다. 8월과 9월에 걸친 1차 매물, 종부세 과세 기준일인 내년 6월 1일 이전인 4~5월의 2차 매물, 그리고 양도세 캡 규정이 시행되는 2028년 1월 이전인 연말의 3차 매물이 순차적으로 나올 것으로 예상했다. 다만 이러한 매물 출회는 강남, 용산, 여의도, 목동, 광진구, 마포 일부 등 초고가 주택 밀집 지역에 국한되며, 중저가 주택 시장에서는 매물이 크게 늘지 않을 것으로 전망했다. 다주택자 양도세 한시 감면 조치도 매물 출회에 영향을 줄 수 있으나 장기보유특별공제가 배제되어 큰 유인은 아니라고 봤다.</p><p>공급 대책과 관련해서는 용산가족공원 개발과 국토부 및 서울시 간의 이견, 탄천 물재생센터 부지에 1만3천 가구 규모 공급 계획 등이 논의됐으나 실현까지 상당한 시간이 소요될 것으로 예상했다. 이번 대책의 특징은 과거와 달리 민간과 공공을 대립 관계로 보지 않고 민간 정비사업 활성화를 위해 조합 설립 동의율 완화, 이주비 대출 산정 기준 개선 등 전향적인 조치를 포함했다는 점이라고 평가했다. 다만 공급은 계획 발표보다 실제 착공과 준공까지 이어지는 과정이 투명하게 공개되어야 시장의 신뢰를 얻을 수 있으며, 신도시 개발 지연의 주요 원인은 보상 문제보다 이주 대책 미비에 있다고 지적했다.</p><p>시장 분석에서는 한국부동산원 아파트 실거래가지수를 인용해 상반기 강남구 마이너스 3.2%, 서초구 마이너스 1.3%, 용산구 플러스 0.6%인 반면, 동대문구 14.4%, 성북구 10.9%, 서대문구와 영등포구가 9%대 상승을 기록했다고 밝혔다. 특히 송파구는 과거 규제 국면에서 가장 먼저 하락하던 선행성을 보였으나 이번에는 플러스를 기록해 실수요자 정착으로 시장 성격이 변화했다고 평가했다. 이러한 비강남 지역 강세의 배경으로 30대 맞벌이 부부의 비중이 63.3%에 달하는 점, 소득 동질혼에 따른 결합 구매력이 커진 파워커플의 등장, 부모 세대의 소비 패턴에서 벗어나려는 세대적 비동조화 경향 등을 꼽았다. 실제 서울 아파트 거래의 30대 비중이 50%를 넘는데, 이는 평균 소득으로는 설명되지 않으며 개인별 재무 상황에 따른 극단적 양극화가 30대 내에서 나타나고 있기 때문이라고 설명했다.</p><p>다만 이러한 비강남 지역의 강세를 장기적 추세로 오인해서는 안 된다고 경고했다. 이를 물웅덩이 이론으로 설명했는데, 단기적으로는 비강남 지역이 상급지와의 가격 격차를 메우며 상승하지만, 입지적 프리미엄의 한계로 인해 유리천장을 넘어서지는 못한다는 것이다. 과천의 경우 많이 오른 만큼 올 상반기 오히려 2% 이상 하락한 사례를 들며, 가격이 부풀려진 지역일수록 외부 충격에 취약할 수 있다고 강조했다.</p><p>금리 관련해서는 기준금리가 현재 3%에서 한두 차례 추가 인상되는 것은 큰 영향이 없으나, 3.5%를 넘어서면 시장에 적잖은 영향을 줄 것으로 전망했다. 2022년 미국발 고금리 쇼크 당시와 비교하면 금리 인상 속도가 상대적으로 완만하고, 경제 성장률 급락 정도도 덜하며, 입주 물량 감소, 고정금리 비중 상승, 갭투자 감소 등의 요인으로 당시와 같은 충격까지는 가지 않을 것으로 봤다. 다만 단기간 급등한 지역은 산이 높으면 골이 깊다는 격언처럼 조정 위험이 크므로 신고가를 무작정 따라가는 것은 경계해야 한다고 조언했다.</p><p>실수요자를 위한 조언으로는 입지보다 가격이 더 중요한 판단 기준이라며, 전고점 대비 회복률을 확인할 것을 권했다. 서울에서는 성동구가 전고점 대비 28.7% 올라 가장 많이 회복했고 강남구, 송파구, 광진구, 동작구도 19% 이상 초과 회복한 반면, 금천구와 도봉구, 노원구 등은 아직 전고점을 밑돌고 있다고 소개했다. 경기 남부는 성장주처럼 변동성이 크고 경기 북부와 인천은 가치주처럼 아직 회복이 더딘 상태라며, 양주, 파주, 김포, 오산, 시흥, 일산서구, 의정부 등이 여전히 큰 폭의 마이너스를 기록 중이라고 밝혔다. 반면 과천과 분당은 전고점을 20~30% 초과해 이미 많이 오른 상태라고 덧붙였다.</p><p>주거 선택 트렌드로는 신축 선호 현상, 맞벌이 여성의 통근시간 단축 수요에 따른 직주근접 중시, 시성비, 즉 시간 대비 성능을 중시하는 경향이 뚜렷하다고 설명했다. 잠실 엘스, 리센츠, 트리지움 등 입주 20년차 단지가 여전히 신축급 대우를 받는 사례를 들며 향후 준공 연한과 관계없이 신축 개념이 확장될 가능성을 제기했다. 갈아타기 수요에 대해서는 재테크 목적의 상급지 갈아타기는 세제 개편으로 수익률 매력이 낮아졌으므로 신중해야 하며, 직장이나 교육 등 실수요에 따른 이동은 무방하다고 조언했다. 또한 대단지 간 이동은 매도 후 매수가 가능하지만 단독주택에서 아파트로, 소단지에서 대단지로 갈아탈 때는 반드시 선매도 후매수 원칙을 지켜야 하며, 시세 15억 이하는 전세를 놓고 전세로 사는 방식도 종부세 부담이 크지 않아 무방하다고 설명했다.</p><p>수도권 지역별로는 업무지구 접근성과 일자리가 가격을 결정하는 핵심 요인이며, 인천 연수구 등 업무지구 인근 지역의 강세도 같은 맥락이라고 밝혔다. 최근 삼성전자, SK하이닉스 등 반도체 기업의 저리 대출 지원 확대가 회사 인근 지역, 즉 경기 남부와 서초구 및 강남구 외곽, 송파구, 강동구 등의 수요를 늘리는 요인이 될 수 있으나 금리 인상 리스크와 함께 봐야 한다고 지적했다.</p><p>마지막으로 내 집 마련에 대한 조언으로, 집을 살지 말지는 정보나 예측이 아니라 간절함과 의지에 달려 있다고 강조했다. 1주택자는 대출 부담이 커지더라도 주거 하향 이동이나 이자 상환 등을 통해 위기를 견뎌낼 수 있는 반면, 과도한 갭투자자들이 2022년 위기 때 가장 큰 타격을 입었다고 설명했다. 집을 살 자금 마련 시 매물망을 넓게 설정하고 리커트 척도를 활용해 단지별 점수를 매기는 등 발품을 파는 노력이 필요하다고 조언했으며, 최근 3년간 주식 등에서 연 10% 이상 수익을 냈다면 굳이 집을 살 필요는 없지만 그렇지 않다면 대출을 활용해 내 집 마련을 하는 것이 낫다고 맞춤형 조언을 제시하며 방송을 마무리했다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=kgwh-3xTrDA" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-13">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">부읽남</div>
+          <div class="title">디에이치 방배 인테리어, 우리 집은 어떻게 바꿀까요? 59·84·101타입 견적 공개합니다 [디벨로더하우스]</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        <p>디에이치 방배는 서초구 이수역 인근에 위치한 3064세대, 29개 동 규모의 현대건설 신축 대단지로, 2호선과 4호선, 7호선 접근이 용이한 입지에 고급화된 브랜드 이미지로 지역 시세를 이끌 것으로 평가받는 단지이다. 부동산 읽어주는 남자와 디벨로드하우스 신정훈 대표가 세대수가 가장 많은 주력 평형인 59A, 84A, 101A 세 가지 타입의 평면을 분석하고 구조적 개선안과 예상 견적을 공개하는 내용이다.</p><p>59A 타입은 주방 발코니에 세탁기와 건조기를 두면 뒤쪽 창호를 사용할 수 없고, 발코니 문이 열리는 방향 때문에 빨래바구니나 분리수거함을 놓을 공간이 없다는 문제가 있다. 또한 식기세척기가 싱크볼 왼쪽에 배치되어 있어 문이 열리는 반경에 걸려 동선이 불편하고 물이 바닥에 떨어지는 단점이 있다. 안방에는 킹사이즈 침대를 넣으면 붙박이장을 놓을 공간이 부족해 옆방을 드레스룸으로 겸용하게 되는데, 이때 중문을 달아 두 공간을 하나의 안방 공간으로 사용할 것을 제안했다. 팬트리장이 없다는 점도 판상형 구조의 한계로 지적됐다. 같은 건설사의 개포디에이치아이파크와 비교하면 방배는 주방 폭이 넓어진 대신 신발장 크기가 줄었다. 개선안으로는 세탁실 벽을 없애고 주방을 확장하며 세탁기와 건조기를 안방 드레스룸 공간으로 이동시켜 주방 규모를 84타입 수준으로 키우는 구조변경을 제안했고, 식기세척기 위치도 싱크대 바로 옆으로 옮기고 음식물처리기도 냉장고 옆으로 재배치하며 삐뚤어진 등박스도 정리하는 안을 제시했다. 바닥재는 기존 강마루의 결이 강해 보여 방은 마루를 유지하고 공용공간은 타일형 마루로 교체하는 안을 냈다. 이러한 구조변경과 마감 업그레이드를 포함한 시그니처 등급 패키지 견적은 약 6500만 원으로, 수입 주방과 세라믹 벽체·상판, 공용부 바닥재 교체, 조명 전체 교체, 현관 중문과 안방 중문 설치, 도배 공사 등이 포함된 금액이며, 기존 강마루를 재사용할 수 있는 경우 비용이 낮아질 수 있다고 설명했다.</p><p>84A 타입은 세대수가 가장 많은 주력 평형으로 아일랜드 구조의 쾌적한 주방을 갖췄지만, 역시 세탁실 문이 열리는 반경 때문에 세탁기 문과 부딪히는 문제와 분리수거 공간 부족이 지적됐다. 알파룸을 팬트리나 분리수거 공간으로 어떻게 활용하느냐가 쾌적함을 좌우한다고 설명했다. 개포디에이치아이파크와 비교하면 방배는 팬트리 공간을 주방 옆으로 옮기고 주방 폭을 넓혔지만, 안방에 발코니가 없고 드레스룸 문을 열면 맞바람이 칠 수 있어 생활공간 측면에서는 개포디에이치가 더 낫다는 의견을 제시했다. 작은방 두 개의 크기가 작다는 점도 언급됐다. 수입 주방 옵션을 선택하면 대형 아일랜드가 일반 식탁 높이가 아닌 바 테이블 높이로 이어져 장시간 앉아 있으면 허리에 무리가 갈 수 있다는 단점도 지적했다. 모든 평면에 적용된 취우드(경사형 후드)는 먼지와 기름때가 쌓여 관리가 어렵다는 점도 문제로 꼽았다. 개선안으로는 알파룸 공간을 분리수거 공간과 안방 드레스룸으로 나누는 방안을 제안했으며, 세면대 앞 마루 바닥에 타일 마감을 추가하고 거실 등박스 위치를 조정하며 조명을 정리하는 방안을 제시했다. 84A 타입 옵션으로 들어간 강마루는 단지 전용으로 제작되어 시중에서 구하기 어려워 소량이라도 확보해 이어붙이는 것이 유리하다고 설명했다. 이 타입의 견적은 주방과 거실 톤 정리, 등박스 균형 조정, 안방 드레스룸과 알파룸 구조변경 등을 포함하는 수준으로 제시됐다.</p><p>101A 타입도 동일하게 세탁실 문 열림 반경 문제로 분리수거 공간 확보가 어렵고, 알파룸을 팬트리 겸용으로 쓸 경우 동선이 멀어지는 단점이 있었다. 현관 팬트리장이 매우 크게 되어 있어 절반은 외부용 팬트리로, 절반은 실내에서 쓸 수 있는 공간으로 나누는 것이 효율적이라는 제안이 나왔다. 안방 세면대 앞 마루 바닥에 타일을 넣는 방안도 동일하게 제시됐다. 개선안으로는 내력벽과 내력기둥은 유지한 채 주방 벽체를 이동시켜 기존의 ㄷ자형 주방을 대형 아일랜드 주방으로 바꾸고, 취우드 대신 매립형 수입 후드를 적용해 풍량을 개선하며, 알파룸 입구에 슬라이딩 도어를 적용해 볼륨감을 주는 방안을 제안했다. 주방 규모가 커지는 만큼 공사비용도 다소 상승할 수 있다고 설명했다.</p><p>전체적으로 세 타입 모두 신축 아파트임에도 세탁실 및 발코니 동선, 팬트리 부재, 조명과 색상 톤의 통일성 부족 등 공통적인 구조적 아쉬움이 있었으며, 특히 주방과 거실처럼 실사용 빈도가 높은 공간을 중심으로 부분적인 구조변경을 제안했다. 59A 타입은 세탁실 확장으로 주방을 넓히면서 세탁기와 건조기를 안방 드레스룸 쪽으로 옮겨 동선을 개선할 수 있고, 84A 타입은 이미 구조가 잘 나온 편이지만 드레스룸과 알파룸의 공간 분할 방식에 따라 실용성이 갈리며, 101A 타입은 알파룸 구조변경만으로도 주방 규모를 크게 넓힐 수 있다는 점이 강조됐다. 신정훈 대표는 입주 전, 옵션을 아직 선택하지 않은 시점에 구조변경을 진행하는 것이 입주 후 공사보다 효율적이라며 지금 타이밍에 공사를 고려해볼 것을 권했다. 색상과 톤은 실제 시공 시 고객과의 협의를 통해 결정되는 부분이며, 영상에서 제시된 견적과 디자인은 확정안이 아니라 예산과 공사 범위를 가늠하기 위한 기준점으로 제공된 것이라는 점도 강조됐다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=4AzXaq-rzXs" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-14">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">부읽남</div>
+          <div class="title">&quot;조금만 더 기다릴까요&quot; 금리 인상, 집값 내려갈까</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        <p>이 영상은 최근 이어지는 기준 금리 인상으로 집값이 내려갈지, 그리고 흔히 언급되는 영끌족이 실제로 위험한 상태인지를 다루고 있다. 결론부터 말하면 지금은 영끌족이 존재하지 않으며, 하고 싶어도 할 수 없는 구조라는 것이 핵심 주장이다.</p><p>영끌이라는 표현은 문재인 정부 시기 대출 규제가 강화되면서 대출을 받기 어려워진 사람들이 부모나 친척에게 현금을 빌려 집을 산 상황에서 생겨났다. 당시에는 집값이 계속 오르고 있었기 때문에 큰 문제로 여겨지지 않았지만, 2022년경 한국과 미국의 기준 금리가 매우 빠른 속도로 급등하면서 상황이 달라졌다. 당시 대부분 변동금리로 대출을 받았던 사람들은 이자 부담이 몇 배로 늘어났고, 전세 이자도 함께 올라 전세금을 돌려주지 못하는 역전세, 급매, 추가 하락으로 이어지는 악순환이 발생했다. 그 결과 실제 영끌을 했던 사람들은 대부분 견디지 못하고 이미 시장에서 정리되었으며, 지금까지 버틴 사람들은 더 이상 영끌족이라 부를 수 없는 상태라는 것이다.</p><p>현재는 은행 대출 심사가 매우 엄격해져 소득과 자산을 그대로 밝히면 원하는 만큼 대출을 받기 어렵다. 정부는 레고랜드 사태와 부동산 PF 부실 우려 이후 고정금리를 유도하고, 스트레스 DSR을 단계적으로 강화하며, 대출 한도를 금액별로 강하게 제한하는 등 LTV와 DSR을 동시에 강력하게 적용하는 세계적으로도 유례없는 수준의 규제를 시행하고 있다. 소득이나 자산이 얼마든 상관없이 일정 금액 이상은 대출을 거의 해주지 않는 방식이며, 자금 출처 조사와 세무조사까지 병행되고 있어 사실상 부동산과 금융을 분리하는 정책이라고 표현한다.</p><p>이런 상황에서도 생애최초 자격으로 대출을 받는 경우를 예로 들어, 연봉 1억 2천만 원 정도의 맞벌이 부부가 현금 2억 8천만 원을 모아 8억 5천만 원짜리 아파트를 사면서 6억 원을 대출받는 사례를 구체적으로 계산한다. 이 경우 실수령액 대비 원리금 상환 비율을 따져보면 생활비로 450만 원 정도가 남아, 실제로는 감당 가능한 수준이며 이런 사람들이 대출 부담 때문에 집을 던질 가능성은 낮다고 분석한다. 또한 같은 조건의 아파트를 월세로 거주할 경우 월 180만에서 200만 원 수준의 월세를 내야 하므로, 대출이자를 내며 자가에 거주하는 것과 월세로 사는 것을 비교하면 오히려 자가 거주가 합리적인 선택일 수 있다고 설명한다.</p><p>은행 연체율 통계를 보면 주택담보대출 비중이 높아 실제 위험 차주 비율은 낮은 수준이며, 최근 상승하고 있다고 해도 절대적으로 높은 수치는 아니라고 언급한다. 과거 2022년과 2023년 하락기에 집을 정리하지 못하고 버텼던 사람들은 이후 2023년부터 반등하여 2024년 5퍼센트, 2025년 9퍼센트 정도 오른 시장에서 오히려 자산이 크게 늘어난 경우가 많다고 설명한다. 가계부채 비율도 GDP 대비 기준으로 볼 때 과거 100퍼센트에 근접했던 수치에서 현재 80퍼센트대 후반까지 낮아졌고, 반도체 호황에 따른 GDP 성장으로 앞으로 더 낮아질 가능성이 있다고 본다.</p><p>토지거래허가구역 확대, 비거주 1주택자에 대한 투기 규제, 실거주 의무 강화 등의 정책으로 인해 서울과 수도권 핵심지역의 전월세 매물이 급격히 줄어들고 있으며, 서울 전세수급지수가 2020년 전세대란 시기에 근접한 수준까지 치솟아 있다는 점을 강조한다. 이런 상황에서는 무주택자 역시 금리 인상의 영향을 크게 받을 수밖에 없다고 지적한다.</p><p>반도체 기업들의 실적이 역대급으로 성장하고 무역수지도 독일과 일본을 앞지르는 수준으로 개선되는 등 국내에 유입되는 자금이 매우 크게 늘어나고 있어, 국내 정책만으로 집값 하락을 유도하기는 어려운 국면이라고 진단한다. 집값 하락을 초래할 만한 요인은 전쟁이나 금융위기, AI 관련 거대한 거품 붕괴와 같은 대외 변수 정도이며, 국내 변수만으로는 하락 가능성이 낮다고 본다.</p><p>마지막으로 언론이나 일부 여론에서 영끌족의 위기를 강조하는 것과 달리, 실제 상황을 객관적으로 살펴보면 지금은 남을 걱정할 때가 아니라 각자 자신의 자산과 상황을 점검해야 하는 시기라고 조언하며 영상을 마무리한다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=TR3dllrBdww" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-15">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">부읽남</div>
+          <div class="title">지금 하늘이 준 기회 왔습니다, 제발 그냥 넘기지 마세요 [안유화 교수 2부]</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        <p>중국 경제와 산업을 진단하며 지금이 한국에게 다시 오지 않을 기회라고 강조하는 내용이다. 중국은 하나의 나라처럼 보이지만 실제로는 완전히 이질적인 두 개의 경제가 공존한다. 부동산과 전통 제조업 중심의 올드 차이나는 심각한 침체 상태로, 부동산 투자는 전년 대비 약 19퍼센트 넘게 감소했고 제조업 지수도 기준선 아래에 머물러 있다. 반면 신에너지차, 항공우주, 산업용 로봇, 배터리, AI 등 첨단 산업 중심의 뉴 차이나는 세계 최고 수준의 경쟁력을 갖추고 있으며 신에너지차는 전년 대비 약 30퍼센트 성장했고 산업용 로봇은 전 세계 수출의 90퍼센트 이상을 중국이 차지한다. 반도체 장비 등 극히 일부 영역에서만 미국의 기술 견제에 막혀 있을 뿐, HBM 같은 기술도 만들 수는 있으나 수율과 경제성이 부족한 수준이며 미국의 기술 패권 견제가 결과적으로 한국에 3년에서 5년 정도의 시간을 벌어주고 있다고 설명한다.</p><p>중국은 과거 부동산을 팔아 지방정부 재정을 채우고 이를 다시 개발에 투입하는 선순환 구조였으나, 이제는 반대로 악순환에 빠져 지방정부 재정자립이 무너지고 일부 지역 공무원은 몇 달치 월급을 받지 못하는 상황도 벌어지고 있다. 중앙정부는 금리 인하와 통화 완화를 지속하지만 이제는 무차별적으로 돈을 풀지 않고 첨단 미래 산업에 선별적으로 자금을 배분하는 방식으로 전환했다. 또한 과거 은행 중심의 간접금융에 의존하던 구조에서 벗어나 직접 자본시장을 키우는 데 힘쓰고 있으며, 창신 메모리와 유니트리 같은 기업이 증시에 상장해 높은 시가총액을 기록한 것을 근거로 중국 자본시장이 인내심 있는 장기 자본을 육성할 수 있는 깊이를 갖추기 시작했다고 본다. 배당 확대와 자사주 매입 등 주주환원 정책을 강화하는 밸류업 프로그램도 이런 흐름의 일환이다.</p><p>계층 및 지역 간 양극화는 역대급으로 벌어지고 있지만, 과거 급성장을 경험한 국민들이 기대와 다른 현실에 소비를 줄이는 정도이지 사회적 소요로 이어질 정도는 아니라고 진단한다. 국적, 성별, 나이, 민족, 종교를 가리지 않는 개방적 인재 정책으로 파격적인 대우를 제공하며 매년 90만 명에 달하는 우수 인재를 양성하는 것이 중국의 강점으로 꼽힌다. 딥시크의 등장 이후 중국 엔지니어들이 원천기술에서도 미국에 열등감을 갖지 않고 자신감을 갖게 되었으며, 초등학교 때부터 알고리즘 교육을 하는 등 AI 교육에 국가적으로 매진하고 있다. 중국의 전략은 미국과 정면 승부하지 않고 가성비로 승부하는 것으로, 모든 상황에 최고 성능이 필요하지 않다는 점을 활용해 저비용 고효율 제품으로 시장을 공략한다는 것이다. 실제로 휴먼노이드 로봇 기업들이 대부분 적자를 면치 못하는 상황에서 유니트리는 흑자를 내며 성장하는 것이 대표적 사례로 제시된다.</p><p>미국이 중국산 부품과 소재를 배제하는 정책을 펴는 상황에서 한국은 독일이나 일본보다 저렴하면서도 품질과 기술력, 납기를 모두 갖춘 유일한 대안이 될 수 있다는 기회론을 제시한다. 중국 1등 기업을 직접 탐방해 왜 성공했는지를 파악하고 이를 참고해 메이드 인 코리아 제품을 중국보다 약간 비싼 가격에 전 세계에 공급하는 전략을 써야 한다고 조언하며, 이 기회의 창은 짧으면 3년 길면 5년 안에 닫히는 일생일대의 기회라고 강조한다.</p><p>후반부에는 AI 시대 개인의 생존 전략을 다룬다. 노동소득은 자신의 시간을 파는 대가이지만 AI가 인간의 노동을 대체하면서 노동시간과 가치가 재조정되고 있어 노동소득만으로는 살아가기 어려운 시대가 되었다고 진단한다. 과거에는 투자가 선택이었지만 AI 시대에는 자산소득 확보가 필수가 되었다는 것이다. 태어나서 죽을 때까지 지출은 계속되는 비용곡선과 달리 자산소득곡선은 스스로 만들지 않으면 평생 바닥에 머물러 있으며, 이 자산소득곡선을 끌어올려 비용곡선과 만나는 지점이 인생의 손익분기점이 된다고 설명한다. AI 에이전트를 활용하면 개인이 가진 콘텐츠와 지식을 기반으로 자신을 대신해 지속적으로 수익을 창출하는 시스템을 예전보다 훨씬 쉽게 구축할 수 있게 되었으며, 특히 수십 년간 쌓아온 경험과 콘텐츠를 가진 은퇴자들이 오히려 이런 시대에 유리한 위치에 서게 되었다고 강조한다. 현재 전 세계는 거대 기술기업들이 데이터센터를 짓는 등 AI라는 고속도로를 깔고 있는 초기 단계에 불과하며, 이 인프라가 완전히 구축되고 나면 본격적인 AI 시대가 도래할 것이라고 전망한다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=i4k2pGP5RfA" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-16">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">부읽남</div>
+          <div class="title">세제 개편안 확정됐습니다, 이제 세입자들 다 밀려날 겁니다 [손품왕 1부]</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        <p>이 영상은 부동산 데이터 분석 전문가 손품왕이 정부의 세제 개편안 국회 제출과 공급 금융 대책의 영향을 분석하는 내용이다.</p><p>정책의 근본 철학은 부동산에서 발생하는 소득을 불로소득으로 규정하고, 정부 기업 개인 모두에서 이를 최소화하는 방향으로 설계되었다는 점이다. LH 등 정부기관이 직접 임대주택을 지어 공급함으로써 불로소득을 취하지 않으려 하고, 개인의 경우도 고가주택 다주택자부터 불로소득을 환수해 기본주택 나아가 기본소득으로 연결하려는 것이 최종 설계 목표라고 설명한다. 이러한 기조는 국회에서도 큰 틀에서 유지될 것으로 보이며, 속도 조절은 있을 수 있지만 방향성 자체가 바뀌기는 어렵다고 본다.</p><p>정책의 타겟은 서울 강남 등 고가주택, 특히 20억에서 30억을 넘는 자산이며, 환수할 여지가 많은 곳부터 규제하여 시장 전체의 속도를 조절하려는 의도가 있다. 실제 데이터를 보면 서울 내에서도 금액대별로 반응이 다르게 나타나는데, 15억 이하 구간은 매물이 줄고 가격이 빠르게 오르는 반면, 30억에서 50억대는 매물이 쌓이고 가격이 정체되거나 하락하는 모습을 보인다. 이는 정책이 고가주택 시장에서는 효과를 내고 있지만, 20억 이하 시장에는 영향이 없다는 것을 보여준다.</p><p>이번 세제 개편안은 2027년에 가장 많은 양도세 혜택을 주도록 설계되어 있어 다주택자들이 2027년 상반기까지 매물을 서둘러 내놓을 가능성이 높다고 전망한다. 반면 2028년, 2029년으로 갈수록 공제가 줄어들고 장기 거주 특별공제로 인해 10년 이상 보유 및 거주해야 큰 혜택을 받을 수 있는 구조가 되어, 이 시기에 집을 매수한 사람들은 장기간 매물을 내놓지 않게 될 가능성이 크다고 본다. 이는 과거 문재인 정부 시기 장기임대사업자 제도가 매물 잠김 문제를 일으켰던 사례와 유사한 패턴이 될 수 있다고 지적한다.</p><p>특히 지방에 거주하며 서울에 갭투자로 집을 가진 비거주자들이 이번 정책의 실질적 타겟이며, 실거주 요건 강화로 인해 이들이 집을 팔거나 세입자를 내보내고 공실로 두거나 서울로 이주하는 선택을 하게 될 것으로 예상한다. 등록임대사업자들의 8년 장기임대 만료 물량이 2026년과 2027년에 특히 서울 강남 송파 등지에서 많이 나올 예정이어서, 이 시기 매물 증가에 영향을 줄 것으로 본다.</p><p>매수자 관점에서는 이미 자산 여력이 크고 삶의 기반이 확고한 부자들은 세금 부담에도 크게 개의치 않고 매수를 이어갈 가능성이 높으며, 정권이 오래 지속되지 않을 것이라는 기대감으로 몇 년만 버티면 된다고 생각하는 사람들도 있어 매수 자체가 크게 위축되지는 않을 것으로 전망한다. 다만 20억에서 30억 이상 고가주택을 매수하려는 사람들에게는 2027년 상반기까지 기다려보는 것이 전략적으로 유리할 수 있다고 조언하며, 20억 이하 시장은 이러한 정책과 무관하게 계속 상승할 가능성이 높다고 본다.</p><p>가장 큰 피해자는 전월세 세입자로 지목된다. 집주인이 실거주를 위해 들어오든 매도를 하든 세입자는 선택권 없이 무조건 퇴거해야 하는 상황에 놓이며, 전세가가 이미 급격히 오른 상태에서 대출 규제까지 겹쳐 같은 동네에서 재계약하거나 매수하기가 어려워 점점 외곽으로 밀려나는 현상이 가속화될 것이라고 진단한다. 실제 전국의 전세 및 월세 매물 수가 계약갱신권 도입 이후인 2020년 수준으로 떨어져 있으며, 지역에 따라 그보다 더 심각한 경우도 있다고 설명한다. 특히 지방에서는 전세 매물과 매매 매물 수가 반대 양상을 보이는데, 이는 집주인들이 세를 놓기보다 아예 팔고자 하는 경향이 강하다는 것을 의미하며, 이는 계약갱신권으로 인한 기간 연장, 하락장 경험, 똘똘한 한 채 선호 심리 등이 복합적으로 반영된 결과라고 분석한다. 결과적으로 지방 자산을 정리해 서울 등으로 자산을 합치려는 흐름이 이어지고 있으며, 이는 정부가 의도한 비거주 다주택 축소 방향과 국민들의 실제 행동이 맞물려 나타나는 현상이라고 결론짓는다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=ZSwkUNEbOzM" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-17">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">부읽남</div>
+          <div class="title">&quot;현장은 완전히 달라졌어요&quot; 지금 부동산 시장 실제 분위기 [플팩 강연옥 대표 풀버전]</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        <p>현재 부동산 대출 시장은 8.13 대책과 한국은행 기준금리 인상이 맞물리며 매우 복잡하고 유동적인 상황이다. 8.13 금융종합대책 이후 완전한 대출 완화는 아니지만 일부 재개되는 흐름이 나타나고 있다. 특히 중도금 대출, 재건축재개발 이주비 대출, 입주 잔금 대출 등 집단 대출은 서민 실수요자 위주로 풀리고 있으며, 실거주 목적자가 우선순위를 갖고 후순위로 전세를 놓으려는 투자 목적 대출은 밀리는 분위기다. 잔금 대출 관련해서는 상담과 접수가 동시에 가능해졌다는 점이 큰 변화이며, 방배동 등 재건축 단지 입주자들도 총량이 일부 배분되며 숨통이 트이고 있다. 다만 하반기 잔금을 치러야 하는 실수요자들은 여전히 어려움을 겪고 있다. 농협은행이 8월 20일부터 변동형 주택담보대출을 재개했고, 8월 31일부터 타행 대환대출도 받기 시작했으나 곧 다시 마감되는 등 은행별로 대출 총량이 매우 제한적으로 짧게 열렸다 닫히는 패턴이 반복되고 있다. 신한은행도 9월 2일부로 상담사 총량이 마감되는 등 실제 풀린 양은 많지 않다. 이는 은행들이 2026년도 가계대출 총량 규제를 지키는 과정에서 상반기에 이미 목표치를 넘겨버린 경우가 많아, 총량이 늘었다고 해도 실제 배분할 여력이 부족하기 때문이다. 따라서 총량을 잘 지킨 은행 위주로 우선 배분되고 있으며, 소비자 입장에서는 지점별로 발품을 파는 것이 여전히 중요하다. 현재 LTV, DSR 조건을 충족하고 서류 접수가 원활하다면 대출 자체는 가능한 은행이 존재하며, 국민은행은 여전히 3억원 한도 제한을 유지 중이지만 다른 은행은 조건 충족 시 6억원까지도 가능하다. 보험사 등 2금융권도 일부 대출이 열려 있으나 전체 금융사 중 극히 일부에 불과해 발품이 필요하다. 12월 잔금 예정자는 상황이 더 어려워, 가능하면 잔금을 내년으로 미루거나 근저당을 설정해 두었다가 연초에 대출받아 상환하는 방법이 권장된다. 통상 1월 초부터 은행들이 새로운 총량으로 영업을 재개하며, 농협처럼 연초에 저금리 저총량을 소진하는 은행들이 있어 연초 대출이 상대적으로 유리할 수 있다. 또한 잔금일 기준 월초에 처리하는 것이 월말보다 대출이 더 잘 나오는 경향이 있다. 매수 수요는 서울 중심에서 노도강 등 외곽, 경기도권, 지방 대장 단지로 확산되고 있으며 대구 수성구, 울산 문수로, 부산 해운대 센텀 등 지방 핵심 입지에도 문의가 늘고 있다. 이는 대출 문의가 선행지표로 작용한다는 점에서 지방 관심 증가의 신호로 해석된다. 지방은 LTV가 최대 80%까지 가능하고 6억원 한도 제한도 없어 수도권보다 대출 여건이 좋지만, 총량 자체는 제한적이라 여전히 발품이 필요하다. 이번 대책에서 특히 주목할 점은 전세자금대출 규제 강화다. 다주택자와 투기과열지구 3억원 이상 아파트 소유자는 이미 전세자금대출이 막혀 있었는데, 여기에 더해 내년 1월부터 서울수도권 규제지역에 갭투자로 아파트를 보유하고 실거주하지 않은 사람은 본인이나 배우자가 다른 곳에서 전세를 살 때 전세자금대출 연장이나 신규 실행이 막힌다. 이는 투기적 목적으로 간주되기 때문이며, 불가피한 사유가 인정되면 최대 6개월 정도 예외적 유예를 받을 수 있으나 심사역의 주관적 판단에 좌우된다. 이로 인해 갭투자자들은 올해 안에 전세 계약을 증액 갱신하거나 미리 월세로 전환하는 등 대비가 필요하며, 세입자 입장에서는 갱신권 사용이 막힐 수 있어 전세 퇴거자금대출 문의가 급증하고 있다. 전세보증 비율도 서울 등 규제지역에서 기존 80%에서 70%로 낮아지는 등 전반적으로 전세자금대출 문턱이 높아지는 추세이며, 이는 역설적으로 전세입자들의 실거주 매수를 강요하는 효과를 낳고 있다. 전세자금대출 금리도 4%대 후반에서 5%대까지 상승해 매매자금대출과 큰 차이가 없어졌다. 강남권은 매수 수요가 있음에도 25억원 이상 고가 주택의 대출 한도가 2억원 수준으로 묶여 있어 기존 주택을 팔고 갈아타려는 수요가 움직이지 못하는 상황이며, 이로 인해 거래가 조용하고 호가도 다소 조정받고 있다. 반면 15억 이하, 9억 이하, 6억 이하 구간은 매우 활발한 거래가 이어지고 있으며, 이는 전세난으로 밀려난 수요가 어쩔 수 없이 매수로 전환하는 생존 매수 성격이 강하다. 삼성전자, SK하이닉스 등 대기업의 사내 저리대출(연 1.5% 등)도 시장에 유동성으로 작용하고 있으며, 이런 대기업 부부는 신용대출까지 활용해 자본금을 늘려 동탄 등 경기 동남권 신축 단지 매수에 나서고 있다. 다만 이번 대책에서 성과급이 기본급 대비 20~30% 이상 많으면 평균 소득으로 산정하는 규정이 도입되어, 오히려 성과급 비중이 큰 중견기업 2030세대 청년층의 대출 한도가 줄어드는 역설적 효과가 우려된다. 한국은행의 연속 기준금리 인상으로 최대 3.5%까지 오를 가능성이 거론되며, 변동금리는 4%대 후반, 고정형(주기형)은 5%대 후반에서 6%대까지 나가고 있다. 그럼에도 2022~2023년 급격한 금리 폭등을 경험하고 학습한 차주들이 많아 이번 금리 인상은 시장에 제한적 영향만 줄 것으로 전망되며, 금리만으로 집값을 잡기는 어려울 것으로 보인다. 스트레스 DSR 규제 강화로 변동금리가 고정금리 대비 메리트가 커지면서 다시 변동금리 선호가 늘고 있다. 전세자금대출도 대부분 변동금리이며 금리 상승에 취약하나, 정부가 임차인 보호 차원에서 가산금리 인상을 제한할 가능성도 거론된다. 청년 미래 보금자리론은 4억원 이하 비아파트에 LTV 80%, DSR 미적용, 저금리를 지원하지만 대상 물건이 제한적이고 잘못 고르면 환금성이 떨어질 위험이 있어 신중한 접근이 필요하며, 차라리 기존 보금자리론으로 아파트를 매수하는 것이 나을 수 있으나 이는 주택가격 6억원 이하 제한이 있어 실효성이 부족하다는 지적이 있다. 재개발 투자 수요도 늘고 있으나 프리미엄은 전액 현금이 필요해 자본력이 충분한 경우에만 가능하다. 청약의 경우 중도금 대출을 받으면 전월세를 주지 못하게 하는 약정이 늘고 있어 실거주 유도가 강화되는 추세이며, 입주자 모집공고와 시행사 협약은행의 내규를 미리 확인하는 전략이 필요하다. 전반적으로 무주택자와 실수요자는 대출 규제가 복잡해진 상황에서 지역별, 규제 여부별로 세밀하게 따져 전략을 세워야 하며, 준비가 된 사람은 좋은 입지의 매물을 서둘러 매수하는 것이 유리하고, 준비가 안 된 경우 무리하게 서두르기보다 내년 초 대출 여건이 개선될 때를 노려보는 것도 방법으로 제시된다. 향후 시장이 다시 과열될 경우 정부가 추가로 대출 규제를 강화할 가능성이 있으며, 세금 규제보다는 대출 규제가 다음 카드로 사용될 가능성이 높다는 전망도 나온다. 결론적으로 금리 인상과 대출 규제라는 이중 압박 속에서도 공급 부족이라는 구조적 요인 때문에 좋은 입지의 부동산은 계속 오를 가능성이 크며, 무주택자와 유주택자 모두 신중한 공부와 상담을 통해 전략적으로 접근할 필요가 있다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=wfoKobVPaRE" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-18">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">부읽남</div>
+          <div class="title">집값 2028년까지 오를 겁니다, 지금이라도 집 사야 하는 이유 [김사부 풀버전]</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        <p>부동산 읽어주는 남자가 부동산 투자 전문가 김사부를 초청해 최근 세제 개편안과 시장 전망에 대해 논의했다. 정부의 세제 개편 정부안이 확정되어 국회로 넘어간 상황이며, 처음 예고했던 것보다는 다소 완화되어 비거주자 주택자에 대한 과세 차등을 줄이고 종부세 공제 대상 구간을 넓혔다. 다만 전체적인 틀에서는 증세라는 점은 변함이 없고, 초고가 주택에 대한 장기보유특별공제 축소는 그대로 유지되었다. 김사부는 우리나라 세제 정책이 역사적으로 정권에 따라 계속 바뀌어 왔고 글로벌 기준에 비해 부동산 세금이 과도하다는 공감대가 있기 때문에, 언젠가는 다시 완화될 가능성이 높다고 보았다. 그래서 고가 주택 보유자들이 세금 부담에도 불구하고 매도보다는 거주 형태를 다운그레이드하며 버티는 경우가 많을 것이고, 정부가 2027~2028년까지 양도세를 완화해줄 것을 기대하며 매물을 내놓게 하려는 정책도 과거 사례를 볼 때 큰 효과가 없을 것이라고 진단했다.</p><p>이번 개편으로 장기보유특별공제가 장기거주특별공제로 전환되면서 거주 요건이 강화되었는데, 이는 전세 매물을 더욱 줄이는 요인이 된다고 지적했다. 서울은 무주택 임차인 비율이 절반에 달하는데, 집주인들이 실거주를 위해 전세를 놓지 않고 직접 들어가려는 경향이 강해지면서 전세 물량이 극도로 부족해졌다는 것이다. 실제로 서울 대단지 아파트의 전세 물량을 확인해보면 1000세대가 넘는 단지에도 전세가 한두 개 밖에 없는 경우가 흔하다고 설명했다. 여기에 재건축, 재개발로 인한 이주 수요까지 겹치면 전월세난은 더욱 심화될 수밖에 없는 구조라고 보았다. 정부가 발표한 3기 신도시 등 공급 대책도 2018년 발표 이후 8년이 지난 2026년 12월에야 첫 입주가 이루어지는 등 진행이 매우 느려서, 새로운 공급 계획보다는 기존 계획의 속도를 높이는 것이 더 현실적이라고 비판했다.</p><p>금리에 대해서는, 주택담보대출 금리가 7% 선을 넘으면 위험 수위이며 현재 최저점 대비 두 배 가까이 오른 상황이라 금리가 부동산 시장의 유일한 하락 변수라고 짚었다. 그러나 예전보다 담보대출 비율과 다주택자 비율이 줄어들어 있어 실제로 쏟아질 매물 자체가 많지 않기 때문에, 금리 상승이 과거처럼 큰 충격을 주지 않을 것이라고 전망했다. 전체적으로 그는 지금의 상승장이 절반 정도(5부) 진행된 수준이며, 2024년 3월부터 시작된 상승 흐름이 앞으로도 약 2년간 유사한 속도로 이어질 것이라고 예측했다. 다만 2년쯤 지나면 집값과 전세가가 지나치게 올라 오히려 사람들이 감당하지 못하는 수준에 이르면서 역전세와 같은 반작용이 나타날 수 있다고 전망했다. 이는 2020년 임대차 2법 시행 이후 2022년에 벌어졌던 역전세 사태와 유사한 패턴이 될 수 있다고 언급했다.</p><p>집을 살 시점에 대해서는 초고가 강남 아파트를 제외하면 서두르는 것이 좋다고 조언했다. 강남 아파트는 대출 규제로 수요가 강제로 억제되어 있어 가격이 정체되어 있으므로 여유를 갖고 호가가 충분히 내려왔을 때 매수해도 된다고 보았다. 서울 내에서는 GTX-A 노선의 삼성역 연결이 실현될 은평구를 유망 지역으로 추천했으며, 현재는 강남 연결이 안 되어 GTX 효과가 제한적이지만 삼성 연결이 완료되면 파급력이 커질 것이라고 설명했다. 경기 남부권은 반도체 산업벨트 영향으로 영통, 망포역 인근 등 기존에는 주목받지 못했던 지역까지 관심권으로 확대되고 있다고 했다. 반면 평택은 아직 반도체 호재를 온전히 누리기에는 교통 접근성이 부족하고 입주 물량이 여전히 많아 시기상 이르다고 평가했다. 서울 서부권과 김포, 검단 등은 분당, 판교, 수지처럼 시장을 선도하는 지역이 없어 상승 타이밍이 상대적으로 늦어질 수 있다고 보았다.</p><p>주택 선택 기준으로는 대단지가 가장 중요하며, 대중의 관심과 노출도가 높아야 가격이 오른다고 강조했다. 그다음으로는 신축 또는 준신축(약 7년 이내)이 탄력이 좋다고 보았고, 서울 구축 아파트라면 세대수가 크고 주변 개발 가능성이 있는 곳을 선택하는 것이 좋다고 권했다. 지방 대도시(광주, 대구, 부산, 세종 등)는 물량이 부족한 상황이라 학군지 아파트를 중심으로 이미 상승세를 보이고 있으며, 지방에서는 학군이 연식보다 중요한 기준이라고 강조했다. 재개발, 재건축 투자와 관련해서는 초기 단계의 지방 사업은 위험하지만, 관리처분인가를 받은 대단지 물건은 안전마진이 있어 투자 가치가 있다고 조언했다. 빌라 투자에 대해서는 투자 목적의 단순 매입은 리스키하지만, 재개발 예정 지역의 빌라를 실거주하며 2년 보유해 비과세 혜택을 받는 전략은 추천할 만하다고 밝혔다.</p><p>마지막으로 김사부는 근본적인 정책 문제로 임대업자와 다주택자에 대한 부정적 인식을 지적하며, 민간이 임대 시장을 담당하는 것을 죄악시하는 현재의 정책 방향이 전세난을 심화시키는 근본 원인이라고 주장했다. 기업형 임대 활성화 정책에 대해서도 기업이 충분한 이익을 낼 수 없는 구조라면 실효성이 낮을 것이라고 전망했다. 결론적으로 그는 정부 정책에 맞서기보다 현재의 흐름에 순응하면서 그 안에서 효율적으로 대응하는 전략을 권했다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=M7zFcZmpeVU" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-19">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">부읽남</div>
+          <div class="title">환율 내려온 지금이 기회입니다, 저라면 현금 ‘여기로’ 옮깁니다 [안유화 교수 1부]</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        <p>환율이 최근 빠르게 하락해 1346원 수준까지 내려온 배경과 앞으로의 방향, 그리고 이를 활용한 투자 전략에 대해 안유화 교수와 나눈 대담이다. 안유화 교수는 환율 하락의 원인으로 세 가지를 꼽는다. 첫째는 무역수지로, 삼성전자와 SK하이닉스 등 국내 반도체 기업들이 메모리 반도체 수출 호조로 사상 최대 실적을 기록하면서 벌어들인 달러를 원화로 환전해 국내 달러 공급이 크게 늘었다는 점이다. 실제로 한국의 1월부터 8월까지 누적 수출은 전년 대비 169퍼센트 증가했고, 8월 한 달만 외환보유액이 143억 달러 늘어 총 4460억 달러 수준으로 역대급을 기록했다. 둘째는 한미 금리차로, 한국은행이 기준금리를 올리면서 한미 금리차가 기존 1퍼센트에서 0.75퍼센트로 좁혀진 점이 원화 절상 요인으로 작용했다. 셋째는 자본수지로, 원화가 절상될 때 외국인 투자자들이 한국 주식을 매수하러 들어오면서 추가로 원화 강세를 부추기는 흐름이 있다.</p><p>다만 교수는 원화 환율이 앞으로도 계속 절상될 것이라고 단정할 수는 없다고 강조한다. 원화는 국내에서만 쓰이는 일종의 상품권과 같아서, 그 가치는 한국이 스스로 결정할 수 없고 사실상 미국의 금리 정책과 미국 국채금리에 더 크게 좌우된다는 것이다. 최근 미국의 고용지표가 예상보다 좋게 나오고 물가지표도 목표치인 2퍼센트에서 크게 벌어진 3.3에서 3.7퍼센트 수준을 보이면서, 연준의 추가 금리인상 가능성이 다시 부각되고 있다. 만약 미국이 금리를 올리면 한미 금리차가 다시 벌어지고, 국내 증시가 부진한 상황에서 서학개미들의 해외주식 투자 수요로 달러 수요가 늘어나 원화가 다시 절하될 수도 있다. 즉 무역수지와 자본수지, 금리차라는 세 요인이 서로 다른 방향으로 작용할 수 있어 원화 환율에는 절상과 절하의 힘이 동시에 존재한다고 설명한다.</p><p>그럼에도 교수는 장기적으로 지금이 한국인들에게 달러 자산을 축적할 매우 좋은 기회라고 강조한다. 그 이유는 글로벌 공급망이 미국 중심과 중국 중심으로 양분되는 지정학적 재편이 진행 중이며, 경제 안보 논리에 따라 각국이 자국 내 생산을 요구하고 관세로 압박하는 흐름이 강해지고 있기 때문이다. 한국은 인구 규모가 작아 내수만으로 성장할 수 없는 구조적 한계와 초고령화 문제를 안고 있어, 원화 환율을 스스로 통제할 수 있는 힘이 근본적으로 약하다는 것이다. 하지만 역설적으로 지금은 한국이 HBM 등 첨단 반도체 분야에서 대체 불가능한 경쟁력을 갖추고 있어 달러를 벌어들이기 가장 좋은 시점이며, 이런 기회는 흔치 않기 때문에 원화가 비쌀 때 달러 자산을 정립식으로, 즉 매달 일정 금액씩 나누어 매입해 축적해야 한다고 조언한다. 구체적으로는 원화가 강세일 때 저렴해진 달러로 미국 국채를 매입해 3.5에서 3.75퍼센트 수준의 달러 이자를 받고, 이후 원화가 다시 절하되면 그 달러를 국내로 들여와 원화로 환전함으로써 환차익까지 얻는 전략을 제시한다. 이는 비트코인 투자와 마찬가지로 정립식 매수를 통해 재무적 자유, 즉 일하지 않아도 임대수익이나 배당, 이자 등으로 월 지출을 충당할 수 있는 손익분기점에 도달하기 위한 방법이라고 설명한다.</p><p>원화 절상은 국내 경제에도 긍정적 측면이 있다고 짚는다. 한국은 에너지를 전량 수입에 의존하기 때문에 호르무즈 해협 정세 불안 등으로 국제 유가가 오르면 수입물가가 상승할 수밖에 없는데, 원화가 강세를 보이면 이러한 수입물가 상승 압력을 상당 부분 상쇄해 국내 물가 안정에 도움이 된다는 것이다. 이는 한국은행 입장에서도 금리 정책 운용의 부담을 덜어주는 요인이 된다. 또한 원화 강세는 해외여행 수요를 늘려 항공, 여행 관련 업종에도 긍정적으로 작용하고 있다. 반면 일반적으로 원화 절상은 수출 경쟁력 약화로 이어져 무역수지 악화를 부르는 경우가 많지만, 현재 한국은 반도체 분야에서 대체 불가능한 위치에 있어 가격이 비싸져도 수요가 꾸준하기 때문에 수출 측면에서 손해를 거의 보지 않는 특수한 상황이라고 설명한다. 실제로 애플이 삼성전자의 메모리를 채택하는 과정에서 과거에는 애플이 갑, 삼성이 을이었던 관계가 이제는 공급자인 삼성이 갑이 되는 역전 현상까지 벌어지고 있다고 언급한다.</p><p>다만 중장기적으로는 중국의 반도체 굴기가 변수가 될 수 있다고 지적한다. 단기적으로는 중국이 큰 영향을 주지 못하지만, 앞으로 1~2년 내 양쯔메모리 등 중국 기업들이 낸드나 HBM 관련 기술에서 빠르게 추격해오고 있어, 만약 중국이 HBM 양산에 성공하는 소식이 나온다면 한국의 반도체 경쟁력과 이에 기반한 환율 여건에도 상당한 영향을 줄 수 있다고 경계했다. 결론적으로 현재는 무역수지 측면에서 한국 반도체 산업이 역사적으로 보기 드문 호황을 누리고 있고, 이를 기반으로 원화가 강세를 보이는 매우 이례적이고 유리한 국면이므로, 투자자 입장에서는 이 기회를 활용해 달러 자산을 정립식으로 축적해 나가는 전략이 유효하다는 것이 안유화 교수의 핵심 메시지다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=x9vLNvOliEM" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-20">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">The Plain Bagel</div>
+          <div class="title">I Paid Off My 2.875% Mortgage…Dave Ramsey Was Right</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        <p>한국 부동산 투자자이자 유튜버 그레이엄(더 플레인 베이글)은 그동안 낮은 고정금리 대출은 절대 조기 상환하지 말고 그 차액을 주식시장에 투자해 차익을 얻으라고 오랫동안 조언해왔다. 그러나 최근 2.875%짜리 초저금리 30년 고정 모기지 세 건을 매도하며 상환하게 되었고, 이 경험을 통해 자신의 오랜 신념이 틀렸을 수도 있다는 것을 깨달았다고 밝힌다. 그는 트위터에서 저금리 대출을 조기 상환한 것을 후회하는지 물었을 때 약 400만 조회수와 1500개의 답변 중 거의 아무도 후회하지 않는다고 답했다는 점에 주목한다.</p><p>그는 어린 시절 모든 형태의 빚은 나쁘다고 배웠고 신용카드나 대출 없이 살았지만, 21살에 부동산 중개인으로 저축한 돈으로 부동산을 사려다 신용 기록이 없다는 이유로 대출을 거절당한 경험을 계기로 생각이 완전히 바뀌었다고 설명한다. 이후 그는 빚과 신용은 피해야 할 것이 아니라 잘 활용하면 큰돈을 벌 수 있는 도구라는 철학을 갖게 되었다. 신용점수를 빠르게 올리는 방법을 익혀 은행에서 낮은 금리로 대출을 받았고, 로스앤젤레스의 여러 부동산을 3.375%, 3.125%, 3.6% 등의 금리로 매입했다. 예를 들어 20% 다운페이먼트로 매입한 부동산이 임대 수익률 8%를 내고 대출금리가 3.125%라면, 그 차이만큼 무료로 수익을 얻는 셈이며 여기에 자산 가치 상승분까지 더하면 투자 대비 수익률이 매우 높아진다는 논리로, 자기 돈을 최소한만 투입하고 나머지는 은행 돈으로 레버리지를 극대화하는 전략을 통해 10년간 수백만 달러를 벌었다고 말한다. 고정금리 덕분에 금리 인상 위험이 없고, 인플레이션이 부채의 실질가치를 갉아먹어 사실상 공짜 돈을 얻는 것과 같다고 여겼기에, 그는 항상 사람들에게 저금리 모기지를 조기 상환하지 말고 차라리 S&amp;P500에 투자하라고 조언해왔다.</p><p>그런데 최근 2.875% 금리의 부동산 세 채를 매도하면서 실제로 빚이 사라지는 것을 경험했고, 이때 예상치 못한 심리적 해방감을 느꼈다고 말한다. 로켓머니 앱에서 부채 항목이 수백만 달러 줄어드는 것을 본 순간 이상하리만치 안도감을 느꼈다는 것이다. 그는 이것이 자신만의 특이한 경험인지 알아보기 위해 관련 연구를 조사했고, 부채를 상환한 사람들 대부분이 불안감이 줄고 더 나은 의사결정을 내리며 인지 능력 테스트에서도 더 좋은 성과를 보였다는 연구 결과를 발견했다. 이는 저소득층뿐 아니라 고소득층에서도 마찬가지였고, 부채의 규모나 금리보다 오히려 부채 계좌의 개수 자체가 중요한 요인이었다고 한다.</p><p>그는 저금리 모기지를 갚는 것은 재무적 결정이 아니라 감정적 결정이라고 강조한다. 수학적으로는 시장에 투자하는 쪽이 압도적으로 유리하지만, 매달 나가는 상환금은 그 자체로 정신적 부담이 된다는 것이다. 한 연구에 따르면 재정 상태에 대한 주관적 만족감이 직업, 건강, 인간관계를 합친 것만큼이나 전체적인 행복에 중요한 요소였다고 한다. 다만 그는 균형이 필요하다고도 지적하는데, 다른 연구에서는 보유 현금이 소득이나 투자, 순자산보다도 삶의 만족도를 더 잘 예측한다는 결과가 나왔기 때문에, 가진 돈을 전부 대출 상환에 써버려 유동성이 없어지는 것도 바람직하지 않다고 말한다. 부동산은 유동성이 매우 낮아 한 번 갚은 돈을 다시 빼내기 어렵기 때문에 항상 현금 버퍼를 유지하면서 부채를 상환하는 것이 가장 좋다고 조언한다. 또한 퍼블릭 이코노믹스 저널의 연구를 인용해, 세제 혜택이 있는 은퇴 계좌에 최대한 투자하는 대신 모기지를 자발적으로 조기 상환하는 가구의 약 38%가 잘못된 선택을 하고 있으며, 이로 인해 달러당 11에서 17센트에 해당하는 손실을 보고 있다고 설명한다.</p><p>결론적으로 그는 401k 매칭을 받지 않거나 24% 고금리 신용카드 빚이 있다면 3% 모기지를 갚는 것은 좋은 선택이 아니지만, 나머지 재정 상태가 이미 안정적으로 정리되어 있다면 마음의 평화를 위해 모기지를 상환하는 것도 합리적일 수 있다고 말한다. 그는 사람마다 부채를 대하는 태도가 다르며 어느 쪽이 맞고 틀리다고 할 수 없다고 하면서도, 나이가 들수록 모든 금리와 차익을 최적화하는 것이 예전만큼 즐겁지 않고 오히려 스트레스로 느껴지기 시작했다고 고백한다. 최종적으로 그는 앞으로 이사를 하게 된다면 모기지를 조기에 상환하는 쪽을 적극적으로 고려하겠다고 밝히며, 재정 관리의 우선순위로 첫째 비상금을 확보하고, 둘째 회사의 401k 매칭을 받고, 셋째 고금리 부채나 신용카드 빚을 갚은 뒤, 그 다음에 마음의 평화가 중요하다면 모기지 조기 상환을 고려하라고 권한다. 4에서 4.5% 이하의 금리라면 수학적으로는 상환하지 않는 것이 맞지만, 그럼에도 정신적 안정감이라는 요소는 결코 과소평가해서는 안 된다는 점을 다시 한번 강조하며 영상을 마친다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=9TwzN5wak8A" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-21">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">SBS 교양이를 부탁해</div>
+          <div class="title">[지식뉴스] &quot;매크로 상황 심상찮다&quot; 미 국채금리 어디까지 흔들릴까...AGI 랠리 뒤에 숨은 반도체 &#x27;진짜 신호&#x27; / 교양이를 부탁해</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        <p>일본은행이 아니라 미국 국채 금리 급등과 AI 산업 자본 의존이 얽히면서 시장이 두 가지 상반된 시나리오 사이에서 흔들리고 있다는 내용의 방송 대화를 정리하면 다음과 같다.</p><p>패널은 최근 자본 시장에서 상반된 두 가지 전망이 동시에 존재하는 슈뢰딩거의 고양이 같은 중첩 상황이 벌어지고 있다고 진단한다. 문제의 근원은 미국 정부의 과도한 부채다. 코로나 사태 이후 늘어난 부채로 인해 내년부터 이자 비용이 전체 예산의 10퍼센트 이상을 차지할 전망이며, 이를 감당하기 위해 채권 발행이 늘어나면 금리가 오를 수밖에 없다는 긴축적 시나리오가 있다. 동시에 부채의 실질 가치를 낮추려면 화폐를 많이 풀고 완화적 통화정책을 쓸 수밖에 없다는 반대 시나리오도 있어, 달러 약세와 금리 상승이 동시에 나타나는 모순적 흐름이 이어지고 있다.</p><p>과거에는 AI 산업과 국채 시장이 별개의 문제였지만, AI 산업이 막대한 투자금을 필요로 하면서 빅테크 기업들이 보유 자금을 다 쓰고 이제는 채권과 주식 발행을 통해 자본 시장에 손을 벌리게 됐다. 그런데 마침 자본 시장은 미국 정부의 부채 문제로 금리가 오르는 시점이라, 빅테크의 자금 조달 비용도 함께 높아지고 있다. 결국 AI 투자가 단기적으로는 오히려 부채와 금리 문제를 심화시키는 역설적 상황이 벌어지고 있다.</p><p>AI가 장기적으로 생산성을 크게 높여 경제 성장을 견인하고 각국 정부의 부채 부담을 줄여줄 수 있다는 희망은 있지만, 단기적으로는 그 반대로 작용하고 있다는 것이다. 또한 AI로 인한 부가가치가 소수의 모델 개발사와 데이터센터 보유 기업에 집중되는 반면, 세금을 내는 것은 다수의 노동자이기 때문에 AI가 정부 부채 문제를 실제로 해결할 수 있을지는 여전히 불확실하다. 패널은 개인적인 경험으로, AI에게 이메일 번역과 일정 조율을 맡겼다가 할루시네이션으로 약속 날짜를 잘못 잡아 고객에게 실례를 범한 사례를 들며, 아직 AI는 사람의 개입과 검증이 필요한 수준이라고 평가한다. 24시간 인간 개입 없이 안정적으로 작업을 수행할 수 있는 AI, 또는 노벨상급의 혁신적 발견을 만들어낼 수 있는 AI 중 하나가 나와야 지금의 기대에 부합할 수 있다고 본다.</p><p>패널은 올해 6월 초 반도체 및 AI 관련 주식에 대한 시장의 열기가 과도하다고 판단해 포트폴리오 비중을 선제적으로 축소했다고 밝힌다. 그 근거는 특별한 정보가 아니라 본인이 직접 AI를 업무에 활용하면서 체감한 비용 부담이었다. 고비용 모델을 매일 사용하다 지출이 부담스러운 수준에 이르자 중국산 저비용 모델인 딥시크나 GLM으로 바꿔봤는데 체감 성능이 동일했고, 이는 전 세계 사용자들도 비슷하게 저비용 대안으로 이동할 것이라는 신호로 해석했다는 것이다. 실제로 올해 여름부터 중국의 저가 AI 서비스들이 미국 독점 모델과 비슷한 성능을 훨씬 낮은 가격에 내놓으면서, AI 시장이 소수 독점에서 경쟁 시장으로 전환되고 있다고 설명한다.</p><p>한국 반도체 주식과 관련해서는, 골드만삭스가 한국 메모리 반도체 기업들의 실적 사이클 기간이 과소평가돼 있다고 밝힌 데 대해 패널은 동의를 표한다. 한국 반도체 기업들의 주가수익비율(PER)은 3배에서 4배 수준인데, 같은 AI 사이클에 있는 미국, 중국, 일본 기업들은 15배에서 20배에 달한다는 점에서 이는 극단적인 저평가라는 것이다. 이러한 저평가는 AI 서버 투자 붐이 갑자기 중단될 경우 한국 반도체 수요가 사라질 수 있다는 불확실성 때문인데, 만약 실제로 다운사이클이 온다면 미국, 일본, 대만 기업들도 동일하게 타격을 받을 것이므로 밸류에이션 차이가 결국 어느 지점에서 수렴할 것으로 본다. 삼성전자와 SK하이닉스는 현재 자사주 매입으로 주가가 일정 범위에 갇혀 있는 상태이며, 5월과 6월에 뒤늦게 진입해 손실을 본 투자자들의 매물이 반등 시마다 나오면서 상단이 눌리고 있다고 설명한다. 외국인 투자자들이 올해 상반기에 한국 주식을 대거 매도했다는 인식과 달리, 실제 매도 비중은 전체 보유 물량의 2퍼센트에 불과하며 여전히 많은 외국인이 한국 반도체 주식을 보유하고 있다고 지적한다.</p><p>하반기 최대 관전 포인트로는 앤트로픽의 기업공개(IPO)가 꼽힌다. 앤트로픽은 시가총액 2조 달러를 희망하는 것으로 알려졌는데, 이는 삼성전자와 SK하이닉스를 합친 시가총액과 맞먹는 규모다. 하지만 올해 8월부터 오픈AI가 반격에 나서면서 점유율 경쟁이 치열해지고 있어 현재로서는 그만한 밸류를 인정받기 어려워 보인다고 평가한다. 원래 9월로 예정됐던 상장이 10월 말이나 11월 초로 한 달 정도 연기된 것은, 그 기간 동안 작년 가을 클로드 코드가 보여줬던 것과 같은 놀라운 기술적 도약을 준비하고 있다는 신호로 해석할 수 있다고 본다. 컴퓨팅 파워 면에서 오픈AI가 앤트로픽보다 약 두 배 많은 자원을 보유하고 있어, 모델 성능이 비슷해지면 결국 컴퓨팅 규모 경쟁에서 앤트로픽이 밀릴 수 있다는 우려도 제기한다.</p><p>국채 금리 안정을 위한 선결 과제로는 중동 지역의 지정학적 리스크, 특히 호르무즈 해협 관련 긴장이 빨리 해소되어야 한다는 점을 짚는다. 정유 제품 가격이 사상 최고 수준으로 치솟은 상황에서 원유와 곡물 가격 상승, AI로 인한 전기요금 상승 등이 겹쳐 인플레이션 압력이 커지고 금리 하락을 어렵게 만들고 있다는 것이다. 올해 1월만 해도 시장은 연내 여러 차례 금리 인하를 기대했지만 3월 지정학적 리스크가 불거지면서 전망이 완전히 뒤집혔다고 설명한다. 하반기 주목할 이벤트로는 앤트로픽 상장과 11월 중간선거를 꼽으며, 역사적으로 중간선거를 전후해 금융시장의 방향성이 바뀌는 경우가 많았다고 덧붙인다.</p><p>투자 조언으로는, 지금 같은 불확실성 국면에서 무리하게 투자 수익에 집착하기보다 AI를 잘 활용하는 능력을 기르는 것이 더 중요하다고 강조한다. 생산성 향상이 전체 시장 파이를 키우는 방향으로 가면 모두에게 이롭지만, 시장 규모가 그대로인 채 생산성만 높아지면 소수의 독점으로 귀결될 수 있어, 이런 시대에는 경제력 상실을 막기 위해서라도 개인이 AI 활용 역량을 키워야 한다는 것이다. 전설적인 헤지펀드 매니저 폴 튜더 존스의 말을 인용하며, 투자는 복싱과 같아서 좋은 기회가 아닐 때는 가드를 올리고 방어적으로 있다가 확실한 기회가 왔을 때 공격적으로 나서는 완급 조절이 중요하다고 말한다. 특히 과도한 레버리지는 상환 기한과 이자 부담 때문에 조급함을 유발해 잘못된 투자 판단을 내리게 한다고 경고한다. 현재 시점에 대해서는, 주가가 오르면 위험해지고 떨어지면 오히려 안전해지는 것이 투자의 속성인 만큼, 5월과 6월보다는 지금이 상대적으로 위험이 낮아진 국면이라고 평가하며, 삼성전자와 SK하이닉스의 배당을 감안하면 현재 밸류에이션이 나쁘지 않다고 본다. 다만 상반기처럼 매달 급등하는 장세는 당분간 기대하기 어렵고, 지금 혼재된 두 가지 시나리오 중 어느 쪽으로 방향이 정해질지는 앞으로 반년 안에, 즉 올해 연말과 내년 초 사이에 결론이 날 것으로 전망한다. 마지막으로 투자에서 변하지 않는 유일한 원칙은 세상이 계속 변한다는 사실이며, 반도체가 무조건 좋다는 식의 고정된 믿음 없이 상황에 따라 유연하게 판단해야 한다고 마무리한다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=LbP501kedig" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-22">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">SBS 교양이를 부탁해</div>
+          <div class="title">[이슈읽기] 미국채 10년물 금리, 곧 5% &quot;살얼음판&quot;...달러 흔들리면 결국 돈은 어디로 갈까, 베센트의 진짜 속내 / 교양이를 부탁해</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        <p>이 영상은 중소기업중앙회 투자전략실 성상현 부부장이 출연하여 미국 장기국채 금리 상승, 재무부의 바이백 정책, 스테이블코인, 화폐의 본질과 비트코인의 가치 등에 대해 설명하는 내용이다. 최근 이란 전쟁 등 지정학적 이슈로 미국 장기국채 금리가 급등하자 미국 재무부는 부채의 평균 금리 상승을 우려해 기존보다 두 배 이상 규모로 장기채 바이백을 하겠다고 선언했다. 이는 중앙은행이 돈을 찍어 국채를 사들이는 전형적인 양적완화와는 다르지만, 시장에 이미 나와 있는 채권을 사들이고 장기채 발행을 줄이는 대신 단기채 발행을 늘려 부채의 평균 만기를 줄이는 방식으로, 유사 양적완화 신호로 시장에 받아들여지고 있다. 이 발표 이후 금과 비트코인 같은 희소 자산의 가격이 오르기 시작했는데, 이는 법정화폐 가치 하락에 대한 베팅이자 실질금리가 인위적으로 눌리면서 이자를 주지 않는 자산이 상대적으로 각광받는 현상이라고 설명한다. 만약 연준이 실제 양적완화로 전환한다면 자산 가격은 훨씬 더 크게 상승할 것으로 전망한다. 지난해 금과 비트코인 가격이 하락했던 이유는 반도체·AI 산업으로 자금이 이동했기 때문이며, 최근 반도체 조정과 함께 자금이 다시 금과 비트코인으로 회귀하고 있다고 본다. 그는 과거 양적완화 시기와 동일한 투자 방식을 고집하면 실패할 수 있으며, 지금은 돈의 이동을 추적하는 것이 중요하다고 강조한다. 포트폴리오 관점에서는 인플레이션 수혜 자산인 금, 비트코인과 생산성 수혜 자산을 함께 구성해야 하며, 원자재 역시 생산성을 위한 설비투자에 필수적인 자산으로 유효하다고 본다. 미국의 생산성 핵심은 AI이며, 현재는 인프라 투자 단계로 아직 뚜렷한 생산성 증대로 이어지지 않고 있지만, 자산시장이 붕괴되지 않도록 정부가 개입해 시장을 지지하는 것이 필수적이라고 설명한다. 이는 미국이 AI 패권 경쟁에서 중국에 따라잡히지 않기 위해 시장을 냉각시킬 여유가 없기 때문이며, 정부와 맞서지 말고 정부의 의지를 따라가는 투자가 유효하다고 조언한다. 재무부가 금리 완화 기조를 지속한다면 장기금리는 이론적 적정 수준인 5%가 아니라 4%대까지도 낮아질 수 있다고 본다. 미국은 초당적으로 현대통화이론을 채택하고 있으며, 화폐 가치가 붕괴하지 않는 한 부채 규모가 40조, 50조, 60조 달러가 되어도 문제가 되지 않는다는 관점을 취하고 있다고 설명한다.</p><p>이어서 화폐의 본질에 대해 설명하며, MV는 PY라는 공식을 통해 통화량과 통화속도의 곱이 명목 경제성장, 즉 물가상승률과 실질GDP의 곱과 같다는 원리를 소개한다. 결국 돈이 풀리더라도 이것이 실질 성장으로 이어져야 화폐가치가 유지되며, 그렇지 못하면 로마제국의 데나리우스 은화처럼 화폐가 붕괴한다고 설명한다. 로마는 은 함량을 95퍼센트에서 2퍼센트까지 낮추며 화폐가치를 훼손했고 결국 제국이 무너졌다고 본다. 화폐가 가치를 지니기 위한 핵심 조건은 분할 가능성, 휴대성, 내구성, 대체 가능성, 검증 가능성이지만 그중 가장 중요한 것은 희소성, 즉 공급 급증이 불가능해야 한다는 점이라고 강조한다. 그는 야프섬의 라이스톤과 아프리카의 유리구슬 화폐 사례를 들어, 채굴이나 생산이 쉬워지며 희소성이 사라지면 화폐로서의 가치도 사라진다는 점을 설명한다. 저량 대비 유량을 뜻하는 S2F 지표를 기준으로 보면 금은 67, 은은 15, 구리는 2인 반면 비트코인은 약 120에 달해, 현재 금보다 비트코인이 더 희소한 자산이라고 평가한다. 다만 금은 오랜 역사를, 비트코인은 짧은 역사를 가지고 있다는 차이가 있으며, 운반성과 검증 가능성 측면에서는 비트코인이 금보다 우월하다고 본다.</p><p>이어 미국이 AI 산업에 총력을 기울이는 이유에 대해, 중국의 부상뿐 아니라 달러 가치 붕괴를 막기 위해 돈을 풀되 이를 생산성으로 연결해야 하기 때문이라고 설명한다. 산업혁명과 중국의 산업화 사례처럼 큰 산업이 성장할 때는 인권 희생이 수반되지만 정부가 이를 묵인하며, 생태계를 먼저 장악하는 국가나 기업이 이익을 독식한다고 본다. 미국 빅테크가 2000년대 인터넷 생태계를 독점해 막대한 부를 축적했듯, AI 생태계 선점 여부가 향후 국가와 기업의 패권을 좌우할 것이라고 전망하며, 이 때문에 회수 불가능해 보이는 대규모 투자도 장기적 관점, 즉 롱터미즘에서 지속되고 있다고 설명한다. 미국 정부는 정권 교체 주기로 인해 장기 정책을 지속하기 어렵지만, 빅테크 수장들이 정부보다 더 긴 안목의 롱터미즘을 가지고 있어 정부가 이를 지원하는 구조라고 본다.</p><p>스테이블코인에 대해서는, 블록체인상 통화 속도가 기존 달러 시스템보다 훨씬 빨라 적은 통화량으로도 GDP를 키울 수 있는 생산성 도구라고 설명한다. 미국 정부 부채 40조 달러 중 32조 달러는 금리에 민감한 민간 수요자가 보유하고 있어 국채 재발행 시 리스크가 크며, 가격에 덜 민감한 수요처로 과거에는 중국이 있었지만 이제는 스테이블코인이 그 역할을 대체할 수 있다고 본다. 스테이블코인은 발행 시 담보로 미국 단기국채를 사용하기 때문에 스테이블코인 시장이 커질수록 자연스럽게 단기국채 수요가 늘어나고, 이는 장기국채 발행을 줄이면서도 금리를 안정시키는 또 다른 정책 수단이 된다고 설명한다. 현재 달러 스테이블코인이 전체 스테이블코인 시장의 99퍼센트를 차지하고 있으며, 이를 통해 달러 패권을 더욱 공고히 할 수 있다고 본다. 특히 자국 화폐 가치를 신뢰하지 못하거나 은행 계좌 개설이 어려운 신흥국 개인들이 스테이블코인 수요의 핵심이며, 이를 통해 과거 중국 등 무역흑자국이 미국 국채를 사줬던 역할을 전 세계 개인들이 대체할 수 있다고 설명한다.</p><p>블록체인이 금융의 시공간 제약을 허물면서 실물자산 토큰화나 증권형 토큰 발행 등을 통해 소액 개인 자금까지 글로벌 자산 투자에 끌어들일 수 있게 되고, 이 모든 거래가 스테이블코인으로 이뤄지면서 전 세계 자산이 미국 거래소에 상장되고 달러라이제이션이 가속화될 가능성이 있다고 전망한다. 이는 동시에 미국 외 다른 나라 중앙은행의 통화 주권이 약화될 수 있음을 의미한다. AI 시대와 스테이블코인은 초소액 결제, 실시간 글로벌 정산, AI 에이전트 간 자율 거래, API 단위 초소액 과금 등에서 뗄 수 없는 관계에 있으며, 기존 결제 시스템으로는 불가능한 이런 거래들이 블록체인과 스테이블코인을 통해 가능해진다고 설명한다.</p><p>마지막으로 그는 화폐 시스템은 언제나 권력에 의해 움직여왔다고 강조하며, 브레튼우즈 체제에서 파운드 대신 달러로 금을 폐화한 것도, 닉슨의 금태환 정지도, 양적완화도 모두 권력에 의한 결정이었고, 스테이블코인 역시 미국의 패권 유지에 도움이 된다고 판단했기 때문에 추진되는 또 하나의 권력적 선택이라고 설명한다. 성공 여부는 불확실하지만 정부는 법정화폐 체제를 지속시키기 위해 이 전략을 밀어붙이고 있으며, 만약 실패해 하이퍼인플레이션이나 달러 가치 붕괴로 이어질 경우를 대비해 개인 투자자는 금과 비트코인 같은 희소 자산을 일정 비중 헤지 수단으로 보유할 필요가 있다고 조언하며 영상을 마무리한다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=f69-Fbo1uC4" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-23">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">SBS 교양이를 부탁해</div>
+          <div class="title">[지식뉴스] &quot;AGI, 내년 말이면 통제 불능&quot; 앤트로픽 개발자가 사표내며 경고...지금 전쟁을 못 끝내는 진짜 이유 / 교양이를 부탁해</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        <p>모스크바에서는 기름 부족으로 주유소마다 시민들이 기름통을 들고 줄을 서는 상황이 벌어지고 있다. 이는 우크라이나가 러시아 본토를 드론으로 공격하며 정유소와 항만, 물류망을 타격해 러시아 경제를 서서히 말려 죽이려는 전략에서 비롯된 것이다. 광운대학교 빅데이터 경영 전공 교수이자 AI 연구자인 최재원 씨는 러시아 우크라이나 전쟁을 중심으로 드론과 AI가 결합되어 현대전의 양상을 어떻게 바꾸고 있는지를 설명한다.</p><p>전쟁 초반 러시아 기갑부대의 진격을 막은 것은 드론이었다. 처음에는 카메라가 달린 FPV 드론이나 터키산 자폭 드론인 바이락타르 TB2가 주로 쓰였다. 전쟁이 중반으로 접어들면서 드론의 역할은 정찰, 표적 정보 수집, 팔란티어 같은 플랫폼과의 결합을 통한 타격 지점 산출, 지뢰 투하 등으로 다양해졌다. 최근에는 우크라이나가 자국산 드론으로 1000km가 넘는 사거리를 확보해 서방 무기 사용 시 필요한 허가 없이도 러시아 본토의 모스크바, 정유소, 항만, 고속도로 물류망, 유조차 등을 직접 타격하고 있다. 이에 러시아는 고속도로에 천막을 치는 등 아날로그적 방어책을 시도하고 있으며, 소형 드론은 레이더로 탐지하기 어려워 산탄총 같은 구식 무기가 다시 등장하고 있다. 우크라이나는 드론 소음을 감지하는 센서를 전국에 설치하는 AI 기반 조기 탐지 시스템을 구축해 대드론 능력에서 앞서 있는 것으로 평가된다.</p><p>드론과 AI의 결합은 전쟁이 길어지면서 필연적으로 이루어졌다. 초기 드론은 GPS 신호와 무선 조종에 의존했으나, 러시아의 전자전 능력으로 GPS 재밍과 전파 교란이 이루어지자 유선 광섬유 드론이 등장했다. 그러나 광섬유 드론은 사거리에 한계가 있어 장거리 타격에는 쓸 수 없었고, 결국 자율 항법을 위한 AI 탑재가 필수가 되었다. 드론은 카메라와 센서로 주변을 인식하고 내장된 지도 정보와 비교해 위치를 파악하며, 신호가 끊긴 종말 단계에서도 스스로 표적을 인식해 타격할 수 있는 수준까지 발전했다. 이에 대응해 러시아군은 AI가 인식하기 어려운 지그재그, 격자무늬 위장을 도입하는 등 AI 인식을 방해하는 위장술도 함께 발전하고 있다.</p><p>챗GPT나 클로드 같은 대형언어모델도 실제 군사 작전에 활용되고 있다는 정황이 나타나고 있다. 베네수엘라의 마두로 대통령을 새벽에 전격 체포한 작전에서 앤트로픽의 클로드가 활용되었다는 보도가 있었고, 이후 미국과 이란의 전쟁에서 미국의 에픽리 작전 당시 24시간 만에 1000개가 넘는 표적을 타격하는 과정에서도 클로드가 표적 선정을 지원한 것으로 알려졌다. 2003년 이라크 전쟁 때와 비슷한 규모의 타격을 하면서도 투입된 정보 장교의 수는 100분의 1 수준으로 줄어들었다는 보고도 있어, AI가 작전 계획 수립과 의사결정 지원에서 실질적인 역할을 하고 있다는 추정이 나온다.</p><p>AI 전쟁을 이야기할 때 빠지지 않는 기업이 팔란티어다. 팔란티어는 2003년 설립된 회사로, 페이팔 창업자 피터 틸과 알렉스 카프 등이 만들었으며 처음부터 기업이 아닌 정부를 상대로 하는 B2G 사업을 지향했다. 팔란티어는 위성 사진, 감청 정보, 음성, 휴민트, 센서 데이터 등 100종이 넘는 이질적인 국방 데이터를 자체 온톨로지 기술로 통합하고 정제해 신뢰도를 검증하는 역할을 한다. 러시아 우크라이나 전쟁 발발 직후 CEO 알렉스 카프가 직접 키이우로 가서 젤렌스키 대통령에게 솔루션을 무료로 제공하겠다고 밝힌 이후, 러시아군의 위치 정보를 실시간으로 수집해 표적을 제시하는 역할을 해왔다. 이를 바탕으로 우크라이나 장교들은 태블릿으로 전장 상황을 파악하고 드론이나 미사일 등 대응 수단을 결정하는 이른바 전장의 우버 같은 체계를 운용하고 있다. 이러한 성과에 힘입어 팔란티어는 현재 시가총액 기준 세계 1위 방산기업으로 올라섰다. 팔란티어가 데이터를 정제하는 하부 플랫폼 역할을 하고, 그 위에서 클로드 같은 언어모델이 추론 기능을 수행하는 구조로 함께 쓰이고 있는 것으로 추정된다.</p><p>이러한 변화는 값비싸고 강력한 무기를 가진 국가만이 전쟁에서 우위를 점하던 시대가 저물고 있음을 보여준다. 드론은 저렴하고 관련 기술 상당수가 오픈소스로 공개되어 있어 후티 반군이나 헤즈볼라 같은 비국가 무장세력도 이를 활용해 호르무즈 해협 등에서 공격을 감행하고 있다. 지난해 우크라이나가 감행한 스파이더웹 작전은 이런 흐름을 상징적으로 보여준다. 러시아가 시베리아 오지 공항에 숨겨둔 전략폭격기 인근에 컨테이너를 몰래 반입한 뒤 정해진 시각에 컨테이너 문이 열리며 드론이 쏟아져 나와 폭격기들을 파괴한 것이다. 민간 물류 수단인 컨테이너가 공격에 활용된 점을 두고 테러에 악용될 수 있다는 우려와 비판도 제기되었다. 이러한 전술이 남의 나라 일만이 아니라는 지적도 나온다. 러시아 우크라이나 전쟁의 실전 경험을 가장 적극적으로 흡수하고 있는 나라가 북한이며, 최근 추가 파병 논의까지 나오는 상황에서 이러한 드론과 AI 전쟁의 변화상은 한반도 안보에도 중요한 시사점을 던지고 있다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=rhunx4t44cA" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-24">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">SBS 교양이를 부탁해</div>
+          <div class="title">&quot;전기는 부족하지 않아요&quot; 진짜 부족한 건 &#x27;이것&#x27;이다 #교양이를부탁해 #AI전력 #데이터센터 #한국전력 #에너지</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        <p>한전이 발전소에서 만드는 전기와 실제로 사용자가 필요로 하는 전기의 양을 시각 단위로 비교했을 때, 지금 이 순간 발전소에서 공급하는 전기가 수요자가 쓰는 전기보다 부족한 상황은 아니다. 만약 정말로 전기가 부족하다면 사용을 제한하거나 정전이 발생하는 일이 생겨야 하는데, 미국이나 한국 모두 그런 일이 실제로 일어나고 있지 않기 때문에 현재 전기 자체는 부족하지 않다고 볼 수 있다. 그런데 왜 전력 부족이라는 말이 나오고 데이터센터 건설에 병목이 생기는가 하면, 문제는 전기를 생산하는 양이 아니라 그 전기를 필요한 곳까지 제때 보내주는 설비, 즉 송전선로와 배전선로가 부족하다는 데 있다. 데이터센터 사업자들은 2년이나 3년 안에 필요한 만큼의 전력을 공급해 달라고 요청하지만, 그 짧은 기간 안에 새로운 전기를 실어 나를 송전망과 배전망을 짓는 것이 현실적으로 매우 어렵다는 것이다. 결국 전기 자체가 모자란 것이 아니라 전기를 원하는 시점에 원하는 장소로 옮겨줄 길, 즉 전력망 인프라가 부족한 것이 데이터센터 건설과 관련한 진짜 병목 지점이라는 설명이다.</p>
+        <a class="watch" href="https://www.youtube.com/shorts/yJSj2PTHMM8" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-25">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">SBS 교양이를 부탁해</div>
+          <div class="title">[지식뉴스] &quot;삼전•하닉, &#x27;전기료 25조&#x27; 미리 내주세요&quot;…결국 한전까지 다급해졌다, AGI 때문에 한국에 닥칠 일 / 교양이를 부탁해</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        <p>호르무즈 해협 위기와 AI 인프라 확산이 겹치면서 한국의 전력 시스템에 큰 부담이 오고 있다는 내용의 지식 뉴스입니다.</p><p>에너지 정책 전문가 권유제 대표는 미국 국채 금리가 5%대에서 내려오지 않는 배경에 AI 인프라 투자 붐이 있다고 설명했습니다. 신용도가 낮은 AI 기업들이 8~9%의 높은 금리로 자금을 조달해 데이터센터를 짓고 있는데, 정작 문제는 전기 생산량 부족이 아니라 전기를 실어 나르는 송전과 배전 설비의 부족이라고 지적했습니다. 이 때문에 일부 사업자는 전력망을 기다리는 대신 데이터센터 옆에 자체 발전소나 이동식 발전기를 두는 방식을 택하고 있으며, 이 모델을 처음 실현한 사람이 일론 머스크로, 통상 2년 걸리던 데이터센터 가동을 4개월로 단축했다고 밝혔습니다.</p><p>미국 내에서는 데이터센터가 광케이블이 몰린 특정 지역, 대표적으로 북부 버지니아에 집중되어 있는데, 수요 급증으로 전기 도매가가 오르면서 주변 주민들의 소매 전기요금도 함께 오르고 있어 반대 여론이 커지고 있습니다. 이 때문에 사업자들은 땅이 넓고 전기가 싸며 인허가가 수월한 텍사스로 이동하고 있지만, 텍사스는 물이 부족한 건조 지역이라 1기가급 데이터센터가 인구 수만 명 도시급의 물을 소비하면서 식수원 고갈과 물값 상승 문제가 발생해 목장과 농업에 의존하는 주민들의 반대에 부딩히고 있습니다. 데이터센터가 창출하는 일자리는 수십 명 수준에 불과한 반면 막대한 공공자원인 물, 토지, 전력망을 사용하기 때문에 이익과 보상의 불균형이 정치적 갈등으로 이어지고 있다고 설명했습니다.</p><p>한국 상황에 대해서는, 전기화 시대가 되면 자동차의 전기차 전환뿐 아니라 제철 공정처럼 석탄 대신 전기와 수소로 쇠를 만드는 산업 공정 전환까지 포함해 현재 사용하는 전기 대비 세 배 정도의 전기가 더 필요해질 것이라고 전망했습니다. 이는 현재 100기가와트 수준의 최대 전력 사용량이 300기가와트로 늘어나는 것을 의미하며, 발전소와 전봇대 등 설비도 세 배로 늘려야 한다고 말했습니다. 문제는 시민들이 발전소나 변전소, 고압 케이블 같은 설비를 평소에는 보지 못하고 살아왔지만, 전기화 시대에는 이런 설비가 집과 학교, 공장 주변에 더 많이 들어서야 하는데 주민들이 반대하면 인프라 건설이 지연되고 결국 전기요금 상승으로 이어진다고 지적했습니다. 실제로 양천구 목동처럼 이미 지하에 고압 케이블과 변전소가 있는 지역에서도 데이터센터 관련 설비 추가에 주민들이 반대하는 사례를 들며, 전기화 시대에는 전기에 대한 감수성과 수용성이 필요하다고 강조했습니다.</p><p>한국의 AI 데이터센터 필요성에 대해서는, 현재는 거의 100% 미국 데이터센터를 이용하고 있어 질문과 응답 사이에 최소 0.5초의 지연이 발생하는데, 로봇과 자율주행차 같은 피지컬 AI 시대에는 이런 지연이 사고로 이어질 수 있어 허용되지 않는다고 설명했습니다. 또한 국가와 기업, 은행, 방송국이 AI에 의존하는 시대가 되면 해저 케이블 단절이나 미국의 서비스 중단 같은 상황이 발생할 경우 국가 안위가 흔들릴 수 있어, 향후 어떤 AI 기업이 살아남든 관계없이 연산력 자체를 자국 주권 하에 두는 것이 핵심이라고 강조했습니다. 데이터센터 하나를 짓는 데 드는 비용은 서버 비용까지 포함해 최소 천조 원 규모로, 이것이 결국 미국 빅테크를 위한 임차 설비가 될 수 있다는 우려도 있지만, AI 인프라 자국 내 구축은 속도와 비용의 문제일 뿐 피할 수 없는 길이라고 주장했습니다.</p><p>호르무즈 해협 위기의 직접적 영향으로는, 한국 전기 도매 원가가 LNG 수입가에 80~90% 연동되는데 호르무즈 봉쇄로 전 세계 LNG 공급의 상당 부분이 막히면서 전쟁 전 kWh당 110원 수준이던 도매가가 겨울에는 200원을 넘을 수도 있다고 전망했습니다. 유가도 전쟁 전 배럴당 60달러에서 90달러 이상으로 오른 상태가 유지되면 도매가는 150원 밑으로 떨어지기 어려운데, 한전이 흑자를 내려면 도매가가 145원을 넘지 않아야 하기 때문에 이 위기가 계속되는 한 한전은 구조적으로 적자를 볼 수밖에 없다고 지적했습니다. 이런 추세라면 내년에는 전기요금이 20~30% 오를 가능성이 있다고 예상했습니다.</p><p>더 근본적인 문제로는 한전의 누적 부채가 200조 원에 달해 매년 이자만 4~5조 원을 갚아야 하는 상황에서, 앞으로 전력 인프라 확충에 필요한 투자 규모가 수백조에서 1000조 원 이상으로 추산되는데 이를 감당할 재원 마련이 쉽지 않다고 밝혔습니다. 결국 전기요금을 올리거나 민간 투자를 개방하거나 둘 중 하나를 정부가 선택해야 하는데, 아직 뚜렷한 해법 없이 정부가 주저하고 있는 상황이라고 진단했습니다.</p><p>마지막으로 현재의 에너지 투자 흐름을 50년 만에 온 기회로 표현하며, 네 가지 파도로 설명했습니다. 첫째는 중국, 인도, 동남아, 중동 등 40억 인구가 최소 빈곤을 벗어나며 전기 사용이 기하급수적으로 늘어나는 것, 둘째는 발전 밀도가 낮은 재생에너지로의 전환으로 인프라 양이 크게 늘어나는 것, 셋째는 AI 붐, 넷째는 제철과 유리 제조 등 산업 공정의 전기화입니다. 이 변화는 최소 30년간 지속될 것이며 궁극적으로 전 세계 전기 사용량이 현재의 네 배 이상으로 늘어날 것이라고 전망했습니다. 다만 사람들이 기대하는 연 15~20% 성장과 실제 가능한 연 5% 성장 사이에 괴리가 있어 향후 성장세가 둔화되면 불황처럼 느껴질 수 있지만 이는 여전히 과거 연 2~3% 성장 대비 매우 큰 증가라고 설명했습니다. 전력 설비 가격은 최근 5년간 다섯 배 오른 비정상적 상황이며, 앞으로는 가격이 유지되거나 낮아지되 공급량 증가로 기업들의 이익 총액은 커질 것으로 전망했습니다. 결론적으로 한국은 한전 체제를 유지하면서 신속히 증자하고, 필요하다면 일부 기업 대상으로 일시적 전기요금 인상을 통해 한전의 부담을 줄여주는 방향으로 빠르게 전력망 건설 속도를 높이는 것이 현실적인 해법이라고 제언했습니다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=qNLaGw-cR2s" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-26">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">SBS 교양이를 부탁해</div>
+          <div class="title">인플레·디플레 공포 속 살아남는 50년 투자 법칙 #교양이를부탁해 #인플레이션 #금값 #비트코인 #자산배분 #신환종 #달러약세</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        <p>금리와 통화정책, 지정학적 리스크에 따라 인플레이션과 디플레이션 국면이 언제든 뒤바뀔 수 있다는 점을 짚으며 자산 배분의 중요성을 강조하는 내용이다. 현재는 인플레이션 흐름이 지속되고 있다고 보고 있지만, 트럼프 정부의 정책적 실수나 연준의 과도한 긴축으로 세계 경제가 디플레이션으로 급격히 전환될 가능성도 존재한다고 설명한다. 특히 예상치 못한 전쟁, 예를 들어 이란을 둘러싼 분쟁이 러시아 우크라이나 전쟁이나 중국과 연계되어 확대될 경우, 인플레이션 국면이 어느 날 갑자기 디플레이션으로 반전될 수 있다고 경고한다. 이런 이유로 한쪽 방향에 지나치게 쏠린 투자는 위험하며, 분산을 통해 자산을 나누어 배치하는 전략이 반드시 필요하다고 강조한다. 구체적으로는 현금을 무작정 쌓아두기보다는 자산에 충분히 투자해 인컴을 확보하고 있다가, 시장의 흐름이 어느 방향으로 확실해졌다고 판단되는 시점에 리밸런싱을 통해 자산 배치를 다르게 조정해야 한다고 조언한다. 이러한 유연한 자산 배분과 리밸런싱 전략을 통해서만 앞으로의 10년은 물론 50년, 100년이라는 장기적인 시계에서도 안정적인 성장을 이어갈 수 있다고 결론짓는다.</p>
+        <a class="watch" href="https://www.youtube.com/shorts/_GLnLyom5fY" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-27">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">SBS 교양이를 부탁해</div>
+          <div class="title">ETF 분산 투자하고 있다고? 사실상 주식 몰빵인 이유 #교양이를부탁해 #인플레이션 #금값 #비트코인 #자산배분 #신환종 #달러약세</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        <p>반도체 ETF 70퍼센트, 조선 ETF 20퍼센트, 방산 ETF 10퍼센트처럼 구성하는 것은 자산 배분이 아니라 사실상 주식에 몰빵하는 것이라고 지적한다. 이는 주식이라는 하나의 자산군 안에서의 배분일 뿐이며, 주식 시장이 하락하면 이들 ETF도 거의 동시에 큰 차이 없이 함께 떨어지기 때문에 진정한 의미의 분산 투자라고 볼 수 없다는 것이다. 또한 현금 10퍼센트를 계속 보유하고 있다고 말하지만 실제로는 주가가 고점 대비 10퍼센트 떨어지면 그 현금을 다 주식 매수에 넣어버리는 경우가 많은데, 이 역시 진짜 배분이 아니라고 설명한다. 진정한 자산 배분이라면 성격이 완전히 다른 자산군, 즉 주식과 채권, 그리고 대체 투자나 실물 자산 등으로 나누어야 한다고 강조한다. 각자의 투자 성향이 보수적인지 공격적인지에 따라 주식과 채권 비중을 60대 30이나 30대 40대 30 같은 식으로 나눌 수도 있지만, 발화자는 이보다 기능별로 자산을 구분하는 방식을 제안한다. 구체적으로는 첫째, 시장을 이끄는 자산으로서 미국과 한국 주식을 얼마나 담을지, 둘째, 이자나 배당 같은 현금흐름을 만들어내는 인컴 자산을 10에서 20퍼센트 정도 담을지, 셋째, 위기 상황에서 반드시 현금화할 수 있는 유동성 자산으로 초단기 국채 같은 것을 얼마나 둘지, 넷째, 물가 상승이나 부동산 가격 상승에 대비하는 인플레이션 헤지 자산을 얼마나 배분할지를 각각 구체적인 기능별로 구분해서 정하는 것이 바람직하다고 말한다. 이렇게 기능별로 예를 들어 60, 30, 20 등 자신만의 비율을 명확히 나누어 자산을 운용하는 방식이 훨씬 합리적인 자산 배분이라고 조언하며 마무리한다.</p>
+        <a class="watch" href="https://www.youtube.com/shorts/xc0vKhLUWEk" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-28">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">SBS 교양이를 부탁해</div>
+          <div class="title">디지털 달러의 탄생 돈이 빛의 속도로 돈다? #교양이를부탁해 #인플레이션 #금값 #비트코인 #자산배분 #신환종 #달러약세</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        <p>이 영상은 디지털 달러 즉 디지털 금융 시스템의 등장이 향후 인플레이션에 미칠 영향을 다루고 있다. 발표자는 미래 인플레이션에 영향을 미칠 주요 변수로 AI로의 전환, 지정학적 요인, 그리고 디지털 금융 세 가지를 꼽는다. 디지털 달러가 합법적으로 도입되면 화폐가 실질적으로 풀리는 효과가 생기며 이는 엄청난 혁신이라고 평가한다. 디지털 금융이 확산되면 송금 수수료 등 거래 비용이 크게 줄어들고 생산성이 높아지면서 물가 상승 압력이 낮아지는 측면도 있지만 동시에 돈이 훨씬 빠른 속도로 회전하게 된다는 점이 핵심이다. 통화량이 아무리 많이 풀려도 그 돈이 실제로 유통되는 속도가 느리면 인플레이션으로 이어지지 않을 수 있는데 그 예로 2008년 금융위기 당시 양적완화를 통해 막대한 돈을 풀었음에도 돈이 잘 돌지 않아 인플레이션이 아니라 오히려 디플레이션으로 흘러갔던 사례를 든다. 반면 디지털 금융 시스템에서는 은행 등 중간 단계를 거칠 필요가 없어지기 때문에 화폐 유통 속도가 극도로 빨라지며 이는 사실상 빛의 속도에 비유할 수 있을 정도라고 설명한다. 통화 유통 속도가 빨라지면 같은 수준의 통화량이라 하더라도 인플레이션을 자극하는 효과가 훨씬 커지게 된다. 결국 디지털 금융의 발전은 거래 효율성을 높여 물가 하락 요인으로 작용할 수도 있지만 동시에 통화 유통 속도를 크게 높여 인플레이션을 자극하는 요인으로도 작용할 수 있는 양면성을 지니고 있으며 향후 통화정책과 인플레이션을 분석할 때 이러한 화폐 유통 속도라는 변수를 반드시 함께 고려해야 한다는 점을 강조하고 있다.</p>
+        <a class="watch" href="https://www.youtube.com/shorts/FDk9k8ZzbfE" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+  </section>
+
+  <footer class="foot">
+    <b>Investment Digest</b> · generated automatically. Not financial advice — personal reading notes only.
+  </footer>
+</div>
+<script>
+(function() {
+  var h = window.location.hash;
+  if (h && h.indexOf("#vid-") === 0) {
+    var el = document.querySelector(h);
+    if (el && el.tagName === "DETAILS") {
+      el.open = true;
+      el.scrollIntoView({block: "start"});
+    }
+  }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026-09-29 — Investment Digest</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Mulish:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#FBF6EC">
+<script>(function(){
+  var t = localStorage.getItem('theme') || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  document.documentElement.setAttribute('data-theme', t);
+})();</script>
+<style>
+:root{
+  --paper:#FBF6EC; --paper-2:#F3EADA; --card:#FFFDF8;
+  --ink:#332C24; --ink-soft:#6E6456; --ink-faint:#9A8E7C;
+  --line:#E7DBC6; --line-strong:#D8C8AC;
+  --honey:#E8A33D; --honey-deep:#C27D14; --honey-soft:#FBEACB;
+  --dram:#2C8C7C; --dram-soft:#DCEFE9;
+  --ltram:#5A61B4; --ltram-soft:#E6E6F6;
+  --optane:#C0563B; --optane-soft:#F7E1D8;
+  --shadow-sm:0 1px 2px rgba(80,60,30,.06),0 2px 8px rgba(80,60,30,.05);
+  --shadow-md:0 6px 18px rgba(90,66,28,.10),0 16px 36px rgba(90,66,28,.08);
+  --radius:18px; --radius-sm:12px; --maxw:1500px;
+  --display:"Fraunces",Georgia,serif;
+  --body:"Mulish",-apple-system,system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,monospace;
+  /* status scale: buy (green) -> hold (neutral) -> sell (red). Never used alone --
+     every status also carries an icon glyph + text label. */
+  --buy:#1F7A4D; --buy-soft:#DDF0E3;
+  --buyhold:#6E9A3C; --buyhold-soft:#EAF2D8;
+  --hold:#8A7F6C; --hold-soft:#F3EADA;
+  --holdsell:#C27D14; --holdsell-soft:#FBEACB; --holdsell-text:#8A5A0E;
+  --sell:#B23D26; --sell-soft:#F7E1D8;
+}
+/* Dark theme -- same design tokens, re-tuned for a dark warm-charcoal background
+   instead of the light "paper" one. Applied via a data-theme attribute on <html>
+   (set before first paint by the inline init script in <head>, so there's no
+   flash of the wrong theme) rather than only prefers-color-scheme, so the
+   toggle button can override the system setting and remember the choice. */
+:root[data-theme="dark"]{
+  --paper:#181512; --paper-2:#211D18; --card:#221E19;
+  --ink:#EEE7D9; --ink-soft:#BBB09C; --ink-faint:#8C8172;
+  --line:#38332A; --line-strong:#4A4335;
+  --honey:#F0B85B; --honey-deep:#F5C878; --honey-soft:#3A2D16;
+  --dram:#4FC0A9; --dram-soft:#173129;
+  --ltram:#9098E8; --ltram-soft:#242850;
+  --optane:#E68A6B; --optane-soft:#3B241B;
+  --shadow-sm:0 1px 2px rgba(0,0,0,.35),0 2px 8px rgba(0,0,0,.3);
+  --shadow-md:0 6px 18px rgba(0,0,0,.45),0 16px 36px rgba(0,0,0,.4);
+  --buy:#5FCB93; --buy-soft:#173121;
+  --buyhold:#A9CC6D; --buyhold-soft:#262E16;
+  --hold:#BBB09C; --hold-soft:#2A2620;
+  --holdsell:#F0B85B; --holdsell-soft:#3A2D16; --holdsell-text:#F0B85B;
+  --sell:#EE8065; --sell-soft:#3A211A;
+}
+*{box-sizing:border-box} html{scroll-behavior:smooth}
+body{margin:0;font-family:var(--body);color:var(--ink);line-height:1.6;background:var(--paper);
+  background-image:radial-gradient(circle at 10% 6%,rgba(44,140,124,.06),transparent 42%),radial-gradient(circle at 90% 18%,rgba(90,97,180,.06),transparent 44%),radial-gradient(circle at 50% 120%,rgba(232,163,61,.07),transparent 55%);
+  -webkit-font-smoothing:antialiased;min-height:100vh;transition:background-color .25s,color .25s}
+:root[data-theme="dark"] body{
+  background-image:radial-gradient(circle at 10% 6%,rgba(79,192,169,.08),transparent 42%),radial-gradient(circle at 90% 18%,rgba(144,152,232,.08),transparent 44%),radial-gradient(circle at 50% 120%,rgba(240,184,91,.06),transparent 55%);
+}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 22px}
+.theme-toggle{position:fixed;top:18px;right:18px;z-index:30;display:inline-flex;align-items:center;justify-content:center;
+  width:42px;height:42px;border-radius:50%;border:1px solid var(--line-strong);background:var(--card);color:var(--ink-soft);
+  cursor:pointer;box-shadow:var(--shadow-sm);font-size:17px;line-height:1;padding:0;transition:border-color .2s,color .2s,transform .15s}
+.theme-toggle:hover{border-color:var(--honey);color:var(--honey-deep);transform:scale(1.06)}
+.theme-toggle .tt-sun,.theme-toggle .tt-moon{display:none}
+:root[data-theme="light"] .theme-toggle .tt-moon{display:inline}
+:root[data-theme="dark"] .theme-toggle .tt-sun{display:inline}
+@media(max-width:480px){.theme-toggle{top:12px;right:12px;width:38px;height:38px;font-size:15px}}
+:root[data-theme="dark"] .eyebrow{border-color:var(--line-strong)}
+a{color:var(--honey-deep);text-decoration:none;border-bottom:1.5px solid var(--honey-soft);transition:border-color .2s}
+a:hover{border-color:var(--honey)}
+h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.2;color:var(--ink);margin:0 0 .5em}
+.head{padding:52px 0 18px}
+.eyebrow{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--honey-deep);background:var(--honey-soft);padding:7px 14px;border-radius:999px;border:1px solid #F0DCB0;margin-bottom:18px}
+.eyebrow .dot{width:8px;height:8px;border-radius:50%;background:var(--honey);box-shadow:0 0 0 4px rgba(232,163,61,.2)}
+.head h1{font-weight:700;font-size:clamp(2.1rem,5.6vw,3.2rem);letter-spacing:-.015em;margin:0 0 .3em}
+.head p{font-size:clamp(1rem,2vw,1.1rem);color:var(--ink-soft);max-width:60ch;margin:0}
+.back{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:.85rem;color:var(--ink-soft);border-bottom:none;margin-bottom:18px}
+.back:hover{color:var(--honey-deep)}
+
+.sec{margin:30px 0 0}
+.sec-h{font-family:var(--display);font-weight:600;font-size:1.15rem;margin:0 0 14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
+a.cardlink{text-decoration:none;color:inherit;border-bottom:none}
+.gcard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px;box-shadow:var(--shadow-sm);
+  transition:transform .18s,box-shadow .18s,border-color .18s;height:100%;display:flex;flex-direction:column}
+.gcard:hover{transform:translateY(-4px);box-shadow:var(--shadow-md);border-color:var(--line-strong)}
+.gcard h2{font-size:1.18rem;letter-spacing:-.01em;margin:0 0 .3em}
+.gcard .date{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:10px}
+.gcard .counts{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 12px}
+.gcard .tickers{font-size:.88rem;color:var(--ink-soft);margin:0 0 12px;flex:1}
+.gcard .go{font-family:var(--body);font-weight:700;font-size:.88rem;color:var(--honey-deep);display:inline-flex;align-items:center;gap:6px}
+.gcard:hover .go{color:var(--ltram)}
+
+.status{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-weight:700;font-size:10.5px;letter-spacing:.03em;
+  text-transform:uppercase;padding:3px 9px;border-radius:999px}
+.status.buy{background:var(--buy-soft);color:var(--buy)}
+.status.buyhold{background:var(--buyhold-soft);color:var(--buyhold)}
+.status.hold{background:var(--hold-soft);color:var(--hold)}
+.status.holdsell{background:var(--holdsell-soft);color:var(--holdsell-text)}
+.status.sell{background:var(--sell-soft);color:var(--sell)}
+
+.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px 24px;margin:14px 0;box-shadow:var(--shadow-sm)}
+.panel.buy{border-left:4px solid var(--buy)}
+.panel.buyhold{border-left:4px solid var(--buyhold)}
+.panel.hold{border-left:4px solid var(--hold)}
+.panel.holdsell{border-left:4px solid var(--holdsell)}
+.panel.sell{border-left:4px solid var(--sell)}
+.panel h3{font-size:1.08rem;margin:0 0 12px;display:flex;align-items:center;gap:10px}
+.panel .empty{color:var(--ink-faint);font-style:italic;font-size:.94rem;margin:0}
+.pick{padding:10px 0;border-top:1px dashed var(--line)}
+.pick:first-of-type{border-top:none;padding-top:2px}
+.pick .ticker{font-weight:700;font-family:var(--display);font-size:1.02rem;margin-bottom:2px}
+.pick .rationale{font-size:.92rem;color:var(--ink-soft);margin:0}
+
+.tickerbar{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 6px}
+.tchip{font-family:var(--mono);font-weight:700;font-size:.82rem;background:var(--paper-2);color:var(--ink-soft);
+  border:1px solid var(--line-strong);border-radius:999px;padding:5px 12px}
+
+.vcard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius-sm);margin:12px 0;overflow:hidden}
+.vcard summary{list-style:none;cursor:pointer;padding:16px 20px;display:flex;gap:14px;align-items:flex-start}
+.vcard summary::-webkit-details-marker{display:none}
+.vcard .vmeta{flex:1;min-width:0}
+.vcard .channel{font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--honey-deep);margin-bottom:3px}
+.vcard .title{font-weight:700;font-size:1rem;color:var(--ink)}
+.vcard .chev{margin-left:auto;color:var(--ink-faint);transition:transform .25s;font-family:var(--mono);flex:0 0 auto}
+.vcard[open] summary .chev{transform:rotate(180deg)}
+.vcard .body{padding:0 20px 20px 20px;color:var(--ink-soft);font-size:.95rem}
+.vcard .body p{margin:0 0 12px}
+.vcard .watch{font-family:var(--mono);font-size:.82rem}
+
+.foot{margin:54px 0 40px;padding-top:20px;border-top:1px solid var(--line);font-size:.85rem;color:var(--ink-faint);font-family:var(--mono);line-height:1.7}
+.foot b{color:var(--ink-soft)}
+.empty-state{color:var(--ink-faint);font-style:italic;padding:24px 2px}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+.zchart-panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px 24px;box-shadow:var(--shadow-sm)}
+.zchart-asof{font-size:.86rem;color:var(--ink-faint);margin-bottom:14px;line-height:1.5}
+.zchart-grid{display:grid;grid-template-columns:1fr 300px;gap:22px;align-items:start}
+@media(max-width:820px){.zchart-grid{grid-template-columns:1fr}}
+.zrank-list{display:flex;flex-direction:column;border-left:1px solid var(--line);padding-left:18px}
+@media(max-width:820px){.zrank-list{border-left:none;border-top:1px solid var(--line);padding-left:0;padding-top:14px}}
+.zrank-row{display:grid;grid-template-columns:12px 1fr auto auto;align-items:center;gap:9px;padding:6px 0;border-top:1px dashed var(--line);font-size:.86rem}
+.zrank-row:first-of-type{border-top:none}
+.zrank-row.zrank-head{border-top:none;border-bottom:1px solid var(--line);padding-bottom:8px;margin-bottom:2px;
+  font-family:var(--mono);font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-faint);font-weight:700}
+.zrank-dot{width:10px;height:10px;border-radius:50%}
+.zrank-ticker{color:var(--ink);font-weight:600}
+.zrank-val{font-family:var(--mono);font-weight:700;font-size:.85rem;text-align:right}
+.zrank-val.pos{color:var(--buy)}
+.zrank-val.neg{color:var(--sell)}
+.zrank-alloc{font-family:var(--mono);font-weight:700;font-size:.85rem;text-align:right;color:var(--ink-soft);min-width:52px}
+.zchart-note{font-size:.85rem;color:var(--ink-faint);margin:16px 0 0}
+
+.date-groups{display:flex;flex-direction:column;gap:16px}
+.date-group{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px 24px;box-shadow:var(--shadow-sm);
+  transition:border-color .18s,box-shadow .18s}
+.date-group:hover{border-color:var(--line-strong);box-shadow:var(--shadow-md)}
+.date-group .dg-head{display:flex;align-items:baseline;flex-wrap:wrap;gap:10px 14px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.date-group .dg-date{font-family:var(--display);font-weight:600;font-size:1.25rem;color:var(--ink);border-bottom:1.5px solid var(--honey-soft)}
+.date-group .dg-date:hover{color:var(--honey-deep);border-color:var(--honey)}
+.date-group .dg-count{font-family:var(--mono);font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-faint)}
+.date-videos{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+.date-videos li{display:flex;flex-direction:column;gap:3px;font-size:.94rem}
+.date-videos .dv-row{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline}
+.date-videos .dv-channel{font-family:var(--mono);font-size:10px;letter-spacing:.04em;text-transform:uppercase;color:var(--honey-deep);
+  background:var(--honey-soft);border-radius:999px;padding:2px 9px;flex:0 0 auto}
+.date-videos .dv-title{color:var(--ink)}
+.date-videos .dv-summary{color:var(--ink-faint);font-size:.85rem;line-height:1.5;margin:0 0 0 2px}
+.date-videos a{color:var(--ink);border-bottom:1.5px solid var(--line-strong)}
+.date-videos a:hover{color:var(--honey-deep);border-color:var(--honey)}
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode" title="Toggle dark mode">
+  <span class="tt-sun">☀</span><span class="tt-moon">☾</span>
+</button>
+<script>function toggleTheme(){
+  var r = document.documentElement, next = r.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  r.setAttribute('data-theme', next); localStorage.setItem('theme', next);
+  var mc = document.querySelector('meta[name="theme-color"]'); if (mc) mc.content = next === 'dark' ? '#181512' : '#FBF6EC';
+}</script>
+<div class="wrap">
+  <header class="head">
+    <a class="back" href="../index.html">← All digests</a>
+    <span class="eyebrow"><span class="dot"></span>2026-09-29</span>
+    <h1>Daily Digest</h1>
+    <p>Executive read of today's finance &amp; investing videos, sorted by call.</p>
+    <div class="tickerbar">
+      <span class="tchip">메타</span>
+<span class="tchip">스페이스X</span>
+<span class="tchip">엔비디아</span>
+<span class="tchip">인텔</span>
+<span class="tchip">ARM</span>
+<span class="tchip">AMD</span>
+<span class="tchip">마이크로소프트</span>
+<span class="tchip">앤트로픽</span>
+<span class="tchip">오픈AI</span>
+<span class="tchip">구글</span>
+<span class="tchip">테슬라</span>
+<span class="tchip">팔란티어</span>
+<span class="tchip">크라우드스트라이크</span>
+<span class="tchip">델</span>
+<span class="tchip">샌디스크</span>
+<span class="tchip">xAI</span>
+<span class="tchip">그록</span>
+<span class="tchip">로켓랩</span>
+<span class="tchip">비아셋</span>
+<span class="tchip">AT&amp;T</span>
+<span class="tchip">이리듐</span>
+<span class="tchip">AST스페이스모바일</span>
+<span class="tchip">부킹닷컴</span>
+<span class="tchip">익스피디아</span>
+<span class="tchip">아마존</span>
+<span class="tchip">인스타그램</span>
+<span class="tchip">유튜브</span>
+<span class="tchip">넷플릭스</span>
+<span class="tchip">현대차</span>
+<span class="tchip">SK하이닉스</span>
+<span class="tchip">삼성전자</span>
+<span class="tchip">마이크론</span>
+<span class="tchip">카카오</span>
+<span class="tchip">삼성전기</span>
+<span class="tchip">대한항공</span>
+<span class="tchip">이수페타시스</span>
+<span class="tchip">크래프톤</span>
+<span class="tchip">JYP</span>
+    </div>
+  </header>
+
+  <section class="sec">
+    <div class="sec-h">Executive summary</div>
+    
+    <div class="panel buy">
+      <h3><span class="status buy">▲ Buy</span></h3>
+      <div class="pick">
+        <div class="ticker">스페이스X</div>
+        <p class="rationale">TD코웬 등 투자은행들이 AI 컴퓨팅 임대와 스타링크 성장성을 근거로 강력 매수 의견과 목표주가 상향을 제시함.</p>
+      </div>
+    </div>
+
+    <div class="panel buyhold">
+      <h3><span class="status buyhold">◆ Buy / Hold</span></h3>
+      <div class="pick">
+        <div class="ticker">메타</div>
+        <p class="rationale">뮤즈 흥행과 AI 에이전트 수익화 기대로 주가가 급등하며 긍정적 전망이 이어짐.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">엔비디아</div>
+        <p class="rationale">저평가 판단에 따른 대규모 자사주 매입 발표로 경영진의 자신감과 매수 매력이 부각됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">AMD</div>
+        <p class="rationale">메타 등 빅테크와의 대규모 공급 계약으로 데이터센터 매출 성장 기대가 커짐.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">구글</div>
+        <p class="rationale">자체 AI 반도체와 소프트웨어 역량을 바탕으로 AI 에이전트 경쟁의 다크호스로 지목됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">마이크론</div>
+        <p class="rationale">임박한 실적 발표에서 매출총이익률 서프라이즈 기대가 커지며 긍정적으로 평가됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">크래프톤</div>
+        <p class="rationale">단기 악재에도 장기 성장 추세는 유지되고 있다는 낙관적 평가를 받음.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">JYP</div>
+        <p class="rationale">단기 부진은 일시적이며 대세 상승 흐름은 훼손되지 않았다는 평가를 받음.</p>
+      </div>
+    </div>
+
+    <div class="panel hold">
+      <h3><span class="status hold">● Hold</span></h3>
+      <div class="pick">
+        <div class="ticker">현대차</div>
+        <p class="rationale">펀더멘털 자체보다 자동차 업종 전반의 부진 때문에 주가가 눌려 있어 섹터 회복이 필요하다는 평가를 받음.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">SK하이닉스</div>
+        <p class="rationale">특별한 호재 없이 반등과 보합을 오가며 관망세를 보임.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">삼성전자</div>
+        <p class="rationale">배당락 하락 이후 소폭 반등하며 특별한 방향성 없이 관망되는 모습을 보임.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">카카오</div>
+        <p class="rationale">저점을 다지고 반등하는 모습으로 특별한 매수 매도 의견 없이 관망됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">삼성전기</div>
+        <p class="rationale">저점을 다지고 반등하는 모습으로 특별한 매수 매도 의견 없이 관망됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">대한항공</div>
+        <p class="rationale">저점을 다지고 반등하는 모습으로 특별한 매수 매도 의견 없이 관망됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">이수페타시스</div>
+        <p class="rationale">저점을 다지고 반등하는 모습으로 특별한 매수 매도 의견 없이 관망됨.</p>
+      </div>
+    </div>
+
+    <div class="panel holdsell">
+      <h3><span class="status holdsell">◇ Hold / Sell</span></h3>
+      <div class="pick">
+        <div class="ticker">부킹닷컴</div>
+        <p class="rationale">AI 에이전트가 목적성 인터넷 이용을 대체하면서 중개 플랫폼으로서 입지가 애매해질 것으로 우려됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">익스피디아</div>
+        <p class="rationale">AI 에이전트의 직접 처리로 여행 중개 플랫폼의 역할이 축소될 가능성이 제기됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">아마존</div>
+        <p class="rationale">쇼핑 등 목적성 검색을 AI 에이전트가 대체하면서 플랫폼 입지가 약화될 수 있다는 우려가 나옴.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">인스타그램</div>
+        <p class="rationale">봇 트래픽 증가로 실제 사용자 트래픽의 가치가 희석되며 손해를 볼 수 있다는 전망이 제기됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">유튜브</div>
+        <p class="rationale">동일한 이유로 봇 트래픽 확산에 따른 트래픽 가치 희석으로 부정적 영향이 우려됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">넷플릭스</div>
+        <p class="rationale">놀이 목적 플랫폼으로서 AI 에이전트 확산에 따른 실사용자 트래픽 가치 희석 우려로 부정적으로 평가됨.</p>
+      </div>
+    </div>
+
+    <div class="panel sell">
+      <h3><span class="status sell">▼ Sell</span></h3>
+      <p class="empty">No calls in this category today.</p>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="sec-h">Videos covered (18)</div>
+    
+    <details class="vcard" id="vid-0">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">somong</div>
+          <div class="title">메타의 승부수에 깜짝 놀란 증시? AI 3차 변곡점의 새로운 수혜주들</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        
+        <p>메타가 새로 출시한 개인 맞춤형 AI 비서 앱 뮤즈가 시장에서 큰 화제가 되며 3차 AI 변곡점에 대한 기대감이 형성되고 있다는 내용의 미국 증시 주간 정리 영상이다. 메타는 이번 주 13퍼센트, 9월 한 달 기준으로는 약 30에서 40퍼센트 가까이 상승하며 최근 10년 내 최대 상승폭을 기록했고, 이 덕분에 다른 빅테크와 AI 인프라 관련주들도 동반 상승했다. 나스닥은 잠깐이지만 신고가를 다시 뚫었고 반도체와 빅테크 전반이 최근 고점을 넘어서는 모습을 보였다.</p><p>메타의 첫 소비자용 AI 에이전트 전용 앱인 뮤즈는 9월 8일 미국에서 출시되어 현재 미국과 캐나다에서만 사용 가능하며, 출시 10일 만에 미국 앱스토어 1위를 기록하고 일간 활성 사용자 약 70만 명을 돌파했다. 초기 반응만큼은 챗GPT를 앞선다는 평가도 나온다. 뮤즈는 챗GPT, 제미나이, 클로드 같은 기존 생성형 AI와 비교해 성능 경쟁을 지향하지 않으며, 대신 누구나 쉽고 재미있게 쓸 수 있는 대중화를 목표로 한다. 사용자가 캐릭터, 아바타, 이름, 음성을 자유롭게 커스터마이징할 수 있고, 음식 사진을 찍으면 칼로리를 계산해주거나 쇼핑, 일정 관리, 이메일 정리, 카드 지출 분석, 중복 구독 정리 등을 먼저 제안하는 방식으로 마치 게임이나 SNS처럼 친근하게 다가간다는 점이 특징이다. 다만 이런 편의성은 개인정보와 결제정보 제공을 전제로 하기 때문에 보안 이슈에 대한 우려도 함께 제기된다.</p><p>마크 저커버그는 연례 행사에서 메타의 핵심이 뮤즈이며 모든 메타 앱에 통합될 것이라고 밝혔고, 앞으로 수십억 명이 사용할 개인 슈퍼 인텔리전스로 성장시키겠다는 목표를 제시했다. 메타는 AI 에이전트를 무료로 제공하면서 사용자가 보험료 비교, 자동차 구매, 환불 챙기기 등 실질적인 비용 절감을 통해 돈을 벌 수 있다는 마케팅을 강조하고 있으며, 장기적으로는 거래 수수료 등을 통한 수익화를 노리고 있다. 이와 함께 손 안에 들어가는 초소형 AI 전용 기기 메타참도 공개했으며, AI 안경을 포함한 하드웨어 전반에 뮤즈를 탑재하겠다는 계획도 밝혔다. JP모건은 뮤즈가 챗GPT 이후 가장 많이 쓰이는 소비자 앱이 될 것으로 전망했으며, 이는 광고 매출에 90퍼센트 이상 의존하던 메타에 새로운 수익원이 될 수 있다는 기대로 이어지고 있다. 그 결과 메타는 올해 부진했던 빅테크 수익률 순위에서 3위권까지 올라섰다.</p><p>영상 진행자는 이번 흐름을 AI 사이클의 3차 변곡점으로 정리한다. 1차는 2022년 말 챗GPT 등장과 엔비디아 중심의 GPU 시대, 2차는 올해 초 오픈 클로 등장으로 AI 에이전트가 실제로 일을 할 수 있다는 가능성이 부각되며 메모리 관련주가 급등한 시기였다면, 3차는 메타 뮤즈처럼 AI가 실생활 영역까지 침투하며 대중화되는 국면이라는 것이다. 이 과정에서 메모리주가 끝난 것이 아니라 사용자 한 명 한 명의 요청을 처리할 가상 컴퓨터, 즉 CPU 수요가 늘어나면서 인텔, ARM, AMD 같은 CPU 관련주가 함께 강세를 보이고 있다고 설명한다.</p><p>마이크로소프트도 주 후반 AI 에이전트를 통한 수익화에 본격 나설 것을 시사했다. 사티아 나델라 CEO는 AI 에이전트 시장이 서버, 클라우드 시장보다 몇 배는 더 커질 거대한 기회라고 낙관적으로 발언했으며, 기업용 시장에 초점을 맞춰 코파일럿이라는 통합 슈퍼앱을 통해 구독제에서 사용량 기반 과금으로 전환해 성장성을 높이겠다는 전략을 밝혔다.</p><p>동시에 AI 신모델 경쟁도 격화되고 있다. 앤트로픽은 비용 40퍼센트 절감, 속도 30퍼센트 향상된 신모델을 내놓았고, 오픈AI도 저가형 모델과 대중화용 AI 에이전트를 준비 중이며, 구글은 뒤처졌다는 평가를 의식해 차세대 제미나이 공개를 10월로 앞당겼다. 일론 머스크는 그록 최신 모델을 공개하며 6개월 내 AI 선두를 차지할 수 있다고 자신감을 드러냈는데, 그 논리는 일정 수준 이상에서는 성능 경�쟁이 무의미해지고 승부는 결국 하드웨어에서 갈리며 스페이스X와 테슬라 등을 통해 하드웨어 역량을 이미 갖춘 자신들이 유리하다는 것이다.</p><p>한편 매크로 환경은 여전히 불안정하다. 장단기 금리가 가파르게 오르고 있고 시장은 10월과 12월 추가 금리 인상, 내년에도 한두 차례 인상을 반영하는 분위기다. 그럼에도 AI 인프라에 대한 기대감이 워낙 커서 나스닥은 6월 이후 신고가를 다시 썼다. 미중 회담은 큰 충돌 없이 무난히 마무리되었고 상세 내용은 추후 공개될 예정이다. 다음 주에는 백악관에서 트럼프 대통령과 빅테크 CEO들이 참석하는 AI 정책 회의, 오픈AI 연례 행사, 마이크론 실적 발표, 물가 지표 발표 등이 예정되어 있으며 우주 관련 이슈도 다수 있다. 영상 마지막에는 진행자가 운영하는 텔레그램 유료 구독 채널에 대한 소개와 구독 안내가 포함되어 있다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=4muqJe1bX-I" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-1">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">Orlando Kim</div>
+          <div class="title">(스페이스X) 스타쉽은 우주와 지구의 고속버스다!!!</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        
+        <p>스페이스X가 진행한 스타십 14번째 시험 비행에서 엔진 이상이 발생했음에도 불구하고 우주선이 궤도 진입에 성공하며 스타링크 위성 26기를 배치하는 데 성공했다. 텍사스 스타베이스에서 발사된 무인 스타십과 슈퍼헤비 부스터 가운데 부스터는 멕시코만에 통제된 방식으로 착수했지만 하강 과정에서 일부 엔진이 정지했고, 스타십 역시 부스터 분리 후 세 개의 주엔진 중 하나가 계획보다 일찍 꺼지면서 궤도 진입 가능성에 의문이 제기됐다. 그러나 엔지니어들이 비행 지속이 가능하다고 판단해 엔진 재점화에 성공했고, 고도 269킬로미터에서 스타링크 V3 베이트 위성 26기를 정상적으로 배치했다. 당초 계획은 10시간 동안 지구를 6회 공전하는 것이었으나 엔진 문제로 비행 시간이 약 3시간으로 단축됐다. 이번 궤도 비행은 스타링크 사업 확장의 핵심 전제조건이라는 점에서 스페이스X에 중요한 이정표로 평가된다. 신형 V3 위성은 기존 팔콘9에 실리던 V2미니 위성보다 최대 열 배 많은 데이터를 처리하도록 설계됐으며, 스페이스X는 스타십 한 번의 비행으로 최대 60기의 위성을 배치해 네트워크 용량 확대와 발사 비용 절감을 동시에 추구할 계획이다. 다만 엔진 신뢰성은 일론 머스크가 목표로 하는 대형 재사용 로켓의 고빈도 운영을 위해 여전히 해결해야 할 과제로 남아 있다. 스타십은 나사의 아르테미스 달 탐사 프로그램에서 우주비행사를 달로 수송하는 착륙선 버전으로도 활용될 예정이며, 스페이스X는 궁극적으로 스타십과 슈퍼헤비 부스터를 완전 재사용 가능하게 만든다는 목표를 갖고 있다. 이번 시험 비행의 일부 실패로 주가는 소폭 하락했으나 시장에서는 이날을 역사적인 진전으로 평가하는 분위기다.</p><p>투자은행 TD코웬은 AI 및 스타링크 성장 기대감을 근거로 스페이스X 주식에 매수 의견을 유지하고 있다. 특히 지상 AI 컴퓨팅 임대 사업이 단기적으로 최대 매출 기회가 될 것으로 보고 있는데, 관련 매출은 올해 140억 달러로 전체 매출의 35퍼센트를 차지한 뒤 2027년 660억 달러, 2028년 1330억 달러로 급증할 것으로 추정된다. xAI와 앤트로픽 같은 고객을 위한 지상 AI 컴퓨팅 임대 사업은 2027년 스페이스X 전체 매출의 약 60퍼센트를 차지하고 회사의 매출 성장을 견인할 것으로 예상된다. 다만 AI 컴퓨팅 성장이 초기 급성장 국면에서 둔화되면 스타링크와 발사 서비스 등 우주 사업의 중요성이 다시 커질 것으로 전망되며, 2027년부터 2031년까지 스페이스X가 전체 AI 컴퓨팅 용량의 44에서 49퍼센트를 임대할 수 있다는 관측도 나온다. 스타링크는 또 다른 핵심 성장 동력으로, 지상 네트워크가 취약한 광대한 시장을 장악할 잠재력이 있으며 2031년까지 소비자 가입자 수가 미국 내 천만 명을 포함해 전 세계 약 1억 700만 명에 이를 것으로 전망된다. 기업 및 정부 대상 연결성 사업도 비용 절감에 힘입어 추가 성장 기회로 꼽힌다. 스타십이 성숙 단계에 접어들면 발사 횟수도 크게 늘어 2031년까지 연간 저궤도 발사 횟수가 1000회에 육박할 수 있으며, 발사의 85퍼센트 이상이 외부 고객이 아닌 스페이스X 자체의 스타링크 및 궤도 데이터센터 운영을 위한 것이 될 수 있다고 본다. TD코웬은 스페이스X 매출이 2025년 187억 달러에서 2026년 409억 달러, 2027년 1132억 달러로 증가하고 에비타도 66억 달러에서 189억 달러, 608억 달러로 늘어날 것으로 전망하며 목표주가를 200달러로 제시했는데 이는 현재가 대비 약 35퍼센트의 상승 여력을 의미한다. 핵심 투자 판단은 스페이스X가 전례 없는 속도로 스타링크와 스타십 발사 역량을 확장하는 동시에 AI 인프라라는 거대한 신규 사업으로 성공적으로 전환할 수 있는지에 달려 있다고 강조한다.</p><p>다른 분석에서도 스페이스X는 발사 사업과 스타링크, 특히 AI 부문의 견조한 성장에 힘입어 강력 매수 등급을 받고 있다. AI 에이전트 제품인 그록봇이 빠르게 호응을 얻으면서 기업 고객 매출을 크게 끌어올릴 것으로 예상되며, 경영진은 연말까지 AI 연간반복매출 100억 달러 달성을 목표로 하고 전체 매출은 2030년까지 3000억 달러에 근접할 것으로 전망하고 있다. 보수적으로 매출 대비 18배의 멀티플을 적용해도 2030년까지 연간 27퍼센트의 수익률이 기대된다고 본다. 스페이스X의 매출은 발사 부문 12.3퍼센트, 스타링크 54.2퍼센트, AI 부문 32.77퍼센트로 구성되어 있으며 현재 AI 비중이 점차 줄어드는 추세다. 발사 부문은 팔콘 로켓과 스타십으로 화물을 우주로 운반한 뒤 로켓을 회수하는 사업으로 연환산 매출은 약 40억 달러 규모이며 시장에서 독보적 선두 지위를 유지하고 있다. 스타링크 부문은 연환산 매출 171억 달러로 발사 사업보다 비중이 훨씬 크며, 발사 사업은 결과적으로 더 수익성이 높은 스타링크 사업을 지원하는 비용 효율적 수단으로 기능한다. AI 부문은 옛 xAI 사업을 기반으로 하며 데이터센터, 그록 AI 모델, 최근 인수한 기업들로 구성되어 연환산 매출 102억 달러를 기록하고 있고 연말까지 연간반복매출 100억 달러 달성이 예상된다. 그록봇은 여러 봇을 동시에 운용하며 자동으로 협업하는 에이전트 구조를 갖추고 있는데 출시 이후 중대한 오류 없이 순조롭게 작동하며 이용자가 폭발적으로 늘고 있다. 기업들이 AI에 맞춰 조직을 재편하는 과정에서 워크플로 전반에 도입이 확산될 것으로 예상되며, 가령 1800만 계정이 월 30달러를 지불한다고 가정하면 이것만으로 연환산 약 65억 달러의 추가 매출이 발생할 수 있어 그록봇이 향후 매출 성장의 핵심 동력이 될 것으로 전망된다.</p><p>밸류에이션 측면에서는 비아셋, AT&amp;T, 이리듐, AST 스페이스모바일 등 통신 및 위성 기업군의 매출액 배수가 평균 약 25배 수준이고, 구글이나 마이크로소프트, 메타처럼 자체 데이터센터와 프런티어 모델을 보유한 빅테크 기업군은 약 8.7배 수준이다. 발사 및 우주 시스템 사업에서 가장 근접한 상장 비교 기업인 로켓랩은 약 55배에 거래되고 있다. 스페이스X의 발사, 통신, AI 세 사업 부문에 각각의 배수를 적용해 혼합하면 약 23.2배 수준이 산출된다. 매출 성장률은 2026년 132퍼센트, 2027년 142퍼센트를 기록한 뒤 이후 79퍼센트, 30퍼센트, 22퍼센트 순으로 둔화되며 2030년까지 두 자릿수 성장을 이어가 매출 규모가 3000억 달러에 근접할 것으로 예상된다. 실제 매출은 2026년 430억 달러, 이후 1050억 달러, 1880억 달러, 2450억 달러, 3000억 달러 순으로 증가할 전망이며 이를 근거로 매출액 대비 23배 수준의 밸류에이션이 타당하다고 평가된다. 이를 토대로 산정한 목표주가는 현재 143달러에서 내년 257달러, 이후 335달러, 410달러까지 상승할 수 있으며 2029년 기준 18배 멀티플을 적용해도 335달러 수준이 가능하다고 본다.</p><p>다만 스페이스X는 여러 사업 부문에 걸쳐 고위험 고수익 구조를 가진 만큼 리스크도 크다. 스타십 개발이 예상보다 더디거나 AI 컴퓨팅 수요가 약화되거나 그록봇이 경쟁 압력에 직면할 경우 성장률이 둔화될 수 있으며, 실행력과 경쟁 상황, 밸류에이션, 거시 경제 환경 모두가 공격적인 성장 목표 달성에 영향을 미칠 수 있다. 또한 9월 24일부터 최대 3억 2840만 주에 대한 매도 제한이 해제되어 매도가 가능해지며, 이는 매도를 의미하는 것은 아니지만 약 500억 달러 규모의 잠재적 매도 가능 물량이 역사적으로 짧은 기간 동안 공개시장에 유입될 수 있다는 점에서 단기 변동성 요인으로 주의가 필요하다. 그럼에도 이익 성장이 프리미엄 밸류에이션을 따라잡기 시작하면서 스페이스X에 대한 투자의견은 매수로 상향 조정되는 분위기이며, 스타십이 스타링크 확장의 잠재력을 현실화하고 향후 모빌리티 및 궤도상 컴퓨팅 가능성까지 열어줄 수 있다는 점이 긍정적으로 평가된다. 주당순이익은 2026년 적자에서 2027년 1.78달러로 흑자 전환하며 이후 몇 년 사이 약 40배 성장할 것으로 전망되어 초기 테슬라에 비견되는 투자처로 거론되고 있다. 현재 모델 기준 적정주가는 약 129달러에서 130달러로 현재가 대비 약 11퍼센트의 하락 여지가 있다고 평가되며, 이에 따라 주가가 하락할 때마다 분할 매수로 조금씩 비중을 늘려가는 전략이 유효할 수 있다는 의견이 제시된다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=0kqqG6r95uI" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-2">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">Orlando Kim</div>
+          <div class="title">(시황분석) 금리 올라 갈때마다 타코했던 트럼프의 다음 행보는?</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        
+        <p>이 시황 분석 영상은 미국 시장이 국채 금리 급등에 눌려 하락한 하루를 다루고 있으며, 다음과 같은 내용을 정리할 수 있다.</p><p>미국 3대 지수는 S&amp;P500이 0.77%, 나스닥이 0.92%, 다우가 0.67%, 러셀이 0.69% 하락하며 대부분 약세를 보였다. 아침에는 국채 금리가 크게 튀었는데, 오픈AI가 최신 모델의 학습을 일시 중단하겠다고 밝힌 것이 AI 및 반도체 관련주에 부담을 줬고, 이후 트럼프가 이란과의 협상 가능성을 언급하면서 원유값이 하락해 잠시 반등하는 모습도 있었으나 전반적으로 힘은 약했다. 10년물 국채 금리가 5.2%까지 오르면서 주가 상승에 큰 부담을 주고 있는 상황이다. 엔비디아는 대규모 자사주 매입 발표로 상승했지만, 오픈AI 이슈로 마이크로소프트, AMD, 인텔, 델, 샌디스크 등 인프라 관련주와 전력 관련주는 하락했다. 반면 보안 관련주인 팔란티어, 크라우드스트라이크는 상승했고, 반도체 장비주는 보합을 유지했다. 메타, 테슬라 등 빅테크도 대체로 하락했다. 섹터별로는 헬스케어, 필수소비재, 에너지 등 3개 섹터만 상승했고 나머지는 하락했으며, 테크놀로지와 금융, 커뮤니케이션 서비스가 가장 부진했다.</p><p>유가는 트럼프의 이란 관련 발언으로 브렌트유가 100달러 아래인 98달러, WTI는 92달러 수준으로 내려왔다. 반면 국채 금리는 10년물 5.23%, 2년물 4.92%, 30년물 5.5% 이상으로 전반적으로 급등했다. 금리 상승에 따라 달러 지수는 101.20까지 올랐고, 금값은 3.82% 하락했으며 비트코인은 방어력을 보이며 약 1% 하락에 그쳤다. 반도체 지수(SOX)는 1.7% 하락했지만, 실적 기반의 상승 흐름 자체가 꺾인 것은 아니며 금리로 인한 일시적 눌림목으로 해석되고, 10월 초순경 반등 여건이 마련될 수 있다는 전망이 제시된다.</p><p>시장 전반적으로는 금융 여건을 판단하는 8가지 지표(10년물 수익률, 수익률 곡선, 재정적자, 통화 공급 증가율, 유가, 실질임금, 소비자물가지수 등) 중 7개가 5월 이후 긴축적 방향으로 역전되었다는 분석이 소개되며, 이는 향후 두 분기 시장이 기대만큼 긍정적이지 않을 수 있음을 시사한다. 다만 정부 규제 강도와 계절성(11월~4월 강세 시즌) 등 과거 데이터를 볼 때 시장이 완전히 무너진다고 보기는 어렵다는 균형 잡힌 시각도 제시된다.</p><p>엔비디아는 1500억 달러 규모의 자사주 매입을 추가 승인해 총 2350억 달러 규모의 프로그램을 운영하게 되며, 이는 애플의 1100억 달러를 넘어서는 미국 기업 역사상 최대 규모가 될 전망이다. 이는 회사의 강한 현금창출력과 향후 성장에 대한 확신을 반영한 것으로, 밸류에이션 측면에서도 엔비디아의 포워드 P/E가 16.6배로 S&amp;P500(19.4배)이나 정보기술 섹터(21.7배)보다 낮은 반면, 매출 성장률과 EPS 성장률은 섹터 평균의 2~3배에 달해 상대적으로 저평가되어 있다는 해석이 나온다. 다만 AI 밸류에이션 전반에 대한 멀티플 축소 우려가 있으며, 이는 금리 상승과 관련이 깊다.</p><p>또한 S&amp;P500 구성 종목 중 상당수(3개월 기준 40%, 1년 기준 17%)가 지수와 반대로 움직이는 마이너스 베타를 보이고 있다는 특이 현상이 소개된다. 이는 소수의 대형주(빅테크, 반도체 등)로만 시장이 몰리고 있고 나머지 종목들은 소외되고 있다는 의미로, 시장의 폭(브레드스)이 약화되고 있음을 나타낸다. 이는 닷컴버블 시기와 비교되기도 하지만, 현재는 실제 수익과 제품을 보유한 성숙한 기업들이 주도하고 있다는 점에서 성격이 다르다는 설명이 덧붙여진다.</p><p>메타는 AI 에이전트 &#x27;뮤즈&#x27;의 성공적 출시로 주목받고 있다. 뮤즈는 단순 질의응답을 넘어 일정 관리, 이메일 전송, 예약 등 실생활 업무를 처리하며 GPU뿐 아니라 CPU 자원도 크게 활용한다는 점에서 AI 투자의 새로운 국면을 보여준다. 메타 주가는 최근 저점에서 38% 상승해 750달러 수준에 거래되고 있으며, 이는 AI 투자가 실질적 성과로 이어지고 있다는 신호로 해석된다. 이와 연계해 AMD는 메타에 MI450 가속기와 베니스 CPU를 공급하는 대규모 계약을 체결했으며, 오픈AI, 앤트로픽, 오라클, 마이크로소프트 등도 AMD 제품을 도입하고 있어 AMD의 데이터센터 매출이 급증하고 있다.</p><p>마지막으로 UBS는 금리 상승이 채권시장에서 신용도가 높은 기업과 낮은 기업 간 양극화를 심화시킬 것으로 전망한다. 고수익(하이일드) 채권과 투기등급(트리플C 이하) 채권의 스프레드가 확대되고 있으며, 팬데믹 기간 저금리로 자금을 조달한 기업들이 만기 도래 시 높은 금리로 재융자해야 하는 부담이 커지고 있다. 다만 이는 시스템 전체의 위험이라기보다는 레버리지론, 사모대출, 저신용 소프트웨어 기업 등 특정 취약 부문에 집중된 리스크로 평가된다. 업종별로는 유틸리티처럼 안정적 현금흐름을 가진 업종이 유리하며, 투자등급 중에서도 소비재 비순환주가 선호되고, 기술주와 통신주는 만기 부담과 지속적인 AI 투자 필요성으로 상대적으로 어려움에 직면할 것으로 전망된다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=C2QyAAcI2Hw" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-3">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">The Rich (김단테)</div>
+          <div class="title">인터넷 이제 전부 바뀐다 #메타 #뮤즈 #에이전트</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        
+        <p>김단테는 AI 에이전트를 직접 사용해 보고 인터넷 생태계 전체가 곧 크게 바뀔 것이라는 확신을 얻었다고 말한다. 에이전트란 채팅으로 요청하면 실제로 그 일을 대신 처리해 주는 AI로, 영화 아이언맨의 자비스와 유사한 개념이라고 설명한다. 메타의 뮤즈, 스페이스엑스 관련 그록봇, 인스팅트 같은 서비스들이 대표적인 예시로 언급된다. 그는 에이전트가 시키지 않은 일까지 알아서 처리해 준다는 점에서 놀랐다고 밝히는데, 예를 들어 메일을 읽고 강연 일정이 잡힌 것을 파악해 슬라이드와 예상 질문을 스스로 만들어 준 사례, 사진을 아직 보내지 않았다는 사실까지 챙겨 준 사례를 소개한다. 귀찮고 번거로운 일일수록 에이전트가 더 유용하다고 말하며, 해지 버튼을 찾기 힘들었던 티빙 구독을 한마디 요청으로 해지해 준 경험, 호텔 예약 시 포인트 결제와 현금 결제의 유불리를 비교해 주고 늦은 퇴실이 가능한지 호텔마다 영어로 문의 메일까지 대신 보내 준 경험을 예로 든다. 이를 바탕으로 그는 사람들이 인터넷을 사용하는 이유를 크게 두 가지로 구분한다. 하나는 예약, 쇼핑, 검색처럼 명확한 목적이 있는 이용이고, 다른 하나는 유튜브나 인스타그램처럼 단순히 즐기기 위한 이용이다. 그는 목적이 있는 인터넷 사용은 앞으로 에이전트가 대부분 대체할 것이라고 전망하며, 이에 따라 그 목적을 중간에서 연결해 주던 부킹닷컴, 익스피디아, 구글 검색, 아마존 같은 기업들의 입지가 애매해질 수 있다고 분석한다. 반대로 놀이 목적의 플랫폼인 인스타그램, 유튜브, 넷플릭스 등은 오히려 손해를 볼 수 있다고 말하는데, 이는 봇 트래픽이 넘쳐나는 세상에서는 실제 사람이 만든 트래픽의 가치가 더 귀해지기 때문이라는 논리를 제시한다. 마지막으로 그는 이 변화의 승자가 누가 될지에 대한 견해를 밝힌다. 현재는 메타의 뮤즈가 다운로드 속도 면에서 가장 빠르다는 점에서 유리한 위치에 있지만, 진정한 다크호스는 구글이라고 평가한다. 구글은 AI 반도체부터 소프트웨어까지 자체적으로 만들기 때문에 AI를 가장 저렴하게 운용할 수 있다는 강점이 있다고 설명한다. 다만 오픈AI와 앤트로픽 같은 다른 강력한 경쟁자들도 존재하기 때문에 아직 최종 승자를 단정할 수는 없다고 덧붙인다. 그럼에도 그는 에이전트로 인해 인터넷 전체가 바뀔 것이라는 방향성 자체는 분명하다고 강조하며 이야기를 마친다.</p>
+        <a class="watch" href="https://www.youtube.com/shorts/0tPDkNP8Dvk" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-4">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">Schuka World (슈카월드)</div>
+          <div class="title">매수는 기술, 매도는 예술</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        
+        <p>현대차 주가와 관련된 슈카의 개인적인 매매 경험을 이야기하는 내용이다. 2년 전 슈카를 믿고 현대차에 전 재산을 투자했다는 사람의 사례를 언급하며, 당시 20만 원대였던 현대차 주가가 이후 78만 원까지 올라 네 배 가까이 상승했다고 설명한다. 슈카 본인도 이연절 시기, 즉 이재용 관련 이슈로 현대차가 미국에서 크게 주목받던 시점 즈음에 주식을 매수했으며, 거의 5년 가까이 오랫동안 버티고 지켜봤다고 밝힌다. 원래 자신은 주식을 길게 보유하는 스타일이 아님에도 이번엔 오래 버텼다고 말한다. 문제는 주가가 78만 원까지 올랐을 때 팔지 못하고, 이후 주가가 빠지는 와중에 결국 매도했다는 점이다. 그 결과 매수가 대비 두 배 넘는 수익을 거두긴 했지만, 마음속으로는 최고점인 78만 원을 이미 봤기 때문에 아쉬움이 남는다고 솔직하게 털어놓는다. 이를 통해 매수는 기술로 할 수 있지만 매도는 예술이라는 주식 투자의 오래된 격언을 몸소 보여주는 사례로 제시한다. 이어서 최근 자동차 시장 전반의 어려움에 대해 설명한다. 고금리로 인해 전 세계적으로 자동차 판매가 둔화되고 있고, 전기차를 기다리는 수요도 상당하다는 점을 지적한다. 현재 전기차 기술이 어느 정도 발전했지만 완전 자율주행 수준에는 이르지 못해 애매한 위치에 있으며, 이 때문에 완전한 기술 진보를 기다리는 소비자들이 구매를 미루고 있다고 분석한다. 결론적으로 현대차 자체의 경쟁력이나 펀더멘털이 나빠서가 아니라, 전 세계 자동차 산업 섹터 전체가 글로벌 경기와 금리 환경의 영향으로 위축되어 있는 상황이며, 섹터 전반이 다시 힘을 받아야 개별 기업들의 주가도 반등할 수 있을 것이라는 전망을 제시한다.</p>
+        <a class="watch" href="https://www.youtube.com/shorts/5H1kX7kp2tc" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-5">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">Schuka World (슈카월드)</div>
+          <div class="title">그들이 사는 세상 (주식 버전)</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        
+        <p>120만 주가 28만5,000원에 매물로 나오면서 총 3,420억 원 규모의 초대형 매도 물량이 등장한 순간을 실시간 중계하듯 지켜본 내용이다. 화자는 이렇게 압도적인 규모의 매도 물량이 특정 가격대에 걸리면 자신의 트레이딩 경험상 대개 그 방향으로 주가가 흘러가는 경향이 있다고 말한다. 처음엔 12만 개 수준이던 물량이 순식간에 늘어났다 줄어들었다를 반복하며, 2만 개를 사들이는 큰손이 한 번에 56억 원어치를 사들이는 장면도 포착된다. 화자도 이 역사적인 순간을 기념하듯 장난삼아 한 주를 매수해본다. 시간이 흐르면서 물량은 몇천 개, 몇만 개 단위로 계속 소진되고, 72만 개에 달하던 매도 물량을 장 마감까지 남은 몇 분 안에 모두 소화할 수 있을지가 관전 포인트가 된다. 물량은 절반 정도인 60만 개까지 줄어드는데, 화자는 이것이 실제 보유자가 연휴를 앞두고 정말로 팔고 싶어서 내놓은 실물량이라고 분석한다. 시간이 얼마 남지 않은 상황에서 화자는 전날 점심을 장어로 무겁게 먹지 않았다면, 혹은 전기세 낼 돈만 있었어도 자신이 그 물량을 한 방에 다 사버렸을 것이라며 농담을 던진다. 결국 장 마감까지 1분을 남기고 물량은 다 뚫리지 못하고, 120만 주의 매도 물량 중 60만 주만 소화되고 나머지 60만 주는 소화되지 못한 채 장이 끝난다. 화자는 이 물량이 진짜 실물량이었다며 막판 장세가 대단했다고 평가하고, 도대체 누가 이런 대규모 매도에 나섰는지 궁금해하며 재미있었겠다는 말로 마무리한다.</p>
+        <a class="watch" href="https://www.youtube.com/shorts/Gy9zZfrYwUo" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-6">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">Schuka World (슈카월드)</div>
+          <div class="title">미중 정상회담 결과 : 만족한 중국, 줘터진 일본</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        
+        <p>9월 23일부터 3일간 진행된 미중 정상회담과 그 전후 상황을 다룬 내용이다. 정상회담 직전 열린 제81차 유엔총회에서는 세계 지도자들의 발언이 화두가 되었다. 유엔 사무총장은 세계가 분열의 시대, 균열이 협곡으로 벌어지는 시대에 처해 있다고 진단했다. 트럼프 대통령은 자신은 말이 아니라 행동으로 평화를 만들었다고 자평하며 앞으로 쿠바에도 자유를 전파하겠다고 밝혀 쿠바 대표단이 자리를 떠나는 일이 있었다. 프랑스의 마크롱 대통령은 트럼프가 말하는 평화가 실제로는 인도적 접근을 열어주지 못했다고 비판했고, 일본 총리는 안정적인 전후 질서의 시대가 끝났다고 발언했다. 이스라엘 네타냐후 총리의 연설 때는 각국 대표들이 회의장을 대거 퇴장했으며, 네타냐후는 남은 이들에게 도덕적 겁쟁이는 나가라는 발언을 하기도 했다. 이런 혼란 속에 유럽 국가들과 아르헨티나의 밀레이 대통령 등은 안보리 상임이사국의 거부권 체제를 포함해 유엔 체제 자체를 새로 짜야 한다는 주장을 내놓았다.</p><p>이런 분열된 국제사회 분위기 속에서 미중 정상회담이 열렸다. 회담의 가장 큰 특징은 실질적인 대형 합의보다 트럼프와 시진핑 두 정상이 매우 우호적인 분위기를 연출했다는 점이다. 트럼프는 평소와 달리 시진핑이 도착하기 한 시간 전부터 공군기지에서 기다렸고, 이는 1962년 케네디가 영국 총리를 맞이한 이후 처음 있는 일이었다. 레드카펫을 깔고 예우를 갖추었으며, 폭격기 사열 등 기선 제압 시도도 시진핑의 무심한 반응에 별 효과를 내지 못했다. 트럼프는 시진핑을 위대한 지도자라 칭하며 첨언을 이어갔고, 시진핑은 두 나라가 경쟁자가 아닌 협력자가 되어야 한다며 미국을 다시 위대하게 만든다는 구호와 중국의 꿈이 공존할 수 있다는 취지의 발언을 했다. 이는 각자 자국 우선주의를 내세우면서도 서로의 세력권을 인정하는 듯한, 과거 중국이 주장했던 신형대국관계와 유사한 모습으로 해석되었으며, 이런 패권적 질서 회귀에 대해 마크롱 대통령은 국제법과 공동규칙이 무너지면 약육강식의 정글 법칙이 지배하는 시대로 회귀할 수 있다고 경고했다.</p><p>이번 회담은 백악관에서 열렸음에도 생중계되지 않았는데, 이는 트럼프 행정부가 최근 CNN, MSNBC, 폴리티코 등 주요 언론사의 백악관 출입을 가짜 뉴스 보도를 이유로 금지했기 때문이다. 그 대안으로 백악관은 자체 유튜브 채널인 트럼프 TV를 공식 출범시켰다. 이 때문에 회담 관련 정보는 관계자 발언과 사진 등을 통해서만 파악할 수 있었다.</p><p>회담에서 가장 주목받은 장면은 트럼프가 갑작스럽게 2차 세계대전 당시 미국과 중국이 함께 일본에 맞서 싸웠다는 발언을 한 것이다. 시진핑도 이에 맞장구치며 양국이 피와 불 속에서 다져진 우정이 있는 국가라고 언급했다. 이는 사실상 일본을 과거의 적국으로 소환하는 발언으로, 만찬에는 실리콘밸리 주요 기업인들도 참석했으며 시진핑은 미국이 대만 독립에 반대하는 입장을 유지하기를 바란다는 발언도 남겼다. 회담 후 트럼프는 11월 중국 방문, 12월 플로리다에서의 G20 계기 만남 등 추가 회동을 예고했다.</p><p>회담의 실질적 성과로는 11월 만료 예정이던 미중 무역전쟁 휴전 기간을 이듬해 1월까지 연장한 것과, 시진핑이 자이언트 판다 두 마리를 애틀랜타 동물원에 장기 임대 형식으로 보낸 것이 꼽힌다. 대형 무역 합의가 없었던 점, 극진한 환대에도 실질적 성과가 미미한 점을 두고 공화당 내부에서도 비판이 나오고 있으며, 특히 평소 사회주의·공산주의 확산을 경계하던 공화당 입장에서 공산주의 국가 지도자를 이례적으로 환대한 것이 모순적이라는 지적도 제기됐다. 반면 중국은 미국과 동등한 대우를 받았다는 점에서 이번 회담을 상당한 성과로 평가하는 분위기다.</p><p>이번 회담에서 가장 큰 피해를 본 것으로 평가되는 나라는 일본이다. 앞서 열린 유엔총회에서 일본의 다카이치 총리는 2차대전 전승국이 패전국의 재무장을 억제하기 위해 만든 적국 조항의 삭제를 주장하며, 이는 중국을 향해 일본이 더 이상 과거의 적국이 아니라 미국의 동맹임을 부각시키려는 외교적 의도로 해석되었다. 이를 위해 방미 하루 전 트럼프와 회담까지 가졌음에도, 정작 트럼프와 시진핑이 회담에서 일본을 과거의 공동의 적으로 언급하며 양국의 협력을 강조하는 발언을 한 것은 일본 외교의 명백한 실패로 평가받았다. 일본 언론들은 이번 미중 정상회담이 중국의 대일 비판을 위한 선전 무대로 활용된 것에 강한 유감을 표했고, 다카이치 총리는 별도의 입장을 밝히지 못한 채 일본과 미국이 전쟁 이후 진정한 화해를 이루었다는 원론적 답변만 내놓았다. 일본은 최근 국제형사재판소 소속 일본인 판사에 대한 미국의 제재에도 별다른 항의를 하지 못했고, 대만 문제에 대해 중국에 맞서는 목소리를 냈다가 중국의 수출 통제로 상당한 경제적 피해를 입기도 했다. 미국에 5500억 달러에 이르는 대규모 투자를 약속하며 관계 개선에 힘썼음에도 이번 회담에서 보여준 미중 밀착 분위기로 인해 일본 내에서는 외교적 무력감과 자국 위상에 대한 위기감이 커지고 있다. 전체적으로 이번 미중 정상회담은 큰 실질적 합의 없이 두 강대국 간의 우호적 분위기만 부각된 채 마무리되었으며, 동맹국들과의 관계는 상대적으로 더 소외되는 국제 질서 분열의 양상을 보여주었다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=A1j-pOb-vYY" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-7">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">부읽남</div>
+          <div class="title">서울 아파트 ‘여기’ 보세요, 이제 노도강도 무섭게 오릅니다 [망고쌤 3부]</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        
+        <p>서울 아파트 시장에서 향후 공급 부족 문제가 매우 심각한 상황임을 짚는 내용이다. 정부가 발표한 110만 호 이상의 공공 임대주택 공급 계획은 현실적으로 불가능하다는 주장이 나온다. 아파트는 착공 후 입주까지 평균 48개월, 즉 4년이 걸리는데 청약홈 데이터를 분석한 결과 앞으로 4년간 서울의 입주 물량은 이미 확정되어 있고 거의 없는 수준이다. 이는 오늘 착공해도 4년 뒤에나 입주가 가능하기 때문이며, 앞으로 추가되는 공급이 극히 제한적이라는 뜻이다.</p><p>이러한 공급 부족은 서울 인구 감소라는 현상으로 나타나는데, 이는 서울이 살기 힘들어서 사람들이 떠나는 것이 아니라 가구당 인구수가 줄어드는 가구 분화 때문에 발생하는 구조적 현상이라고 설명한다. 예전에는 한 가구에 4명이 살아 100만 호로 400만 명을 수용했지만 지금은 2명 수준으로 줄어 같은 주택 수로 200만 명밖에 수용하지 못한다는 것이다. 즉 가격 허들이 높아지면서 서울에 들어올 수 있는 사람의 수가 줄어든 것뿐이라는 논리다.</p><p>역대 정부의 주택 공급 계획 이행률을 보면 노태우 정부 시절 200만 호 계획을 3년 만에 215만 호로 초과 달성한 것이 유일한 성공 사례이고, 이후 어떤 정부도 계획의 30% 이상을 달성하지 못했다는 역사적 사실을 근거로 이번 공급 대책도 실현 가능성이 낮다고 지적한다. 중요한 것은 공급 대책 발표 자체가 아니라 정권이 바뀌어도 연속성이 유지될 수 있는 구조인지 여부인데, 그런 방안을 제시한 정부는 없었다고 언급한다.</p><p>서울 공급의 87%는 재개발, 재건축을 통해 이루어지는데, 2030년까지 약 17만9천 가구 규모의 대규모 이주가 예정되어 있어 상황이 더 심각해질 수 있다고 경고한다. 재건축, 재개발로 철거가 시작되면 거주자들이 인근으로 이주하면서 전월세 수요가 급등할 가능성이 크며, 실제로 잠실주공 5단지의 경우 이주비가 약 20억 원 수준으로 책정되고 있는데 3천 세대가 넘는 조합원이 인근의 한정된 전세 물량으로 몰리면 전월세가가 폭등할 수 있다고 본다. 전월세가 오르면 매매가도 함께 오르는 시소 현상이 발생하며, 강남에서 시작된 전월세 폭등이 향후 강북 외곽까지 확산될 가능성이 있다고 전망한다.</p><p>실수요자를 위한 조언으로는 관심 있는 아파트의 1년 전과 현재 실거래가를 비교해 자신의 소득 상승 속도로 따라갈 수 있는지 판단하고, 동원 가능한 현금과 대출 한도를 먼저 계산한 뒤 후보 아파트 리스트를 만들어 직접 임장하며 동네 분위기를 느껴보라고 권한다. 세대수는 700세대 이상이면 대단지와 가격 흐름이 크게 다르지 않으므로 거래량이 많고 주변에 아파트가 군집된 곳을 선택하면 실패 확률이 낮다고 설명한다.</p><p>재건축 투자에 대해서는 분담금 규모가 핵심이며, 이는 일반 분양 수입에 따라 결정된다고 강조한다. 서울 아파트는 준공 후 22년까지 가격이 하락하다가 그 이후 재건축 기대감으로 다시 오르는 경향이 있는데, 이는 재건축이 가능한 단지만 신축 수준으로 오르기 때문에 발생하는 평균의 함정이라고 설명한다. 재건축 사업성을 판단할 때는 기존 용적률을 확인해야 하며, 서울 기준 용적률 210% 이하이면서 소형 평형 위주가 아닌 단지를 선택하는 것이 유리하다고 조언한다. 노원구의 경우 지구단위계획으로 용적률 상향 여부가 이미 정해져 있어 역세권 위주로, 특히 노원역 인근이나 공사 중인 동북선 은행사거리역 인근 단지를 눈여겨볼 필요가 있다고 언급한다.</p><p>정치적 성향과 재개발, 재건축의 관계에 대해서는 지난 서울시장 선거 결과를 분석한 결과 친여 성향 지역이라도 아파트가 많은 곳에서는 보수 후보 득표율이 높게 나타나는 경우가 있었다며, 사람들은 결국 자신의 재산 이익에 따라 투표 성향이 바뀔 수 있다고 설명한다. 이런 이유로 여당의 입장과 무관하게 재개발, 재건축은 계속 추진될 가능성이 높다고 전망한다.</p><p>초기 재개발 투자에 대해서는 최근 투자 열기가 과열된 상태로, 구역 지정조차 되지 않은 곳들도 가격이 5억에서 7억 원 수준으로 비슷하게 수렴하고 있어 사업성이나 진행 가능성에 대한 깊은 공부 없이 접근하는 경우가 많다고 우려한다. 사당동, 상도동처럼 유망하다고 알려졌던 구역도 후보지 지정에서 탈락하는 사례가 나오고 있어 조합 설립이나 시공사 선정 등 실제 진행 여부를 꼼꼼히 확인해야 한다고 강조한다. 마지막으로 현재는 과거처럼 여러 채를 매수하는 갭투자 시대가 아니므로 한두 개의 매물에 집중해 신중하게 투자해야 한다고 조언한다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=mpVhTS2dNoc" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-8">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">부읽남</div>
+          <div class="title">주식 VS 내 집 마련, 뭘 선택할까요? [상남자들 모음집]</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        
+        <p>이 영상은 부읽남 채널에서 여러 사연자들의 자산 관리와 내 집 마련, 결혼, 노후 준비에 관한 고민을 상담해주는 모음집이다.</p><p>첫 번째 사연자는 90년생 미혼 자영업자로 작은 파스타 식당을 운영하고 있다. 학창 시절 금전적 결핍으로 저축 습관을 들였고 유학과 창업을 목표로 돈을 모았으나 유학 자금과 파인다이닝 탐방 등으로 상당한 돈을 소비한 경험이 있다. 이후 다시 저축을 시작해 정부 지원 사업으로 적은 투자금으로 매장을 창업했다. 현재 순자산은 약 1억 5천만 원이며 연금저축펀드에 약 5천만 원이 들어가 있고, 일반 계좌 수익률 65퍼센트, ISA 계좌 수익률 74퍼센트, 연금저축펀드 수익률 84퍼센트를 기록하는 등 다양한 종목에 분산 투자하고 있다. 상담자는 이렇게 잘게 쪼개어 여러 종목에 투자하는 것이 결국 지수 추종과 큰 차이가 없으며, 특히 ISA 계좌에서 국내 주식인 삼성전자나 코덱스 200을 매수하는 것은 비과세 혜택을 제대로 활용하지 못하는 것이라고 지적했다. ISA는 3년 후 해지 시 그동안의 매도 이력을 바탕으로 손익을 계산하는데, 한 번도 매도한 적이 없다면 수익이 나 있어도 세제 혜택을 전혀 받지 못하는 문제가 있으므로 중간에 매도해 수익을 확정 짓거나 손실이 났을 때 매도 후 재매수하는 것이 유리하다고 설명했다. 소비 부분은 이미 최대한 절제되어 있어 더 줄일 곳이 없다고 판단했으며, 핵심 문제는 소득이라고 짚었다. 현재 매장을 주 3일만 운영하고 나머지는 밀키트 제작 및 판매에 집중하고 있는데, 밀키트는 한때 유튜브 광고로 반짝 매출이 늘었지만 지금은 매출이 줄어드는 추세다. 매장 자체는 장사가 잘 되는 상황이므로, 상담자는 밀키트로 방향을 전환하기보다는 매장을 더 키우고 직원을 채용해 주 6일 영업과 배달을 확대하여 월 순수입 1천만 원을 찍을 때까지 본업에 집중할 것을 권했다. 연금저축펀드는 이미 올해부터 세액공제를 받지 않고 있으므로 무리해서 해지할 필요는 없으며, 노란우산공제는 지금 소득 수준에서는 큰 의미가 없다고 조언했다. 집은 지금 사기보다는 소득과 순자산을 늘린 뒤, 순수입 월 1천만 원과 순자산 4억 원 정도를 확보한 후에 수원이나 동탄 지역 20평대 아파트를 고려하는 것이 바람직하다고 정리했다.</p><p>두 번째 사연자는 27세 남성으로 올해 안에 결혼을 준비 중이며, 여자친구는 부산에 거주하고 있어 결혼 후 상경할 예정이다. 여자친구는 1억, 본인은 4700만 원을 모았고, 남양주 하남 인근에 전세를 구하려 하며 QLD, SCHD, SGOV 등 미국 배당 및 레버리지 상품을 매일 자동 매수하는 장기 투자 전략을 세워두고 있다. 상담자는 26살에 풀할부로 BMW를 구매한 점, 미용실에 매달 9만 원을 지출하는 점 등 절약 노력과 모순되는 소비 패턴을 지적했다. 여자친구가 상경 후 곧바로 임신과 출산을 계획하고 있다는 점에 대해서는, 안정된 직장을 구하기 전에 아이를 갖는 것은 리스크가 크며 인생의 변수를 동시에 여러 개 만드는 것은 위험하다고 조언했다. 특히 전세자금 대출까지 감안하면 외벌이 상황에서 가계가 크게 흔들릴 수 있으므로, 여자친구가 먼저 서울에서 안정적인 직장을 구한 뒤 최소 1~2년 정도 함께 지내보고 결혼하는 것이 바람직하다고 제안했다. 또한 여자친구의 현재 직장 본사가 서울에 있다면 그쪽으로 전근하는 방법도 고려해볼 만하다고 언급했다. 부모님의 결혼 자금 지원을 거절하려는 태도에 대해서도 불필요하게 난이도를 높이는 행동이라고 지적하며, 무리한 목표 설정보다는 현실적인 단계를 밟을 것을 권했다.</p><p>세 번째 사연자는 사회생활 4년 차로 입사 후 예적금만 하다가 2024년 말 동료의 권유로 투자를 시작한 30대 초반 미혼 직장인이다. S&amp;P500 중심의 안정적인 투자로 10퍼센트 이상의 수익을 냈으며, CMA, ISA, 연금저축, IRP 등으로 계좌를 세분화하여 운용하고 있다. 청년도약계좌에도 많은 금액을 납입하고 있으며 현재 회사 기숙사에 거주해 생활비 부담이 거의 없는 상태다. 8월에 기숙사를 나와야 하는 상황이며 이직도 계획 중이라 주거지와 근무지가 모두 유동적인 상태다. 상담자는 세액공제를 받는 연금저축 및 IRP 방식에 대해, 연금 수령 한도인 연 1500만 원을 초과하면 오히려 높은 세율의 종합과세 대상이 될 수 있으므로 세액공제를 받지 않는 방식으로 납입하는 것이 장기적으로 유리하다고 설명했다. IRP는 중도 인출이 어려운 반면 연금저축은 원금을 비과세로 인출할 수 있어 유동성 면에서 낫다고 조언했다. 또한 아직 원금 규모가 크지 않고 월급으로 충분히 손실을 방어할 수 있는 단계이므로 채권이나 안전자산으로 분산하기보다는 오히려 더 공격적으로 투자하는 것이 낫다고 강조했다. 청년도약계좌에 대해서도 수익률이 낮은 상품에 자금이 묶여 있는 것은 비효율적이라며 비중을 줄일 것을 권했다. 부모님께 매달 용돈을 드리는 것에 대해서는, 부모님이 이미 자가를 보유하고 본인보다 자산이 많은 상황이므로 지금은 본인의 자산을 키우는 데 집중하고 나중에 필요할 때 도와드리는 것이 합리적이라고 조언했다. 이직은 미루지 말고 빠르게 진행해 주거지 결정의 변수를 줄이고, 연애나 결혼에 대해서도 너무 일찍 단정 짓지 말고 열어두라고 권했다. 전반적으로 세 사연 모두에서 상담자는 과도한 분산 투자보다 단순한 지수 투자 위주의 전략을 권하고, 내 집 마련보다 소득을 늘리고 자산을 키우는 것이 우선이라는 원칙을 일관되게 제시했다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=saugFDXkWbc" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-9">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">부읽남</div>
+          <div class="title">&quot;집값, 문제는 공급이야&quot; 알아도 방법이 없는 이유 [망고쌤]</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        
+        <p>부읽남 방송에서 망고쌤은 정부가 발표하는 공급 대책은 결국 정부의 발램, 즉 다짐성 발표에 불과하다고 지적한다. 현재까지 나온 공급 대책만 해도 100만 호 이상에 이어 추가로 110만 호가 발표되어 총 130만 호가 넘는 규모이지만, 이 물량이 2030년까지 실제로 입주가 가능한지 따져보면 물리적으로 불가능하다고 본다. 지금 주택 문제의 핵심은 서울시와 서울 인접 권역, 정확히는 서울 권역에 국한된 문제이기 때문에 결국 관건은 서울 안에서 얼마나 많은 공급을 실제로 만들어낼 수 있느냐이다. 서울시 통계에 따르면 서울 내 공급의 87퍼센트가 민간 도심 재생 사업을 통해 이루어지는데, 계획은 발표되었지만 실제로 그 사업을 진행할 땅을 확보할 수 있느냐가 근본적인 문제로 남는다. 땅 확보가 어려우면 결국 도심이 아닌 외곽에서 공급이 이루어질 가능성이 크고, 도심 내에서 공급하려 해도 아파트가 아닌 비아파트 형태로 일부만 채우는 수준에 그칠 수밖에 없다. 아파트 수요가 큰 상황에서 비아파트 위주로 공급을 채우겠다는 발상 자체가 넌센스이며, 시장에서도 더 이상 이런 식의 대책을 믿는 사람이 없다고 말한다. 결과적으로 130만 호가 넘는 대규모 공급 대책이 이미 여러 차례 발표되었음에도 실질적인 땅 확보와 서울 도심 내 아파트 공급으로 이어지지 못하기 때문에 시장의 불안감은 해소되지 않고 오히려 집값은 계속 뜨겁게 달아오르고 있다는 것이 요지이다.</p>
+        <a class="watch" href="https://www.youtube.com/shorts/nNvOuY8YaDY" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-10">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">부읽남</div>
+          <div class="title">강남은 하락, 외곽은 폭등, 지금 부동산 시장에서 벌어지는 일 [망고쌤 2부]</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        
+        <p>강남 집값은 최근 하락하며 조정을 받고 있는 반면, 서울 외곽 지역은 오히려 가파르게 오르는 대비되는 흐름이 나타나고 있다. 강남 하락의 원인은 초고가 주택에 대한 차별적 세율 강화로 보유세 부담이 커진 소유주들이 매물을 내놓았지만, 이에 대응하는 수요가 부족해 소량 거래가 시세를 왜곡하며 하락한 것처럼 보이는 현상이다. 반대로 외곽 지역은 전월세 만기가 돌아온 실수요자들이 주택 매입에 나서면서 오르고 있는데, 주택담보대출이 가장 많이 나오는 15억 이하 구간에 수요가 몰려 상승이 집중되고, 이 상승이 15억에서 20억 사이 구간까지 밀어 올리는 효과를 낳고 있다. 근본 원인은 공급 부족이라는 점이 강조된다.</p><p>이재명 대통령이 언급한 지역 간 평탄화라는 표현에 대해서는, 실제로는 가격이 평탄해지는 것이 아니라 튀어나온 지역은 일부 깎이고 낮았던 지역이 크게 올라가는 상향 평준화 과정이라고 진단한다. 이는 깎아내려 평평해지는 것이 아니라 비어 있던 저수지에 물이 차올라 수면이 올라오는 것에 가까운 현상이라는 비유로 설명된다.</p><p>강남이 하락하면 온기가 확산되던 방식이 끊겨 주변 지역도 함께 조정받을 것이라는 전통적 시각에 대해서는 반박한다. 강남 부동산은 지난 20년간 실약자들이 계속 정리되어 온 시장이며, 강남 집을 팔았던 사람들이 곧 후회하는 경험이 반복되면서 강남 불패 신앙이 강화되어 왔다고 본다. 과거 노무현, 문재인 정부 시기에는 규제로 인한 강남 하락이 몇 개월씩 지속됐지만 최근에는 그 기간이 한두 달로 짧아지고 있으며, 이는 매도할 사람이 이미 대부분 정리되어 매물이 예전만큼 나오지 않기 때문이라고 설명한다. 결국 강남이 먼저 오르고 다른 지역이 따라 오르는 것은 공급 부족과 수요 초과라는 근본적 시장 원리가 반영된 결과이지, 강남 가격 자체가 시장을 이끄는 원인은 아니라는 해석이다.</p><p>서울 아파트 공급 상황은 매우 심각한 수준으로 진단된다. 올해 약 1만6천호가 입주하지만 내년에는 6천호, 그다음 해에는 4천호로 줄어들며, 1982년 이후 한 번도 서울 아파트 입주 물량이 1만호 아래로 내려간 적이 없었는데 향후 몇 년간 연속으로 1만호 미만을 기록할 것으로 예상된다. 서울의 10년 평균 입주 물량은 연 3만5천호 수준이었던 것과 비교하면 극심한 공급 감소이며, 오늘 착공해도 4년 후에야 입주가 가능하기 때문에 단기간에 해결할 방법이 없다는 점이 강조된다. 정부와 서울시가 2030년을 착공 목표로 잡고 있는 것을 고려하면 그때까지 공급 부족 사태가 지속될 것으로 전망된다. 이런 상황에서는 경제 위기가 오지 않는 한 서울 집값을 잡기 어렵다는 결론이 제시되며, 경제 위기는 예측이 불가능한 성격을 가지기 때문에 일반적으로 예상 가능한 범위 내에서 서울 집값이 하락할 가능성은 낮다고 본다. 아울러 대구, 부산 등 대도시 중심지역도 이미 오르고 있고 내년부터 입주 물량이 줄어들 것으로 예상되어, 앞으로는 서울만이 아니라 전국적인 상승 국면이 펼쳐질 가능성이 제기된다.</p><p>금리 변수에 대해서는 금리 인상에 좋은 금리 인상과 나쁜 금리 인상이 있다는 프레임으로 설명한다. 경제 체력이 충분한 상태에서의 금리 인상은 감당할 수 있지만, 체력이 약한 상태에서 금리가 오르면 위기가 된다는 것이다. 과거 IMF 외환위기, 2008년 금융위기, 2022년 코로나 시기의 금리와 경제성장률 격차를 비교하면, 기준금리와 경제성장률의 차이가 4.5퍼센트포인트 이상 벌어질 때 집값이 폭락하는 경향이 있었다고 분석한다. 향후 한국이 두 차례 금리를 인상해 3.5퍼센트가 되더라도 예상 경제성장률이 2에서 3퍼센트 수준이라면 그 격차는 0.5에서 1.5퍼센트포인트 정도로 충분히 감당 가능한 수준이라고 본다. 다만 반도체 대기업 실적에 의존하는 경제 구조와 양극화 심화가 서민층에 미치는 영향에 대한 우려도 제기되는데, 이에 대해서는 대기업이 벌어들인 자금이 직원 보너스와 협력업체 재투자 등을 통해 시차를 두고 서서히 경제 전반에 흘러들어간다는 논리로 반박한다.</p><p>서울 아파트 시장의 특수성도 짚는다. 서울의 아파트 보급률은 40퍼센트 초반대로, 전국 광역시 평균 55퍼센트나 전주의 65퍼센트에 비해 현저히 낮은 수준이며, 이는 서울에 사실상 아파트가 부족한 상태임을 보여준다. 서울 아파트는 토지거래허가제 등의 규제로 거래량 자체가 매우 적어 전체 물량 대비 소수의 거래만으로도 시세가 크게 움직일 수 있는 구조라고 설명한다. 아울러 정부의 주택 공급 발표 수치에는 도시형 생활주택이나 청년임대주택 등이 포함되어 실제 아파트 공급 부족의 심각성이 가려지고 있다는 점도 지적하며, 부동산 정책이라는 표현 자체가 실질적으로는 서울권 아파트 가격 대책을 의미함에도 용어의 정의가 불분명해 오해를 낳고 있다고 비판한다.</p><p>마지막으로 투자 전략에 대해서는 장기적으로 잘 버틸 수 있는 주택을 선택해야 한다는 조언이 제시된다. 서울 집값은 큰 폭으로 오른 뒤 위기 시 일부 하락하고 다시 회복하는 패턴을 반복해왔는데, 전고점을 회복해 새로운 국면으로 진입한 지역과 아직 회복하지 못한 지역 간의 격차가 존재한다는 점을 인식해야 한다고 강조한다. 투자 방식은 장기 거주와 단기 갈아타기라는 투트랙 관점으로 접근해야 하며, 장기 거주라면 재개발 재건축 가능성이 있는 아파트가 유리하고, 단기적으로 자주 이동한다면 거래가 활발하고 매매가 잘되는 지역을 선택하는 것이 합리적이라고 설명한다. 입지라는 추상적 개념도 결국 가격에 모두 반영되어 있으므로, 본인이 감당 가능한 범위 내에서 실질적으로 해결 가능한 선택에 집중해야 하며 타인과 비교하기보다 장기적인 계획을 세우고 꾸준히 공부하고 발품을 파는 태도가 중요하다는 조언으로 마무리된다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=nfEihZ4QE3I" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-11">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">Andrei Jikh</div>
+          <div class="title">Will Religion End the World?</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        
+        <p>이번 전쟁의 배경에는 세 개의 정부가 있으며, 이들 각각의 내부에는 이 상황을 종말의 시대로 바라보는 소수의 매우 영향력 있는 집단이 존재한다는 이론이 소개된다. 이 이론에 따르면 현재 중대한 결정을 내리는 사람들 중 일부는 예언을 근거로 판단을 내리고 있으며, 그들의 예언에서는 세상의 종말을 앞당기는 것이 목표로 여겨진다. 미국 기독교 내부에는 크리스천 시오니즘이라는 흐름이 있는데, 그중 상당수는 성경에 대한 특정한 해석을 따른다. 이 해석에 따르면 현대 이스라엘 국가는 반드시 존재해야 하고, 영토를 확장해야 하며, 적들로부터 공격을 받아야 한다. 왜냐하면 이러한 사건들이 결국 그리스도의 재림을 불러올 것이라고 믿기 때문이다. 이와 관련해 한 인물은 신이 언제 오실지는 알 수 없지만, 지금이 종말의 시대일 수도 있다는 것에 놀라지 않을 것이며, 자신은 그것이 종말로 이어지더라도 지금 할 수 있는 한 신의 일을 최대한 많이 하는 데 집중하고 있다고 말한다. 영상은 이 발언을 한 인물이 미국에서 두 번째로 강력한 권력을 가진 인물이며, 마치 대단한 일이 아닌 것처럼 농담 삼아 이런 말을 했다고 지적한다. 이어서 로마와 예루살렘이 가치관 충돌을 벌였던 과거와 달리, 지금은 다른 시대이며 미국이라는 새로운 로마가 스스로를 새로운 예루살렘으로 여긴다는 표현이 인용된다. 이는 크리스천 시오니즘과 이스라엘 정책을 직접적으로 연결 짓는 발언으로 해석된다. 한편 이란은 이슬람 전통에서 종말 이전에 나타나 세상의 악을 정화한다고 여겨지는 존재인 마흐디의 귀환을 준비하고 있다고 설명된다. 결국 이 전쟁에 연관된 세 정부 각각의 내부에는 매우 강력한 소수의 집단이 존재하며, 이들은 현재의 갈등을 각자의 경전이 실현되는 과정으로 받아들이고 있다는 점이 영상의 핵심 메시지로 제시된다.</p>
+        <a class="watch" href="https://www.youtube.com/shorts/ArvL4wAwAm0" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-12">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">Andrei Jikh</div>
+          <div class="title">The Oil Crisis Was Made by The US</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        
+        <p>미국이 세계 에너지 인프라를 의도적으로 파괴하고 있으며 이는 우연이 아니라는 주장을 담은 내용이다. 미국은 세계 최대의 석유 및 가스 생산국으로, 다른 나라들의 공급을 차단하면 세계가 결국 미국산 에너지를 사야 하고 이를 미국 달러로 가격을 매길 수 있게 된다는 논리다. 현재 미국은 중국과 경제 전쟁을 벌이고 있는데, 중국의 공장들은 주로 걸프 국가에서 수입한 석유로 가동되고 있다. 호르무즈 해협과 바브엘만데브 해협 같은 주요 해상 통로를 봉쇄하면 중국에 압박을 가하는 동시에 아시아와 유럽이 사우디아라비아 대신 미국산 에너지를 구매하도록 유도할 수 있다는 것이다. 실제로 중국은 세계에서 걸프 지역 석유를 가장 많이 수입하는 국가이며, 호르무즈 해협이 폐쇄되었을 때와 바브엘만데브 해협이 폐쇄되었을 때 모두 중국에 타격을 준 바 있다. 사우디아라비아와 관련해서는 미국이 아브라함 협정 서명을 조건으로 안보 보호, 무기 지원, 핵 프로그램 지원을 제안하고 있지만, 사우디는 팔레스타인 국가 수립 경로가 먼저 마련되지 않으면 서명할 수 없다는 입장을 고수하고 있다고 설명한다. 이 때문에 현재 사우디아라비아에 가해지고 있는 압박은 사실 미국이 협상 전술로서 간접적으로 행사하고 있는 압력이라는 해석을 제시한다. 결론적으로 이러한 일련의 움직임을 통해 미국은 자국에 가장 가까운 운송 항로와 에너지 공급을 장악하게 된다는 것이 이 영상의 핵심 주장이다.</p>
+        <a class="watch" href="https://www.youtube.com/shorts/fNMtMsXwU9Q" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-13">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">The Plain Bagel</div>
+          <div class="title">The Housing Market Is Completely F*d</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        
+        <p>모기지 금리가 7.5%에 육박할 정도로 급등하고, 장기 국채 금리도 20년 만에 최고 수준까지 상승하면서 대출 비용이 크게 늘고 있다. 이 때문에 투자자들이 임대 부동산에서 얻는 수익보다 정부 국채에서 더 높은 수익을 얻을 수 있는 상황이 벌어지고 있다. 이는 세입자 관리, 재산세, 보험, 수리비, 레버리지 부담 없이도 국채로 더 많은 돈을 벌 수 있다는 뜻이며, 충분히 많은 사람들이 이렇게 생각하기 시작하면 그 파장은 매우 클 수 있다.</p><p>이러한 금리 급등의 배경에는 미국 국채 시장이 있다. 미국 정부가 자금을 조달할 때 국채를 발행하는데, 이는 원래 무위험 수익률로 여겨져 연기금, 보험사, 은퇴자, 은행 등이 안전한 자산으로 매입해왔다. 그런데 최근 국채 가격이 급락하고 있다. 채권 가격과 수익률은 반대로 움직이기 때문에, 투자자들이 채권을 팔면 가격이 하락하고 수익률은 상승한다. 즉 수익률이 급등한다는 뉴스는 사실 투자자들이 국채를 매도하고 있고 수요가 낮아 더 높은 수익률을 제시해야 매수자를 끌어들일 수 있다는 의미다. 가장 안전한 차입자인 미국 정부조차 더 높은 금리를 지불해야 한다면, 경제 전체가 이 새로운 기준에 맞춰 재조정되어야 한다.</p><p>미국은 세계 최대의 채무자이기 때문에 금리가 오르면 부채 비용이 급격히 늘어난다. 기존 부채가 만기될 때마다 오늘날의 더 높은 금리로 재발행되면서 국가부채는 더 악화되고, 이는 투자자들이 추가 위험에 대한 보상으로 더 높은 수익률을 요구하게 만들며, 이 악순환이 계속되다가 결국 무언가 터지게 된다.</p><p>현재 채권 시장을 강타하는 세 가지 요인이 있다. 첫째, 인플레이션이 65개월 연속 2.5%를 웃돌고 있고 유가도 배럴당 100달러를 넘어섰으며 뱅크오브아메리카는 150달러까지 오를 수 있다고 경고했다. 이 때문에 연준은 물가 상승을 억제하기 위해 공격적으로 대응해야 하는 상황이다. 둘째, 호르무즈 해협을 재개하기 위한 협상이 결렬되었고 중간선거 이후 갈등이 더 격화될 수 있다는 보도가 나오면서 유가와 인플레이션, 금리가 더 오를 가능성이 있다. 셋째, 미국 정부는 연간 약 2조 달러의 재정적자를 기록하며 부채에 허덕이고 있다. 정부는 지출을 충당하기 위해 계속 새로운 국채를 발행해야 하는데, 동시에 매수자들은 더 높은 수익률을 요구하고 있어 누군가 이를 감당할 때까지 수익률이 계속 오를 수밖에 없는 구조다. 이것이 결국 채권시장의 문제를 넘어 전면적인 금융위기로 번질 위험이 있다.</p><p>주택시장의 경우 모기지 금리가 이렇게 빠르게 오르면 가격보다 거래량이 먼저 떨어진다. 실제로 주택 구매 수요는 미증유의 수준으로 낮아졌고 모기지 신청 건수도 1990년대 초 이후 최저 수준으로 떨어졌다. 레드핀 조사에 따르면 매도자가 매수자보다 53% 더 많아 역대 최대 격차를 기록했고, 내슈빌, 마이애미, 휴스턴, 올랜도, 라스베이거스 등에서는 매수자 한 명당 매도자가 두 명 이상이다. 이 때문에 절반 가까운 매도자들이 거래 성사를 위해 양보안을 제시하고 있고, 이번 달 주택건설업체의 38%가 가격을 인하했으며 신규주택 평균 가격은 전년 대비 8.8% 하락했다. 다만 전국 중위 주택 가격은 여전히 전년 대비 2.1% 상승했는데, 이는 대부분의 집주인이 손해를 보고 팔기보다는 매도를 미루기 때문이다. 인플레이션을 반영하면 실질적으로 주택 가격은 하락하고 있지만 그 속도가 더디게 나타나고 있을 뿐이다.</p><p>모기지 금리가 7% 이상에서 장기간 머물거나 더 오른다면 평균적인 소득으로 평균적인 주택을 구매하는 것이 불가능해질 수 있다. 임대인들도 임대 부동산을 관리하는 것보다 국채를 매입하는 것이 더 나은 수익을 낼 수 있는 20년 만의 상황에 직면할 수 있다. 만약 이런 일이 벌어지면 매물이 늘어나면서 가격 하락 압력이 커질 수 있다. 현재 금리 수준에서 올해 초와 동일한 월 상환액을 유지하려면 주택 가격이 약 14% 하락해야 한다는 계산이 나온다.</p><p>높은 금리는 주택시장뿐 아니라 경제 전체의 가격 구조를 다시 짜고 있다. 미국은 3조 9천억 달러에서 40조 달러로 불과 5개월 만에 국가부채가 늘었고, 회계연도 첫 11개월 동안 이자로만 1조 달러 이상을 지출했는데 이는 메디케어나 국방비 지출보다 많은 수준으로 하루 약 30억 달러에 달한다. 과거 낮은 금리로 조달한 부채가 만기 도래하면서 현재의 높은 금리로 재조달해야 하는데, 공공 부문이 보유한 32조 달러의 부채에서 금리가 1%포인트 오를 때마다 이자 비용이 3200억 달러 늘어난다. 이는 더 많은 부채, 더 많은 화폐 발행, 더 높은 인플레이션, 더 높은 금리로 이어지는 악순환을 만든다.</p><p>은퇴 계좌 측면에서도 문제가 심각한데, 수십 년간 안전자산으로 여겨졌던 채권이 2020년 고점 대비 50% 이상 하락하며 사상 최저 수준을 기록했다. 이는 많은 은퇴자 포트폴리오에서 채권 부분만 손실을 내는 이례적인 상황을 만들고 있다. 또한 채권이 주식과 경쟁하는 구도도 나타나는데, S&amp;P 500 기업들의 기대 수익률이 5.2%인 반면 국채도 동일하게 5.2%의 확정 수익률을 제공하면서 투자자들은 위험을 감수하고 주식에 투자할지 확정 수익을 얻을지 고민하게 된다. 마찬가지로 채권은 임대 부동산과도 경쟁하는데, 50만 달러를 국채에 투자하면 연 2만 6천 달러를 벌 수 있는 반면 같은 금액으로 임대 부동산에 투자하면 세입자 관리, 보험, 재산세 등의 위험을 감수하고도 연 2만 4천 달러를 버는 상황이 벌어지고 있다. 이 때문에 최근 4년간 부동산 투자가 절반 가까이 줄었다는 조사 결과도 있으며, 금리가 계속 높은 수준을 유지한다면 결국 가격이 하락하는 방향으로만 균형이 맞춰질 수 있다는 분석이다.</p><p>앞으로의 전개는 두 가지 시나리오로 나뉜다. 최선의 시나리오는 호르무즈 해협 관련 협상이 타결되어 유가가 하락하고 인플레이션이 진정되면서 연준이 추가 금리 인상을 하지 않아도 되고 서서히 정상화되는 것이다. 최악의 시나리오는 유가가 100달러 이상에서 유지되고 갈등이 격화되면서 연준이 금리를 더 올리고 모기지 금리가 8%에 도달해 주택시장, 주식시장, 은퇴 계좌 등 전반에 큰 타격을 주는 것이다. 다만 이번 상황이 2008년과 같은 전국적 주택시장 붕괴로 이어질 가능성은 낮다고 본다. 2008년에는 감당할 수 없는 대출을 받은 사람들이 많았고 가격이 떨어지자 강제 매도에 나서야 했지만, 지금은 주택 소유자들이 상당한 자기자본을 보유하고 있고 낮은 금리의 기존 모기지를 포기하지 않으려 하기 때문에 금리가 높게 유지되더라도 많은 사람이 매도를 선택하지 않을 가능성이 크다. 매도에 나서는 사람들도 시장에 오래 머물면서 매수자들에게 협상력을 더 실어줄 수 있다. 다만 신규 건설이 많고 매도자가 매수자보다 많으며 현금흐름 목적으로 매입한 투자자가 많은 지역은 다른 지역보다 더 큰 타격을 받을 가능성이 있다. 전국적으로 볼 때 가장 큰 위험 요인은 시간이다. 모기지 금리가 7% 이상에서 오래 유지될수록 매도자들은 더 오래 기다려야 하고, 매물은 더 많이 쌓이며, 조급해진 매도자들이 가격을 더 낮추게 될 가능성이 크다. 이는 매수자 입장에서는 다소 유리한 상황이 될 수 있으며, 가격이 충분히 하락하거나 금리가 충분히 내려가면 월 상환액이 다시 균형을 이루면서 시장이 회복될 가능성도 있다. 결론적으로 주택시장이 하룻밤 사이에 붕괴할 것이라고 우려할 필요는 없지만, 앞으로도 가격이 계속 오를 것이라는 기대를 갖고 주택을 구매하는 것도 바람직하지 않다. 현재는 오랜만에 매수자들이 협상력을 갖게 된 시점이며, 인내심을 갖고 자신의 상황에 맞는 합리적인 제안을 하는 것이 중요하다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=BWNOdHB8TKA" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-14">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">SBS 교양이를 부탁해</div>
+          <div class="title">전세 찾아도 집이 없다? 서울 매물 잠근 세 가지 #교양이를부탁해 #부동산 #전세 #월세 #집값</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        
+        <p>서울 전세 시장에서 매물이 잠기는 구조적 원인 세 가지를 설명하는 내용이다. 첫 번째는 2020년에 도입된 2플러스 2 계약갱신청구권 제도로, 세입자가 5% 이내 갱신을 청구하면 4년간 거주할 수 있게 해 주거 안정을 도모한 취지는 좋았으나, 4년이 지나는 시점에 그동안 쌓인 인플레이션이 한꺼번에 반영되면서 집주인이 갑자기 1억 원 같은 큰 금액의 보증금 인상을 요구하는 문제가 발생한다. 세입자는 갑작스러운 인상에 놀라 부동산을 알아보지만 전세 매물 자체가 부족하고 전세, 월세, 매매가가 모두 크게 올라 있어 이사가 현실적으로 어렵고, 결국 집주인과 절충해 일부만 올려주고 계속 거주하는 선택을 하게 된다. 이렇게 한번 들어간 세입자가 계속 눌러앉는 인질 효과가 발생하면서 기존 재고 매물의 회전이 멈추고, 서울의 입주 물량 감소와 겹쳐 전세 공급이 전반적으로 막히는 구조적 문제가 2024년, 2025년부터 본격적으로 드러나고 있다고 설명한다. 두 번째 원인은 토지거래허가구역에서 대출을 받을 경우 적용되는 실거주 의무 제도이다. 갭투자를 막고 실거주자만 거주하게 하려는 취지였지만, 집주인이 집을 매도하려 할 때 세입자가 거주하고 있으면 매수자가 입주할 수 없어 매매의 걸림돌이 되는 부작용이 생긴다. 이에 따라 집주인들은 세입자를 두는 대신 본인이 직접 들어가 살다가 매도하거나, 아예 공실로 비워 두어 언제든 팔 수 있는 상태를 유지하는 방식을 택하는 경우가 늘고 있다. 그 결과 세입자들은 거주할 곳을 찾아 밖으로 밀려나야 하는데, 전세 공급 자체가 막혀 있어 이들이 갈 곳이 더욱 줄어드는 악순환이 발생한다. 세 번째는 소유권 이전 조건부 전세대출 제도이다. 신축 아파트에 입주하는 분양자가 잔금을 치르는 방법은 보통 자기 자본, 은행 대출, 또는 세입자로부터 받는 전세금 세 가지인데, 최근 은행 대출이 거의 막힌 상황에서 전세금을 통한 잔금 마련도 갭투자로 간주되어 정부가 이를 제한하면서, 신축 아파트에 입주하려는 세입자에게는 전세대출이 나오지 않게 되었다. 전세대출을 받을 수 없는 세입자는 사실상 해당 신축 아파트에 전세로 들어가는 것이 불가능해지며, 이는 결국 신축 아파트 전세 공급까지 막히는 결과로 이어진다. 이렇게 취지 자체는 세입자 보호와 실거주 유도, 갭투자 억제라는 좋은 목적을 가진 세 가지 제도가 실제로는 서로 맞물리면서 서울의 전세 매물 회전을 막고 공급을 축소시켜, 전세를 구하려는 사람들이 매물을 찾기 어려운 상황을 만들어내고 있다는 점을 지적하고 있다.</p>
+        <a class="watch" href="https://www.youtube.com/shorts/rFlhwsJCGFY" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-15">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">SBS 교양이를 부탁해</div>
+          <div class="title">25평 월세가 350만 원? 영끌 아닌 &#x27;생존 매수&#x27; 시대 #교양이를부탁해 #부동산 #전세 #월세 #집값</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        
+        <p>2020~2021년과 지금의 부동산 시장은 집값 상승을 주도하는 주체가 다르다는 점이 결정적인 차이다. 문재인 정부 시기에는 투자자들이 상승을 주도했는데, 이는 포모 즉 나만 뒤처질 것 같은 두려움에서 비롯된 것으로, 주변 사람이 집을 사서 몇억씩 오르는 것을 보고 뒤따라 사는 심리였다. 반면 지금은 실수요자들이 상승을 주도하고 있으며 이는 생존형 매수에 가깝다. 예전에는 투자를 하지 않는 것도 하나의 선택지였지만, 지금은 전세 매물이 사라지면서 원래 집을 살 생각이 없던 사람들도 어쩔 수 없이 집을 사야 하는 상황에 놓이게 되었다. 투자자가 주도하는 시장에서는 투자 심리가 꺾이면 집값이 오르지 않을 것 같아서 사지 않아도 되는 선택이 가능하지만, 지금은 어쨌든 주거 안정을 이뤄야 하기 때문에 집값이 오르고 내리는 것은 그다음 문제가 된다. 전월세 문제가 쉽게 해결될 기미가 보이지 않고, 서울은 공급 부족과 수요 과잉이 겹친 불균형 지역이라는 불안감 때문에 결국 대출을 받아서라도 집을 사자는 심리가 확산되고 있다. 서울 외곽이든 중소형 평형이든 경기도든 상관없이 이런 생존 매수가 이어지면서 집값이 오르는 것이 아니냐는 분석이 나오고 있다. 진행자들은 신혼 시절 월세로 200만 원, 300만 원씩 내는 것에 대한 불안감을 이야기하며 본인들도 지금 같은 시점이라면 생존 매수에 나섰을 것이라고 공감했다. 실제 사례로 송파 헬리오시티의 전용면적 59제곱미터, 즉 25평형 아파트의 월세가 보증금 2억 원에 월 350만 원에 이른다는 점을 언급했고, 강북의 신축 아파트도 월세 200만 원에서 250만 원 수준을 쉽게 찾아볼 수 있다고 지적했다. 이런 상황이라면 차라리 대출을 받아 집을 사는 것이 더 합리적인 판단이 아니겠냐는 데 의견이 모아졌다.</p>
+        <a class="watch" href="https://www.youtube.com/shorts/ACzWDGMF9w0" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-16">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">SBS 교양이를 부탁해</div>
+          <div class="title">강남 집값 빠진 게 세금 때문? 집주인들이 주목한 2027년 #교양이를부탁해 #부동산 #전세 #월세 #집값</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        
+        <p>강남 등 서울 주요 지역의 집값이 최근 하락세를 보이는 것은 추세적인 하락이 아니라 세금 제도에 따른 일시적 하락으로 봐야 한다는 분석이다. 먼저 3월 시점에는 강남부터 집값이 빠지지만 급매물은 계속 거래된다는 점이 특징이다. 만약 집값이 앞으로도 계속 떨어질 것이라 예상된다면 바닥을 알 수 없기 때문에 사람들은 매수를 하지 않는 것이 일반적이다. 그런데도 급매가 거래되는 이유는 이번 하락이 끝이 정해져 있는 일시적 하락이기 때문이다. 그 이유는 양도세 중과세 유예 기간과 관련이 있는데, 5월 9일까지는 중과세가 유예되고 이후에는 다시 중과세가 적용된다. 따라서 집을 팔 계획이 있는 사람이라면 5월 9일 이후까지 기다릴 이유가 없으므로 2월, 3월, 4월 사이에 미리 매물을 내놓게 되고, 이로 인해 급매물이 집중적으로 쏟아지게 된다. 시점이 다가올수록 오히려 가격은 다시 오르는 경향을 보이며, 세금 부담을 피하기 위해 매도를 포기하고 증여 등 다른 방법을 택하는 사람들도 늘어난다. 이렇게 일시적 하락은 끝이 명확히 정해져 있다는 특징이 있다. 이어서 논의된 것은 2027년을 기점으로 한 또 다른 세제 변화이다. 2029년부터 장기 거주에 따른 소득공제 제도가 바뀌는데, 현재 10억 원 한도의 혜택이 2027년까지는 유예되어 적용된다. 즉 2027년까지 집을 팔면 기존 방식대로 80퍼센트의 세제 혜택을 받을 수 있다는 것이다. 이 때문에 시세 차익이 크게 남은 다주택자나 고가주택 보유자들은 2027년까지 매도를 하는 것이 유리하다고 판단할 가능성이 높다. 이번에 처분한 뒤 다시 매입하면 취득가격이 높아져 향후 양도세 부담을 줄일 수 있기 때문에 한 번 정리하는 것이 유리한 전략이 된다는 것이다. 특히 2027년 중에서도 상반기에 매도가 몰릴 가능성이 큰데, 이는 종합부동산세 등 보유세 부과 기준일이 매년 6월 1일이기 때문이다. 매도를 계획하는 사람이라면 6월 1일 이전에 처분해 다음 해 종부세 부담을 피하려는 경향이 있다는 것이다. 다만 이 모든 것은 국회의 입법 상황에 따라 유동적이다. 만약 국회에서 소득공제 한도가 10억 원이 아니라 20억 원으로 상향 조정된다면, 집을 팔 필요가 없어진 사람들이 매물을 다시 거두어들일 수도 있다. 반대로 법안이 그대로 유지되거나 불리하게 바뀐다면 매물이 더 늘어날 수도 있다. 결국 국회 통과 여부를 지켜보며 매물의 증감이 결정될 것으로 보이며, 현재로서는 2027년 상반기가 일종의 데드라인으로 작용할 가능성이 높다는 것이다. 이런 흐름을 종합하면 최근의 집값 하락은 정상적인 추세 하락이라기보다는 세제상의 유예 기간과 기준일에 따라 발생하는 일시적 하락으로 해석하는 것이 타당하다는 결론이다. 다만 이러한 상황에서 서울 외곽 지역 집주인들은 상대적으로 더 고통스러운 시장 환경에 놓일 수 있다는 점도 함께 언급되었다.</p>
+        <a class="watch" href="https://www.youtube.com/shorts/1y4pDvtZ8MM" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-17">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">Money Comics</div>
+          <div class="title">9월29일ㅣ슈황(슈카의 시황)의 틱희틱비 치어리딩 방송</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        
+        <p>이 방송에서 슈카는 자신을 SK하이닉스 등 특정 종목이 오르길 기원하는 치어리딩 방송 진행자로 소개하며 유머러스하게 시장 상황을 중계했다. 이날 코스피와 코스닥은 각각 약 1% 정도 빠지며 시작했고, 외국인은 매도, 개인과 기타법인은 매수하는 흐름이었으며 원달러 환율은 소폭 하락, 국내 금리는 소강 상태였다. 특별한 뉴스는 없었지만 전날 삼성전자가 배당락으로 약 5% 하락한 영향이 있었다고 설명했다.</p><p>미국채 금리를 보여주며 10년물이 5.25%, 30년물이 5.5%를 넘어 팬데믹 고점을 넘어섰다고 언급하며 금리가 매우 빠르게 오른 점을 강조했다. 다만 미국 주식, 특히 마이크론은 고점 대비 10~12% 정도만 하락한 수준이며, 이번 주 목요일 예정된 마이크론 실적 발표에서 매출총이익률이 80% 중후반까지 나올 수 있어 서프라이즈 가능성이 있다고 기대했다.</p><p>부동산 관련해서는 서울 아파트 중위 가격이 사상 최초로 13억 원을 돌파했으며 강북 약 10억, 강남 약 16억 수준이라고 전했다. 강남 주요 지역은 평당 1억 원이 기본이 되어가는 추세라며, 최근 물가 상승과 화폐 가치 하락이 급격하게 진행되고 있다는 개인적 견해를 밝혔다. 다만 부동산도 업다운 사이클이 있으며 최근의 급격한 상승은 과열된 감이 있어 향후 조정 가능성이 있다고 조심스럽게 전망했다.</p><p>엔비디아가 1000억 달러(약 200조 원) 규모의 자사주 매입을 발표했다는 뉴스를 소개하며, 기존 800억 달러와 합쳐 총 2300억 달러(약 300조 원)를 내년 초까지 소각할 계획이라고 설명했다. 이는 미국 기업 역사상 최대 규모이며, 이전 최대치였던 애플의 1000억 달러를 넘어섰다고 언급했다. 젠슨 황이 최근 엔비디아 주가가 부진해 저평가되었다고 판단해 매입을 결정했다고 전하며, 실제로 엔비디아 주가가 최근 5개월간 정체된 상태임을 차트로 보여주었다.</p><p>트럼프 대통령이 중간선거 캠페인에서 바이든 전 대통령을 올해 900번 이상 언급하며 물가 상승의 책임을 바이든에게 돌리고 있다는 뉴스도 가볍게 소개했다.</p><p>SK하이닉스는 방송 중 반등에 성공해 결국 소폭 보합 수준(약 176만9000원)으로 마감했고, 삼성전자는 약 1% 상승한 27만2500원 부근에서 마무리됐다. 현대차, 카카오, 삼성전기, 대한항공, 이수페타시스 등 여러 종목의 차트를 보여주며 대체로 저점을 다지고 반등하는 모습이라고 해석했다. 크래프톤과 JYP는 최근 단기 악재로 부진하지만 대세는 변하지 않았다는 낙관적 견해를 전했다.</p><p>마지막에는 호르무즈 해협 관련 지정학적 리스크가 완화되면 유가 안정과 함께 증시에 긍정적 영향을 줄 수 있다고 언급했으며, 장 마감 직전 &quot;상어(북한 잠수함으로 추정되는 존재를 유머로 지칭)가 구조 작업 중 밖으로 나가지 않는다&quot;는 속보를 우스갯소리로 소개하며 방송을 마무리했다. 전반적으로 전날 급락에 대한 기술적 반등과 함께 다음 거래일에는 상황이 개선될 수 있다는 기대감을 표하며 방송을 종료했다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=1rSzmeSL2gA" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+  </section>
+
+  <footer class="foot">
+    <b>Investment Digest</b> · generated automatically. Not financial advice — personal reading notes only.
+  </footer>
+</div>
+<script>
+(function() {
+  var h = window.location.hash;
+  if (h && h.indexOf("#vid-") === 0) {
+    var el = document.querySelector(h);
+    if (el && el.tagName === "DETAILS") {
+      el.open = true;
+      el.scrollIntoView({block: "start"});
+    }
+  }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026-10-19 — Investment Digest</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Mulish:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#FBF6EC">
+<script>(function(){
+  var t = localStorage.getItem('theme') || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  document.documentElement.setAttribute('data-theme', t);
+})();</script>
+<style>
+:root{
+  --paper:#FBF6EC; --paper-2:#F3EADA; --card:#FFFDF8;
+  --ink:#332C24; --ink-soft:#6E6456; --ink-faint:#9A8E7C;
+  --line:#E7DBC6; --line-strong:#D8C8AC;
+  --honey:#E8A33D; --honey-deep:#C27D14; --honey-soft:#FBEACB;
+  --dram:#2C8C7C; --dram-soft:#DCEFE9;
+  --ltram:#5A61B4; --ltram-soft:#E6E6F6;
+  --optane:#C0563B; --optane-soft:#F7E1D8;
+  --shadow-sm:0 1px 2px rgba(80,60,30,.06),0 2px 8px rgba(80,60,30,.05);
+  --shadow-md:0 6px 18px rgba(90,66,28,.10),0 16px 36px rgba(90,66,28,.08);
+  --radius:18px; --radius-sm:12px; --maxw:1500px;
+  --display:"Fraunces",Georgia,serif;
+  --body:"Mulish",-apple-system,system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,monospace;
+  /* status scale: buy (green) -> hold (neutral) -> sell (red). Never used alone --
+     every status also carries an icon glyph + text label. */
+  --buy:#1F7A4D; --buy-soft:#DDF0E3;
+  --buyhold:#6E9A3C; --buyhold-soft:#EAF2D8;
+  --hold:#8A7F6C; --hold-soft:#F3EADA;
+  --holdsell:#C27D14; --holdsell-soft:#FBEACB; --holdsell-text:#8A5A0E;
+  --sell:#B23D26; --sell-soft:#F7E1D8;
+}
+/* Dark theme -- same design tokens, re-tuned for a dark warm-charcoal background
+   instead of the light "paper" one. Applied via a data-theme attribute on <html>
+   (set before first paint by the inline init script in <head>, so there's no
+   flash of the wrong theme) rather than only prefers-color-scheme, so the
+   toggle button can override the system setting and remember the choice. */
+:root[data-theme="dark"]{
+  --paper:#181512; --paper-2:#211D18; --card:#221E19;
+  --ink:#EEE7D9; --ink-soft:#BBB09C; --ink-faint:#8C8172;
+  --line:#38332A; --line-strong:#4A4335;
+  --honey:#F0B85B; --honey-deep:#F5C878; --honey-soft:#3A2D16;
+  --dram:#4FC0A9; --dram-soft:#173129;
+  --ltram:#9098E8; --ltram-soft:#242850;
+  --optane:#E68A6B; --optane-soft:#3B241B;
+  --shadow-sm:0 1px 2px rgba(0,0,0,.35),0 2px 8px rgba(0,0,0,.3);
+  --shadow-md:0 6px 18px rgba(0,0,0,.45),0 16px 36px rgba(0,0,0,.4);
+  --buy:#5FCB93; --buy-soft:#173121;
+  --buyhold:#A9CC6D; --buyhold-soft:#262E16;
+  --hold:#BBB09C; --hold-soft:#2A2620;
+  --holdsell:#F0B85B; --holdsell-soft:#3A2D16; --holdsell-text:#F0B85B;
+  --sell:#EE8065; --sell-soft:#3A211A;
+}
+*{box-sizing:border-box} html{scroll-behavior:smooth}
+body{margin:0;font-family:var(--body);color:var(--ink);line-height:1.6;background:var(--paper);
+  background-image:radial-gradient(circle at 10% 6%,rgba(44,140,124,.06),transparent 42%),radial-gradient(circle at 90% 18%,rgba(90,97,180,.06),transparent 44%),radial-gradient(circle at 50% 120%,rgba(232,163,61,.07),transparent 55%);
+  -webkit-font-smoothing:antialiased;min-height:100vh;transition:background-color .25s,color .25s}
+:root[data-theme="dark"] body{
+  background-image:radial-gradient(circle at 10% 6%,rgba(79,192,169,.08),transparent 42%),radial-gradient(circle at 90% 18%,rgba(144,152,232,.08),transparent 44%),radial-gradient(circle at 50% 120%,rgba(240,184,91,.06),transparent 55%);
+}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 22px}
+.theme-toggle{position:fixed;top:18px;right:18px;z-index:30;display:inline-flex;align-items:center;justify-content:center;
+  width:42px;height:42px;border-radius:50%;border:1px solid var(--line-strong);background:var(--card);color:var(--ink-soft);
+  cursor:pointer;box-shadow:var(--shadow-sm);font-size:17px;line-height:1;padding:0;transition:border-color .2s,color .2s,transform .15s}
+.theme-toggle:hover{border-color:var(--honey);color:var(--honey-deep);transform:scale(1.06)}
+.theme-toggle .tt-sun,.theme-toggle .tt-moon{display:none}
+:root[data-theme="light"] .theme-toggle .tt-moon{display:inline}
+:root[data-theme="dark"] .theme-toggle .tt-sun{display:inline}
+@media(max-width:480px){.theme-toggle{top:12px;right:12px;width:38px;height:38px;font-size:15px}}
+:root[data-theme="dark"] .eyebrow{border-color:var(--line-strong)}
+a{color:var(--honey-deep);text-decoration:none;border-bottom:1.5px solid var(--honey-soft);transition:border-color .2s}
+a:hover{border-color:var(--honey)}
+h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.2;color:var(--ink);margin:0 0 .5em}
+.head{padding:52px 0 18px}
+.eyebrow{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--honey-deep);background:var(--honey-soft);padding:7px 14px;border-radius:999px;border:1px solid #F0DCB0;margin-bottom:18px}
+.eyebrow .dot{width:8px;height:8px;border-radius:50%;background:var(--honey);box-shadow:0 0 0 4px rgba(232,163,61,.2)}
+.head h1{font-weight:700;font-size:clamp(2.1rem,5.6vw,3.2rem);letter-spacing:-.015em;margin:0 0 .3em}
+.head p{font-size:clamp(1rem,2vw,1.1rem);color:var(--ink-soft);max-width:60ch;margin:0}
+.back{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:.85rem;color:var(--ink-soft);border-bottom:none;margin-bottom:18px}
+.back:hover{color:var(--honey-deep)}
+
+.sec{margin:30px 0 0}
+.sec-h{font-family:var(--display);font-weight:600;font-size:1.15rem;margin:0 0 14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
+a.cardlink{text-decoration:none;color:inherit;border-bottom:none}
+.gcard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px;box-shadow:var(--shadow-sm);
+  transition:transform .18s,box-shadow .18s,border-color .18s;height:100%;display:flex;flex-direction:column}
+.gcard:hover{transform:translateY(-4px);box-shadow:var(--shadow-md);border-color:var(--line-strong)}
+.gcard h2{font-size:1.18rem;letter-spacing:-.01em;margin:0 0 .3em}
+.gcard .date{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:10px}
+.gcard .counts{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 12px}
+.gcard .tickers{font-size:.88rem;color:var(--ink-soft);margin:0 0 12px;flex:1}
+.gcard .go{font-family:var(--body);font-weight:700;font-size:.88rem;color:var(--honey-deep);display:inline-flex;align-items:center;gap:6px}
+.gcard:hover .go{color:var(--ltram)}
+
+.status{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-weight:700;font-size:10.5px;letter-spacing:.03em;
+  text-transform:uppercase;padding:3px 9px;border-radius:999px}
+.status.buy{background:var(--buy-soft);color:var(--buy)}
+.status.buyhold{background:var(--buyhold-soft);color:var(--buyhold)}
+.status.hold{background:var(--hold-soft);color:var(--hold)}
+.status.holdsell{background:var(--holdsell-soft);color:var(--holdsell-text)}
+.status.sell{background:var(--sell-soft);color:var(--sell)}
+
+.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px 24px;margin:14px 0;box-shadow:var(--shadow-sm)}
+.panel.buy{border-left:4px solid var(--buy)}
+.panel.buyhold{border-left:4px solid var(--buyhold)}
+.panel.hold{border-left:4px solid var(--hold)}
+.panel.holdsell{border-left:4px solid var(--holdsell)}
+.panel.sell{border-left:4px solid var(--sell)}
+.panel h3{font-size:1.08rem;margin:0 0 12px;display:flex;align-items:center;gap:10px}
+.panel .empty{color:var(--ink-faint);font-style:italic;font-size:.94rem;margin:0}
+.pick{padding:10px 0;border-top:1px dashed var(--line)}
+.pick:first-of-type{border-top:none;padding-top:2px}
+.pick .ticker{font-weight:700;font-family:var(--display);font-size:1.02rem;margin-bottom:2px}
+.pick .rationale{font-size:.92rem;color:var(--ink-soft);margin:0}
+
+.tickerbar{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 6px}
+.tchip{font-family:var(--mono);font-weight:700;font-size:.82rem;background:var(--paper-2);color:var(--ink-soft);
+  border:1px solid var(--line-strong);border-radius:999px;padding:5px 12px}
+
+.vcard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius-sm);margin:12px 0;overflow:hidden}
+.vcard summary{list-style:none;cursor:pointer;padding:16px 20px;display:flex;gap:14px;align-items:flex-start}
+.vcard summary::-webkit-details-marker{display:none}
+.vcard .vmeta{flex:1;min-width:0}
+.vcard .channel{font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--honey-deep);margin-bottom:3px}
+.vcard .title{font-weight:700;font-size:1rem;color:var(--ink)}
+.vcard .chev{margin-left:auto;color:var(--ink-faint);transition:transform .25s;font-family:var(--mono);flex:0 0 auto}
+.vcard[open] summary .chev{transform:rotate(180deg)}
+.vcard .body{padding:0 20px 20px 20px;color:var(--ink-soft);font-size:.95rem}
+.vcard .body p{margin:0 0 12px}
+.vcard .watch{font-family:var(--mono);font-size:.82rem}
+
+.foot{margin:54px 0 40px;padding-top:20px;border-top:1px solid var(--line);font-size:.85rem;color:var(--ink-faint);font-family:var(--mono);line-height:1.7}
+.foot b{color:var(--ink-soft)}
+.empty-state{color:var(--ink-faint);font-style:italic;padding:24px 2px}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+.zchart-panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px 24px;box-shadow:var(--shadow-sm)}
+.zchart-asof{font-size:.86rem;color:var(--ink-faint);margin-bottom:14px;line-height:1.5}
+.zchart-grid{display:grid;grid-template-columns:1fr 300px;gap:22px;align-items:start}
+@media(max-width:820px){.zchart-grid{grid-template-columns:1fr}}
+.zrank-list{display:flex;flex-direction:column;border-left:1px solid var(--line);padding-left:18px}
+@media(max-width:820px){.zrank-list{border-left:none;border-top:1px solid var(--line);padding-left:0;padding-top:14px}}
+.zrank-row{display:grid;grid-template-columns:12px 1fr auto auto;align-items:center;gap:9px;padding:6px 0;border-top:1px dashed var(--line);font-size:.86rem}
+.zrank-row:first-of-type{border-top:none}
+.zrank-row.zrank-head{border-top:none;border-bottom:1px solid var(--line);padding-bottom:8px;margin-bottom:2px;
+  font-family:var(--mono);font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-faint);font-weight:700}
+.zrank-dot{width:10px;height:10px;border-radius:50%}
+.zrank-ticker{color:var(--ink);font-weight:600}
+.zrank-val{font-family:var(--mono);font-weight:700;font-size:.85rem;text-align:right}
+.zrank-val.pos{color:var(--buy)}
+.zrank-val.neg{color:var(--sell)}
+.zrank-alloc{font-family:var(--mono);font-weight:700;font-size:.85rem;text-align:right;color:var(--ink-soft);min-width:52px}
+.zchart-note{font-size:.85rem;color:var(--ink-faint);margin:16px 0 0}
+
+.date-groups{display:flex;flex-direction:column;gap:16px}
+.date-group{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px 24px;box-shadow:var(--shadow-sm);
+  transition:border-color .18s,box-shadow .18s}
+.date-group:hover{border-color:var(--line-strong);box-shadow:var(--shadow-md)}
+.date-group .dg-head{display:flex;align-items:baseline;flex-wrap:wrap;gap:10px 14px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.date-group .dg-date{font-family:var(--display);font-weight:600;font-size:1.25rem;color:var(--ink);border-bottom:1.5px solid var(--honey-soft)}
+.date-group .dg-date:hover{color:var(--honey-deep);border-color:var(--honey)}
+.date-group .dg-count{font-family:var(--mono);font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-faint)}
+.date-videos{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+.date-videos li{display:flex;flex-direction:column;gap:3px;font-size:.94rem}
+.date-videos .dv-row{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline}
+.date-videos .dv-channel{font-family:var(--mono);font-size:10px;letter-spacing:.04em;text-transform:uppercase;color:var(--honey-deep);
+  background:var(--honey-soft);border-radius:999px;padding:2px 9px;flex:0 0 auto}
+.date-videos .dv-title{color:var(--ink)}
+.date-videos .dv-summary{color:var(--ink-faint);font-size:.85rem;line-height:1.5;margin:0 0 0 2px}
+.date-videos a{color:var(--ink);border-bottom:1.5px solid var(--line-strong)}
+.date-videos a:hover{color:var(--honey-deep);border-color:var(--honey)}
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode" title="Toggle dark mode">
+  <span class="tt-sun">☀</span><span class="tt-moon">☾</span>
+</button>
+<script>function toggleTheme(){
+  var r = document.documentElement, next = r.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  r.setAttribute('data-theme', next); localStorage.setItem('theme', next);
+  var mc = document.querySelector('meta[name="theme-color"]'); if (mc) mc.content = next === 'dark' ? '#181512' : '#FBF6EC';
+}</script>
+<div class="wrap">
+  <header class="head">
+    <a class="back" href="../index.html">← All digests</a>
+    <span class="eyebrow"><span class="dot"></span>2026-10-19</span>
+    <h1>Daily Digest</h1>
+    <p>Executive read of today's finance &amp; investing videos, sorted by call.</p>
+    <div class="tickerbar">
+      <span class="tchip">마이크로소프트</span>
+<span class="tchip">쇼피파이</span>
+<span class="tchip">트윌리오</span>
+<span class="tchip">케이덴스</span>
+<span class="tchip">스포티파이</span>
+<span class="tchip">코어위브</span>
+<span class="tchip">앤트로픽</span>
+<span class="tchip">엔비디아</span>
+<span class="tchip">마이크론테크놀로지</span>
+<span class="tchip">AMD</span>
+<span class="tchip">인텔</span>
+<span class="tchip">브로드컴</span>
+<span class="tchip">웨스턴디지털</span>
+<span class="tchip">샌디스크</span>
+<span class="tchip">시게이트</span>
+<span class="tchip">구글</span>
+<span class="tchip">아마존</span>
+<span class="tchip">테슬라</span>
+<span class="tchip">세일즈포스</span>
+<span class="tchip">애플</span>
+<span class="tchip">암페놀</span>
+<span class="tchip">박스</span>
+<span class="tchip">캠텍</span>
+<span class="tchip">쿠팡</span>
+<span class="tchip">삼성전자</span>
+<span class="tchip">SK하이닉스</span>
+<span class="tchip">현대차</span>
+<span class="tchip">조선주</span>
+<span class="tchip">넷플릭스</span>
+<span class="tchip">스페이스엑스</span>
+<span class="tchip">메타</span>
+<span class="tchip">IBM</span>
+<span class="tchip">텍사스인스트루먼트</span>
+<span class="tchip">GM</span>
+    </div>
+  </header>
+
+  <section class="sec">
+    <div class="sec-h">Executive summary</div>
+    
+    <div class="panel buy">
+      <h3><span class="status buy">▲ Buy</span></h3>
+      <div class="pick">
+        <div class="ticker">마이크로소프트</div>
+        <p class="rationale">코파일럿과 애저 성장에 힘입어 밸류에이션이 여전히 매력적이라 조정 시 분할 매수가 권장됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">쇼피파이</div>
+        <p class="rationale">AI 에이전트 결제 선도력과 매출 성장 가속으로 매수 의견이 제시됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">트윌리오</div>
+        <p class="rationale">AI 에이전트 확산에 따른 커뮤니케이션 수요 급증 수혜주로 매수가 권고됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">케이덴스</div>
+        <p class="rationale">실적 전망치 상향과 AI 설계 수요 증가로 상승 여력이 충분하다고 평가됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">스포티파이</div>
+        <p class="rationale">광고 확대와 구독자 증가, 가격 정책 등으로 성장 여력이 충분해 매수 추천됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">코어위브</div>
+        <p class="rationale">최근 급락이 펀더멘털 악화가 아닌 신용시장 우려 탓이라며 큰 상승 여력을 근거로 매수 의견이 제시됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">암페놀</div>
+        <p class="rationale">AI 인프라 투자 수요로 견조한 실적이 예상되어 매수가 추천됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">박스</div>
+        <p class="rationale">AI 수요 대비 저평가 상태로 목표주가가 상향되며 매수 의견이 제시됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">캠텍</div>
+        <p class="rationale">AI 기반 패키징 시장 성장 수혜로 목표주가 상향과 함께 매수 의견이 재확인됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">쿠팡</div>
+        <p class="rationale">실적 발표를 앞두고 매수하기 좋은 종목으로 제시됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">마이크론테크놀로지</div>
+        <p class="rationale">밸류에이션이 과거 고점 대비 크게 할인되어 매도가 아닌 매수 관점으로 접근해야 한다고 평가됨.</p>
+      </div>
+    </div>
+
+    <div class="panel buyhold">
+      <h3><span class="status buyhold">◆ Buy / Hold</span></h3>
+      <div class="pick">
+        <div class="ticker">엔비디아</div>
+        <p class="rationale">GPU 및 네트워킹 시장 지배력 확대로 긍정적이나 신용시장 우려로 당장은 지켜볼 필요가 있다는 평가가 혼재됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">삼성전자</div>
+        <p class="rationale">반도체 슈퍼사이클 수혜가 기대되지만 변동성을 꺼리는 투자자에게는 차익실현도 거론되는 등 시각이 엇갈림.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">SK하이닉스</div>
+        <p class="rationale">사상 최대 실적과 반도체 슈퍼사이클 수혜가 부각되지만 급등에 따른 주의도 함께 언급됨.</p>
+      </div>
+    </div>
+
+    <div class="panel hold">
+      <h3><span class="status hold">● Hold</span></h3>
+      <div class="pick">
+        <div class="ticker">앤트로픽</div>
+        <p class="rationale">재정 우려와 AI 안전성 이슈로 불확실성이 커 투자 판단을 유보하고 지켜볼 대상으로 거론됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">네오클라우드</div>
+        <p class="rationale">최근 급락이 실적 부진이 아닌 외부 신용 우려에서 비롯됐다며 매도보다는 관망이 권고됨.</p>
+      </div>
+    </div>
+
+    <div class="panel holdsell">
+      <h3><span class="status holdsell">◇ Hold / Sell</span></h3>
+      <div class="pick">
+        <div class="ticker">현대차</div>
+        <p class="rationale">미국 빅테크 대신 비중을 유지했던 것이 판단 착오였다고 평가되며 비중 축소 필요성이 시사됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">조선주</div>
+        <p class="rationale">미국 주식 비중 확대가 맞다고 언급되며 상대적으로 비중을 줄여야 할 종목으로 거론됨.</p>
+      </div>
+    </div>
+
+    <div class="panel sell">
+      <h3><span class="status sell">▼ Sell</span></h3>
+      <p class="empty">No calls in this category today.</p>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="sec-h">Videos covered (6)</div>
+    
+    <details class="vcard" id="vid-0">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">Orlando Kim</div>
+          <div class="title">(상승 가능종목) 실적과 이익이 나는 소프트종목은 눈여겨보자!!!</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        
+        <p>오를란도 킴이 진행한 이번 영상은 실적 발표 시즌을 앞두고 AI 수혜가 기대되는 소프트웨어 및 관련 종목들을 점검하는 내용을 담고 있다. 전반적으로 마이크로소프트, 쇼피파이, 트윌리오 등 AI 수요에 힘입어 시장 예상치를 상회하는 실적을 낼 것으로 전망되는 기업들이 언급되었으며, 키뱅크와 제프리스 등 증권사들이 이들 종목에 대해 긍정적 전망을 내놓고 있다고 소개한다.</p><p>기술주 전반은 최근 변동성이 컸던 한 주를 보냈으며, AI 투자 기대에 부응할 수 있을지에 대한 우려와 인플레이션 이슈가 맞물리면서 나스닥 지수가 하락세를 보였다. 특히 클로드를 개발한 앤트로픽의 재정적 우려와 AI 안전성 문제가 투자자들의 불확실성을 키우고 있으며, 향후 기업공개에 대한 면밀한 검토가 이루어지고 있다고 전한다.</p><p>개별 종목으로는 먼저 케이덴스가 언급된다. 전자설계자동화 EDA 솔루션을 제공하는 핵심 기업으로, 최근 기술주 전반의 매도세에 휘말려 주가가 10% 가량 하락했으나, 실적 전망치는 오히려 큰 폭으로 상향 조정될 것으로 예상된다. 주요 제품에 대한 강한 수요와 매출 성장률, 그리고 월가의 보수적인 전망치를 고려할 때 상승 여력이 충분하다고 평가된다. 특히 반도체 설계 경쟁이 심화되고 설계 주기가 단축되면서 AI 에이전트 기반 솔루션에 대한 수요가 늘어나 케이덴스 플랫폼 활용도가 증가할 것으로 기대된다.</p><p>AI 에이전트 관련 소비자향 소프트웨어 종목으로는 스포티파이와 트윌리오가 꼽힌다. 스포티파이는 AI가 전자상거래 결제를 대신 처리하는 에이전트 기반 상거래의 선도주자로 평가되는 쇼피파이와 함께 거론되며, 쇼피파이는 아마존이 자사 플랫폼에서 AI 에이전트 결제를 차단한 반면 독자적으로 원활한 에이전트 결제를 허용하기로 하면서 경쟁력을 확보했다고 설명한다. 해외 결제 사업 호조에 힘입어 매출 성장률이 기존 예상치 30%대 초반을 넘어 35%까지 가속화될 것으로 전망된다. 트윌리오는 음성, 문자, 채팅 기능을 소프트웨어에 추가할 수 있게 해주는 클라우드 통신 플랫폼으로 올해 들어 주가가 72% 급등했으며, AI 에이전트 확산에 따른 고객 커뮤니케이션 급증의 수혜주로 분류된다. 10월 29일 실적 발표에서 AI 관련 성장 내용이 공개될 것으로 예상된다.</p><p>마이크로소프트는 제프리스가 가장 선호하는 종목으로 꼽힌다. 코파일럿 도입 확대와 애저 클라우드 성장에 힘입어 지난 분기 예상치를 상회하는 실적을 냈으며, AI 컴퓨팅 수요 지속에 따라 더 높은 가격을 책정할 수 있는 점이 강점으로 꼽힌다. 2026년 인프라 투자에 1750억 달러를 지출할 계획이며, 공급과 수요의 불균형을 고려할 때 2027년에는 더 큰 규모의 투자 계획이 발표될 가능성도 제기된다. 현재 주가수익비율은 26배로 최근 5년 평균 28배에 비해 여전히 양호한 수준으로 평가되며, EPS 추정치 23.7달러에 26배를 적용하면 주가가 약 616달러까지 상승할 수 있다는 계산도 제시된다. 밸류에이션이 저렴한 상태에서 신고가 경신 가능성이 있어 조정 시마다 분할 매수하며 장기 보유할 만한 종목으로 평가된다.</p><p>코어위브도 주목할 종목으로 언급된다. 이번 주 주가가 26% 폭락했지만 이는 회사 펀더멘털 악화가 아니라 신용시장 우려에서 비롯된 것으로 분석된다. 코어위브는 520억 달러 규모의 부채를 보유하고 있으며, 금리 상승으로 자본비용이 늘어날 것이라는 우려로 일부 무담보채권 수익률이 15%까지 치솟아 부실채권 수준에 이르렀다고 설명한다. 그러나 기존 부채 조건은 변동이 없고, AI 컴퓨팅 수요 급증에 따라 더 높은 가격 책정이 가능해 금융비용 증가를 상쇄할 수 있다는 평가가 나온다. 목표주가는 150달러로 현재가 대비 140% 이상 상승 여력이 있다고 제시되며, BNP파리바 역시 낙관적인 전망을 내놓고 있다. 신규 고가 계약에서 발생하는 현금흐름이 향후 인프라 확장 자금을 충당할 수 있을 것으로 기대되며, 다가오는 3분기 실적에서 외부 자금 의존 없이 부채를 상환할 현금흐름 창출 시점에 대한 구체적 로드맵이 공개될 것으로 예상된다.</p><p>AI 인프라 시장 전망과 관련해서는 추론과 학습 수요가 모두 지속적으로 증가할 것으로 보이며, 특히 추론 시장이 학습 시장보다 더 빠르게 성장해 2030년에는 2000억 달러 이상 규모로 커질 것으로 예상된다. 이에 따라 케이덴스, 코어위브 등 관련 종목들이 장기적으로 상승할 수밖에 없는 위치에 있다고 평가한다.</p><p>마지막으로 네오클라우드 관련 종목들의 최근 급락은 회사 자체의 실적 부진이 아니라 외부 변수, 즉 신용시장 우려에서 비롯된 것이라는 점을 강조한다. 이러한 신용 우려의 근원을 추적하면 결국 유가 상승에 따른 10년물 국채금리 상승으로 이어지며, 유가 상승은 전쟁 등 지정학적 리스크에서 기인한다고 설명한다. 따라서 유가가 하락하면 금리도 하락하고 신용시장 우려도 완화되면서 관련 주가가 다시 상승할 수 있다는 논리를 제시한다. 실제로 이날 브렌트유와 WTI 유가가 각각 1.74%, 1.59% 하락했고 10년물 금리도 소폭 하락하는 모습을 보였다고 전하며, 외부 변수에 의한 하락이므로 지금은 섣불리 매도하기보다 관망하며 지켜볼 시점이라고 조언하며 영상을 마무리한다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=6GAu97XsTb4" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-1">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">Orlando Kim</div>
+          <div class="title">(주간시황) 신용으로 꺽이는 장이기에 현금과 이익이 나는 종목은 던지지 말자!!!</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        
+        <p>9월 30일부터 10월 중순까지 한 주 동안 미국 주요 지수를 복기하면 S&amp;P500이 1.97퍼센트 하락했고 다우는 오히려 상승했으며 나스닥이 가장 크게 빠지면서 현재 장을 주도하는 하락은 나스닥 중심이라는 것을 알 수 있다. 미드캡과 스몰캡, 특히 마이크로캡이 금리에 민감하게 반응하며 많이 빠졌다. 다만 1개월 기준으로는 아직 상승 추세이고 연초 대비로도 S&amp;P500 11퍼센트, 나스닥 15퍼센트, 다우 8퍼센트로 모두 플러스 구간이라 이번 주 조정은 나스닥 위주의 단기 조정으로 봐야 한다.</p><p>11개 섹터로 보면 한 주 동안 에너지가 가장 좋았고 테크놀로지가 가장 나빴으며, 커뮤니케이션서비스와 자유소비재, 산업재도 함께 하락했다. 반면 헬스케어와 필수소비재를 중심으로 경기방어주가 올라가면서 11개 섹터 중 7개가 상승해 장 전체가 무너진 것은 아니라는 신호로 해석된다. 반도체 관련주인 엔비디아, 마이크론, AMD, 인텔, 브로드컴, 웨스턴디지털, 샌디스크, 시게이트 및 반도체 장비주가 일제히 하락했고, 마이크로소프트는 상대적으로 덜 빠졌지만 구글, 아마존, 테슬라는 많이 빠졌다. 세일즈포스 같은 소프트웨어주는 소폭 반등했고 AI와 관련성이 낮은 애플은 올랐다. 가치주는 1.05퍼센트 상승한 반면 성장주는 4.29퍼센트 하락해 스타일 로테이션이 뚜렷했지만 연초 대비로는 가치주 10.97퍼센트, 성장주 12.75퍼센트로 비슷한 수준이라 포트폴리오에서 가치주 비중을 무시하면 안 된다.</p><p>글로벌 증시는 한 주 동안 전세계 기준 1.96퍼센트 하락했고 특히 신흥시장이 5.66퍼센트로 가장 많이 빠졌다. 선진국과 미국도 1.2퍼센트 안팎 하락했다. 국가별로는 프랑스, 영국, 독일이 소폭 상승한 반면 미국, 일본, 중국, 브라질은 하락했다. 다만 연초 대비로는 미국 11퍼센트, 일본 17퍼센트 상승 중이다.</p><p>채권 쪽에서는 20년물 국채가 금리 급락에 따라 한 주 동안 2.65퍼센트 상승했지만 1개월로는 TLT가 여전히 하락 중이고 연초 대비로도 손실 구간이라 장기채보다는 3년에서 5년물 정도가 바람직하다고 본다. 금은 0.67퍼센트, 은은 5.97퍼센트, 백금은 3.28퍼센트 하락했는데 이는 달러 금리가 오르면서 이자를 주지 않는 원자재 자산의 매력이 떨어졌기 때문이다. 달러인덱스는 금리 하락 영향으로 한 주 동안 0.33퍼센트 내렸지만 1개월로는 여전히 상승 추세다. 브렌트유 가격과 나스닥 지수가 비슷한 흐름으로 연동되고 있다는 점도 짚었는데, 유가가 오르면 나스닥이 내리는 패턴이 나타나고 있어 유가 하락 없이는 나스닥의 급반등이 어렵다고 본다.</p><p>10년물 금리는 5.08퍼센트 수준까지 내려왔지만 50일선에 걸쳐 있어 추가 하락 여부가 관건이며 5퍼센트를 강하게 뚫고 내려가기는 쉽지 않다고 본다. 30년물 금리도 5.45퍼센트로 과거 5.7퍼센트보다는 낮아졌지만 신용경색 우려를 완전히 해소하려면 더 내려가야 한다. VIX 지수는 한 주 동안 30에서 40퍼센트 급등하며 20까지 올라가 투자 심리가 매우 불안한 상태임을 보여준다. S&amp;P500과 나스닥 차트에서는 다이버전스와 삼중 봉우리 패턴이 나타나고 있어 기술적으로 바로 반등하기는 어렵고 하락 강도가 아직 강하다고 평가된다. 다우는 50일선에서 반등 중이며 상대적으로 양호하지만 러셀은 금리와 연동되어 약세가 뚜렷하다. 러셀은 고점 대비 11퍼센트 하락해 조정장 영역에 들어섰지만 나스닥은 아직 6퍼센트 수준이라 조정장으로 보기는 이르다.</p><p>이번 주 가장 큰 이슈는 신용과 크레딧 문제였다. 특히 AI 데이터센터 관련 기업들이 15퍼센트에 달하는 고금리로 자금을 조달하면서 부도 위험, CDS 프리미엄 상승 우려가 제기됐고 일론 머스크도 관련 발언을 했다. 다만 엔비디아가 주요 주주이자 GPU 공급자인 만큼 이 생태계가 쉽게 무너지도록 방치되지는 않을 것으로 보이며, 하이퍼스케일러들의 캐펙스 축소도 아직 나타나지 않고 있다. JP모건 자료에 따르면 2027년 하이퍼스케일러 및 네오클라우드의 캐펙스는 1.58조 달러 규모로 계속 증가할 전망이며 반도체 및 서버 분야가 그 중 42퍼센트를 차지한다. 내부수익률 계산으로도 15퍼센트의 조달비용을 상회하는 16퍼센트의 IRR이 나와 회수 기간 약 3.4년이면 수익성이 있다는 분석도 있어 현재의 자금조달 구조가 당장 붕괴될 가능성은 낮다고 본다. 골드만삭스 자료에서는 경기민감주와 경기방어주 흐름, 미국 실질 경제성장 속도가 함께 둔화되고 있고 헤지펀드들도 레버리지 비율을 줄이며 AI 관련 포지션을 축소하고 있다는 점이 확인됐다. 블룸버그에 따르면 HBM과 D램 가격 및 출하량이 2030년까지 최소 세 배 이상 상승할 것으로 전망돼 메모리 업황의 장기 성장성은 유효하다.</p><p>공포탐욕지수는 18까지 내려와 극도의 공포 구간에 있는데, 이는 보유자 입장에서는 매도 타이밍이 아니라 보유해야 할 시점이며 현금 보유자 입장에서는 분할 매수를 고려할 시점이라는 신호로 해석된다. 다만 3배 레버리지 상품은 피하고 1배 일반 주식 중심으로 매수 관점에서 접근해야 한다고 강조한다. S&amp;P500의 밸류에이션은 18배 수준으로 작년 말 22배 대비 상당히 낮아졌고 정보기술은 20배 이하, 헬스케어는 18.9배로 전반적으로 저평가 구간에 들어와 있다. 마이크론테크놀로지의 경우 PER이 5배, PBR이 7.7배까지 내려와 과거 고점 대비 크게 할인된 상태로 매도가 아닌 매수 관점에서 봐야 한다고 설명한다.</p><p>다음 주에는 넷플릭스, 스페이스엑스, 테슬라, 메타, IBM, 텍사스인스트루먼트 등 주요 실적 발표가 예정돼 있어 반도체 관련주의 흐름이 다시 정리되는 한 주가 될 것으로 예상된다. 또한 파이낸셜타임스 보도에 따르면 앤트로픽이 블랙스톤 주도의 600억 달러 규모 반도체 금융 패키지 중 90억 달러 후순위채를 10퍼센트대 금리로 발행하고 브로드컴이 420억 달러 규모 선순위채 주선 및 대출을 제공하기로 했으며 이 대출은 앤트로픽 지분으로 전환될 수 있는 전환사채 형태다. 이 자금은 구글 TPU를 5년간 임대하는 비용에 쓰이는데, 이러한 고금리 조달 구조가 지속되면 기업 이익 압박 우려로 이어질 수 있다는 시각도 있다.</p><p>뱅크오브아메리카는 실적 발표를 앞두고 매수하기 좋은 종목으로 스포티파이, 암페놀, 박스, 캠텍, 쿠팡 다섯 종목을 제시했다. 박스는 AI 수요 대비 저평가된 소프트웨어 기업으로 목표주가를 42달러에서 50달러로 상향했고, 암페놀은 AI 인프라 투자 수요로 견조한 실적이 예상되며, 스포티파이는 광고 확대와 구독자 증가, 가격 정책 등으로 AI 우려에도 불구하고 성장 여력이 충분하다고 평가됐다. 캠텍은 AI 기반 고성능 로직 및 메모리 패키징 시장 성장에 힘입어 목표주가 200달러로 매수 의견이 재확인됐다. 끝으로 엔비디아 CEO 젠슨 황은 기가와트당 제공 가치가 과거 180억 달러에서 400억 달러 이상으로 늘었다며 엔비디아가 GPU뿐 아니라 가장 빠르게 성장하는 네트워킹 및 CPU 기업으로 자리잡았고 전세계 클라우드 서비스 제공업체 시장에서 약 40퍼센트, 온프레미스 및 네오클라우드를 포함하면 전체 자본지출에서 차지하는 비중이 계속 확대되고 있다고 밝혔다. 전반적으로 현재는 신용 문제로 인한 단기 조정 국면이지만 밸류에이션이 낮아진 구간이므로 보유 종목은 던지지 말고 현금 보유자는 분할 매수 관점으로 접근해야 할 때라는 것이 핵심 메시지다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=dnHTo3-FbgE" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-2">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">부읽남</div>
+          <div class="title">이제 집 사고 싶어도 못 삽니다 &quot;집값 내년부터 이렇게 됩니다&quot; [김제경 박사 1부]</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        
+        <p>이 영상에서는 김제경 박사가 출연하여 최근 서울 및 수도권 주택 가격 상승세와 이재명 정부의 부동산 정책 방향에 대해 논의한다.</p><p>핵심 내용은 현재 서울 집값이 88주 연속 상승하며 문재인 정부 시절 기록한 85주 연속 상승 기록을 이미 깼다는 점이다. 연말까지 가면 정확히 100주를 채우게 되는데, 이는 한국 부동산 역사상 전례 없는 기록으로 정부 입장에서 상당히 부담스러운 상징적 수치다. 이 때문에 정부가 100주를 채우기 전에 어떻게든 상승세를 끊으려 하며, 조만간 추가 대출 규제가 나올 가능성이 높다는 이야기가 나온다. 실제로 LH 사장이 급락 가능성을 경고하거나 6억원 대출 한도가 과도하다는 발언을 먼저 꺼낸 것도 이런 맥락과 무관하지 않다는 분석이다.</p><p>8월 3일 세제 개편안이 발표된 날에도 강남 등 일부 지역은 일시적으로 하락했지만 외곽 지역이 오히려 오르면서 전체 평균은 꺾이지 않았다. 이에 정부는 서울 25개구와 경기 12개 지역을 조정대상지역, 투기과열지구, 토지거래허가구역으로 지정했고, 이후 구리, 기흥, 동탄 등을 추가해 15개 지역으로 확대했지만 여전히 상승세를 잡지 못하고 있다. 추가 규제지역 확대는 풍선효과 우려로 한계가 있어, 15억원 미만 주택에 대한 6억원 대출 한도를 축소하거나 금액대별로 세분화하는 방식의 대출 규제가 유력하게 거론되고 있다.</p><p>다만 역사적으로 대출 규제가 집값 자체를 안정시킨 사례는 한 번도 없었다는 점이 강조된다. 문재인 정부 시절에도 15억원 초과 주택에 대한 대출을 전면 금지했지만 결국 집값은 올랐다. 대출 규제는 일시적으로 거래를 위축시키고 상승세에 숨 고르기를 주는 효과는 있지만, 정부가 계속해서 막대한 재정을 풀고 있는 한 유동성 자체를 막을 수는 없다는 것이다. 올해 정부 예산이 사상 처음 700조원을 넘었고 내년에는 800조원을 넘을 전망이며, 삼성전자나 SK하이닉스 같은 기업들의 성과급 규모도 매우 커서 시중에 막대한 자금이 풀리고 있다. 이런 상황에서 대출만 규제하면 현금 여력이 있는 사람들은 그대로 집을 사고, 목돈이 없는 무주택 서민들만 사다리를 걷어차이는 결과가 된다는 비판이 제기된다.</p><p>실제로 대출 규제가 강화될수록 부모 자금 지원을 받을 수 있는 사람이나 현금 부자들만 강남 등 핵심지에서 집을 살 수 있게 되고, 평범한 직장인이나 전문직처럼 소득은 있지만 목돈이 부족한 사람들은 오히려 내 집 마련 기회를 박탈당하는 양극화가 심화된다는 점도 지적된다. 실제 등기부등본 분석에 따르면 압구정, 반포 등지에서는 상당수가 대출 없이 거래되고 있어, 이런 지역은 이미 현금 부자들만의 시장으로 재편되고 있다는 설명이다.</p><p>한편 최근 기준금리 인상에도 불구하고 시장 체감은 예상보다 크지 않은데, 이는 애초에 대출 규제로 인해 대출 의존도가 낮은 사람들 위주로 거래가 이루어지고 있기 때문이라는 분석이다. 오히려 사채 시장에서는 연 12%에 달하는 고금리에도 불구하고 대출 수요가 폭증하는 기현상이 나타나고 있으며, 안정적인 직장을 가진 사람들조차 아파트를 담보로 사채를 끌어다 쓰는 사례가 늘고 있다고 한다. 이는 집값 상승에 대한 확신이 여전히 강하다는 방증으로 해석된다. 다만 금리 인상의 충격은 주택보다는 상업용 부동산, 특히 대형 빌딩 시장에 더 크게 작용할 것으로 전망되는데, 자영업자들의 경영난으로 임대료를 올리기 어려운 상황에서 금리까지 오르면 건물주들의 이자 부담이 가중되기 때문이다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=26uBuWtsXwM" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-3">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">부읽남</div>
+          <div class="title">금값 상상 못할 전망 나왔다? 가진 금 전부 &#x27;이렇게&#x27; 하세요 [박정호 교수 4부]</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        
+        <p>금값은 달러 가치에 대한 신뢰가 흔들릴 때마다 상승하는 패턴을 보여왔다. 닉슨 대통령이 금태환을 중단한다고 발표했을 때와 글로벌 금융위기 이후에도 금값은 급등한 바 있다. 전문가들 사이에서는 미국이 국가부채를 결국 다 갚지 못할 것이라는 전망이 나오고 있으며, 과거 닉슨 쇼크 때처럼 미국이 어느 순간 중앙은행과 금융기관이 보유한 미국 국채를 상환할 수 없다고 선언하고 이를 영구채로 전환할 가능성이 거론된다. 빚이 많은 쪽이 오히려 힘을 가지게 되는 것처럼, 미국이 원금은 갚지 못하지만 이자는 계속 지급하겠다는 방식으로 재정 부담을 줄이려 할 수 있다는 것이다. 이 때문에 여러 국가들이 미국 국채나 달러 표시 자산 비중을 줄이고 미국에 맡겨둔 금을 돌려받으려는 움직임을 보이고 있으며, 이는 달러 패권이 약화되는 상황에 대비해 금이 보다 견고한 가치로 인정받을 것이라는 전망과 맞닿아 있다.</p><p>다만 작년 금값 상승은 나스닥 주요 종목보다도 가파른 비정상적인 상승이었기 때문에 최근의 조정은 자연스러운 현상이며, 금에서 반도체나 AI 기업과 같은 수준의 수익률을 기대해서는 안 된다고 강조한다. 금은 엔화처럼 장기간 천천히 우상향하는 자산으로 보유하는 것이 맞다는 입장이다. 전쟁이 계속되는데도 금값이 크게 반등하지 않는 이유에 대해서는, 전쟁의 양상이 과거와 달라졌기 때문이라고 설명한다. 과거 전쟁은 대규모 병력 동원과 보급으로 막대한 비용이 들고 단기간에 승패가 갈렸지만, 현재는 드론 중심의 전쟁으로 바뀌면서 전투기 한 대 가격으로 수천에서 수만 대의 드론을 운용할 수 있게 되었고, 인명 피해가 적어 여론 악화도 덜하다. 그 결과 전쟁이 장기 소모전 형태로 변하면서 증시에 미치는 충격도 초반 급락 이후 서서히 회복하거나 횡보하는 양상을 보이며, 러시아-우크라이나 전쟁이나 중동 전쟁처럼 유가 등 특수 요인이 있는 경우를 제외하면 전쟁으로 인한 금값 급등 효과는 일시적이고, 앞으로는 전쟁이 5년, 10년 지속되는 상수로 자리잡을 것이라는 시각을 제시한다.</p><p>이런 상황에서는 물가 안정이나 금리 인하 기대가 당초 예상보다 더 오래 걸릴 수 있다고 본다. 그럼에도 코로나19 극복 과정과 글로벌 금융위기 극복 과정에서 풀린 유동성이 전혀 회수되지 않고 오히려 계속 쌓이고 있으며, 돈을 거둬들이는 것은 경기 침체 위험을 수반하기 때문에 어떤 정치인도 선택하지 않을 것이므로 결국 자산시장은 유동성이 갈 곳을 찾아 다시 오를 수밖에 없다고 전망한다. 한편 사모펀드나 퀀트 트레이딩 등 소위 고수들이 의도적으로 변동성을 키워 막대한 수익을 챙기고 있을 가능성도 있다는 음모론적 시각도 언급된다.</p><p>투자 성향에 대해서는, 변동성이 불편하고 편하게 자고 싶은 사람이라면 삼성전자 같은 주식 수익을 실현해 금 같은 안정 자산으로 옮기는 것도 나쁘지 않다고 조언한다. 반면 공격적인 투자를 원하는 사람에게는 AI 반도체 주가가 하락한 지금이 오히려 비중을 늘릴 좋은 타이밍이라고 말한다. 암호화폐에 대해서는 과거 큰 기대를 걸었지만 트럼프로 인한 시장 피해 회복에 시간이 걸리고 관련 입법도 지연되고 있어 현재는 반도체를 더 선호한다고 밝힌다. 암호화폐 입법이 통과되지 못한 배경에는 민주당이 트럼프와 같은 이해상충 사례의 재발 방지 조항과 과거 행위에 대한 조사 권한을 요구했으나 트럼프가 이를 받아들이지 않았기 때문이라고 설명하며, 차기 대선 결과와 무관하게 암호화폐 시장 자체는 꾸준히 이어질 것으로 본다. 중동 전쟁과 관련해서는 바이든 역시 이스라엘의 행보에 계속 끌려다녔던 전례를 들어, 정권이 민주당으로 바뀌어도 미국과 이스라엘의 특수관계상 패권이나 정책 집행에 큰 변화를 기대하기는 어렵다고 말한다.</p><p>개인적인 포트폴리오와 관련해서는, 미국 빅테크의 기업가 정신을 줄곧 강조하면서도 실제로는 비중을 늘리지 못하고 국내 조선주나 현대차 등에 머물러 물려 있었던 것이 판단 착오였다고 솔직하게 고백하며, 지금이라도 미국 주식 비중을 늘리는 것이 맞다고 생각한다고 말한다. 처음 투자를 시작하는 사람이라면 미국과 국내 주식을 적절히 섞는 것이 좋고, 오라클 관련 우려 등으로 미국 시장이 조정을 받을 때 비싸다고 느꼈던 사람들은 그 기회를 활용하면 된다고 조언한다.</p><p>인덱스 펀드 투자에 대한 질문에는, 네덜란드나 노르웨이 같은 국부펀드들이 패시브 비중과 채권 투자를 크게 늘리고 있다고 언급하며, 이는 국가 자산을 다루는 입장에서 확신이 없을 때 방어적으로 지수를 추종하는 전략을 택한 것이라고 설명한다. 금리가 5퍼센트를 넘어 6퍼센트까지 갈 수 있는 상황에서 확정 수익률을 잠그는 채권 투자도 매력적이라고 본다. 다만 본인은 스스로를 실패한 공격수라 칭하며 아직 패시브로 전환할 생각은 없고, 지고 있는 경기일수록 수비보다는 공격을 해야 최소한 무승부라도 노릴 수 있다는 입장을 유지한다.</p><p>마지막으로 지금처럼 변동성이 큰 시장에서 살아남고 성공한 사람들의 공통점은 모두 낙관주의자라는 점이라고 강조한다. 본인 역시 이 정도의 변동성에는 흔들리지만, 언제나 기술 혁신을 이뤄내는 새로운 플레이어가 등장하기 마련이며 그들이 다음 시대를 이끌어간다고 말한다. 전문가가 아니더라도 그런 성과를 내는 기업들을 예의주시하며 올라타는 것이 투자자의 역할이라고 설명하고, 지금은 한 번에 올인할 수 있는 시장이 아니므로 분할 매수와 분할 매도를 통해 시점을 분산하는 적극적인 투자를 권한다. 현재의 변동성은 기업 실적이나 펀더멘털이 훼손되어서가 아니라 순전히 수급 문제에서 비롯된 것이므로, 수급이 나빠질 수 있는 것처럼 반대 방향으로도 다시 살아날 수 있다며 꾸준히 버티고 나아가는 자세를 당부한다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=eZ1_u4MUEMs" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-4">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">부읽남</div>
+          <div class="title">&quot;많은 사람들이 상급지로 움직일 겁니다&quot; 역대급 의자 뺏기 시작됩니다 [박정호 교수 3부]</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        
+        <p>삼성전자와 SK하이닉스를 중심으로 한 반도체 슈퍼사이클이 실적, 금리, 부동산 시장 전반에 어떤 파급효과를 낳고 있는지에 대해 다루는 대담이다. 삼성전자와 SK하이닉스는 사상 최대 영업이익을 기록했고, 이로 인해 직원들에게 수백 퍼센트에 달하는 성과급이 지급되었다. 맞벌이 부부인 경우 합산 수십억 원에 이르는 보너스를 받은 사례도 있으며, 회사 내부 대출 제도를 활용하면 연 1.5퍼센트 수준의 저금리로 5~6억 원까지 빌릴 수 있어, 이들은 기존 거주지보다 상급지로 이동할 여력과 동기를 동시에 갖추게 되었다. 삼성전자 12만 명, SK하이닉스 6만 명에 더해 여의도 금융가의 관련 기업들까지 포함하면, 수도권에서 상급지 이주를 고민하는 인구가 20만 명을 넘어설 것으로 추정되며, 이는 부동산 시장에서 일종의 자리 뺏기 현상, 즉 역대급 의자 빼앗기 경쟁을 유발할 것으로 전망된다.</p><p>금리 측면에서는 한국은행이 선제적으로 기준금리를 인상할 가능성이 높다고 본다. 생산자물가 상승이 소비자물가로 전이되는 데 시차가 있어, 올해보다 내년에 물가 상승 압력이 더 커질 것으로 예상되며, 전쟁이 끝난다고 해서 물가가 곧바로 떨어지는 것도 아니라고 설명한다. 제조업은 중장기 계약 구조상 가격 반영에 시간이 걸리기 때문이다. 설령 한국은행이 기준금리 인상 속도를 조절하더라도, 삼성전자와 SK하이닉스 및 관련 협력사들이 설비투자와 국채·회사채 발행을 통해 시장 유동성을 빨아들이면서 여타 비반도체, 비AI 기업들은 회사채 차환 시 높은 금리를 감수해야 하는 역차별적 상황에 놓이게 될 것이라고 지적한다. 국가 경제 규모가 1.8조 달러 수준인데 삼성전자와 SK하이닉스 두 기업의 시가총액이 각각 1조 달러를 넘어서는 기형적 구조 속에서, 정부와 우량 기업들이 유동성을 흡수하면 나머지 기업들은 자금 조달에 어려움을 겪게 되고, 결과적으로 반도체와 비반도체 간 양극화가 심화될 수밖에 없다고 분석한다.</p><p>주식 투자 관점에서도 변동성이 있을 때마다 건설주, 화장품주 등 대안주가 잠시 부각되지만, 결국 아마존이나 마이크로소프트 같은 빅테크의 실적 발표로 AI와 서버 수요가 재확인되면 다시 반도체 대장주로 자금이 회귀하는 패턴이 반복되어 왔다고 설명한다. 따라서 대장주 중심의 투자 전략이 유효하다고 본다.</p><p>부동산 시장에서는 이러한 자금 흐름이 그대로 반영될 것으로 예측한다. 강남의 경우 보유세 부담으로 대형 평형은 하락 흐름이 이어질 수 있지만, 기존 거주자들이 강남을 떠나기보다는 평형을 줄여 눌러앉으려는 수요가 있어 중소형 평형은 바닥을 다지거나 반등할 가능성이 크다고 전망한다. 반도체 기업 임직원들의 사례를 들며, 이들이 분당이나 반포 등 이미 좋은 입지에 거주하면서도 더 상급지로의 이주를 고려하고 있고, 자녀 학군 등 당장 급하지 않은 조건은 미루면서 마포 등을 거쳐 단계적으로 강남 진입을 시도하는 경우도 있다고 소개한다. 또한 고소득층 자녀에게 증여를 통해 주택 구매 자금을 지원하는 사례가 통계적으로도 확인되고 있으며, 급매물이 나오면 실수요자들이 빠르게 매수에 나서는 분위기라고 전한다. 현재는 고금리로 인해 매수 대기 심리가 있지만, 투자 수익률보다는 가족이 거주하고 싶은 동네에서 사는 것 자체에 의미를 두는 실수요 중심의 매수가 점차 현실화될 것으로 내다본다. 전반적으로 반도체 초호황이 만들어내는 부의 편중이 내년 수도권 부동산 시장에서 상급지로의 대규모 이동이라는 형태로 나타날 것이라는 전망으로 대담이 마무리된다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=s8htuUXidbY" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-5">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">SBS 교양이를 부탁해</div>
+          <div class="title">[통합본] &quot;아직은...&quot; 지금 봐야 할 AI 경제 붕괴의 &#x27;진짜 신호&#x27; / 교양이를 부탁해</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        
+        <p>AI 경제와 관련한 산업 구조 및 내년도 전망에 대한 분석이다. 현재 한국 증시는 외국인 투자자의 수급에 따라 등락을 반복하고 있지만, 이는 정치적 이슈에 따른 단기 변동일 뿐 시장 붕괴를 의미하지는 않는다. 더 중요한 것은 AI 생산성이 실제로 어디까지 와 있는지, 그리고 금리 부담이 경제에 얼마나 영향을 미칠지를 구조적으로 살펴보는 일이다.</p><p>AI는 확률 모델로서 통계적 가설을 세우고 방대한 데이터를 축적해 추론을 수행한다. 현재 데이터를 기반으로 가설의 참, 거짓을 판단하는 단계를 넘어, 미래를 예측하는 추론 단계로 나아가면서 엄청난 양의 데이터를 소비하게 된다. 정답이 없는 미래 사건을 다루기 때문에 자기 수정과 보완을 반복하며 막대한 데이터를 필요로 한다. 따라서 데이터가 정교하게 축적된 산업과 데이터가 뒤죽박죽 쌓인 산업을 구분해서 봐야 한다. 의료 분야는 처방 기록이 병원 데이터로 남고 임상시험을 통해 체계적으로 데이터가 쌓이는 대표적 산업이며, 사람이 데이터를 잘 정리해 놓았기 때문에 AI가 강력한 힘을 발휘할 수 있다. 반대로 순수 제조업처럼 현장에서 설계도대로 100% 진행되지 않고 오차가 발생하는 산업에서는 데이터 자체가 존재하지 않아 아무리 뛰어난 AI라도 한계가 있다. 법률, 회계, 코딩 분야 역시 판례와 문헌, 깃허브 데이터 등이 잘 축적되어 있어 AI가 강력한 영향력을 발휘할 수 있는 영역이다.</p><p>AI 창업자와 경영진들이 AI가 인간의 삶을 완전히 바꾸고 인간을 불필요하게 만들 것이라며 공포 마케팅을 하는 것은 과장이다. AI를 궁극적으로 망칠 수 있는 것은 이를 구축하고 운영하는 관리자와 에이전트들이며, 데이터의 순도를 신뢰할 수 있는지는 결국 인간의 책임이자 산업의 특성 문제다. 트럼프 대통령과 AI 창업자들이 주장하는 것처럼 내년 잠재 GDP 성장률을 완벽하게 끌어올릴 가능성은 낮아 보인다.</p><p>제조업 분야의 물리적 AI 혁명이 핵심 화두로 떠오르고 있지만, 필요한 데이터 상태가 갖춰지기까지는 시간이 걸릴 수밖에 없으며, 새로운 기술이 혁명으로 이어지려면 이를 수용할 정책과 인프라가 뒷받침되어야 하는데 아직 따라가지 못하고 있다. AI는 매우 실용적인 도구로 다가오고 있지만 AI는 마법이 아니다. 공장에 AI를 도입하면 모든 작업이 해결될 것이라는 환상을 경영진들이 갖고 있지만, 실제로는 사람이 잘하는 영역과 못하는 영역을 명확히 구분해 약점 부분에만 AI 절차를 도입해야 한다. 현재 AI는 공급자 중심으로 움직이고 있어 소비자가 실제로 불편해하는 지점과 제공되는 해법이 어긋나는 경우가 많다. 로봇공학의 선구자인 브룩스 연구소 교수가 언급했듯이, 사람이 금속에 손끝을 대는 순간 무게와 부피, 강도를 신경을 통해 입체적으로 느끼는 반면, 현재의 물리적 AI는 두뇌 영역 발전에만 집중할 뿐 사람 손의 미세한 신경세포를 구현하지 못하고 있다. 따라서 로봇이 인간을 완전히 대체하는 세상이 아니라 인간과 함께 일하는 로봇이 늘어나는 방향으로 갈 것이다.</p><p>현재 시장 변동성은 단순한 거시 모멘텀 종료가 아니라 미국의 중간선거를 앞둔 휴지기(break) 성격이 강하다. 새로운 정책이 없고 국방부발 AI 관련 소프트웨어 계약 건수도 줄어든 상태다. 한국은 주주친화 정책의 기반이 약하고, 외국인 포트폴리오가 지속적으로 미국으로 쏠리는 가운데 미국이 전체 주식형 펀드의 53%, 한국이 1%에 불과해 미국 기술주 비중을 소폭만 줄여도 한국 비중은 급락한 것처럼 보이는 구조적 문제가 있다.</p><p>내년 2027년 전망의 핵심 키워드는 &#x27;뜨거움 속의 차가운 마음&#x27;이며, 자산배분 비율은 주식 3, 채권 3, 원자재 2, 현금 2의 3-3-2-2 비율이 여전히 중요하다. 선진국들은 AI 생산성에 대한 강한 신념을 유지하고 있지만 실제 경제 방향은 급등도 급락도 아닌 평평한(flat) 흐름을 보일 것으로 전망되며, 하반기로 갈수록 소폭 하락 추세가 나타날 수 있다. 변수로는 중간선거 이후 예산 정책, 내년 중반의 부채한도 문제, 그리고 FOMC의 대차대조표 축소 이슈가 있다.</p><p>AI 생산성 지표인 3개월 평균 노동생산성 지수는 최근 상승하고 있지만 과거 2007~2008년 수준을 돌파하지 못하고 있다. 생산성은 데이터만으로 결정되는 것이 아니라 효율적인 분업, 원자재 조달, 운송 등이 뒷받침되어야 하는데 현재는 미중 분절로 원자재 확보가 어렵고 트럼프의 디젤 금수 조치 가능성까지 거론되는 등 세계가 분절되는 상황이어서 생산성이 쉽게 개선되기 어렵다. 생산성과 임금 격차가 완전히 해소되는 혁명적 상황이 되려면 임금이 하락하며 대량 실업이 발생해야 하는데, 이런 현상은 2015년 이전 세계화 시기에나 존재했다. 당시 중국 등 아시아의 저임금 노동력과 공급망을 자유롭게 활용할 수 있었으나, 이후 공장이 본국으로 회귀하고 브렉시트 등으로 인적 교류까지 막히면서 혁명이라 부르기엔 아직 걸림돌이 많다.</p><p>내년 성장률 시나리오는 세 가지로 나뉜다. 첫째는 AI가 생산성을 개선해 투자가 늘고 GDP가 잠깐 상승했다가 2~3년 후 원래 수준으로 돌아오는 기본 시나리오로 확률이 40% 이상으로 가장 높다. 둘째는 생산성이 상승한 채로 한동안 유지되며 성장을 일정 기간 견인하다가 서서히 수렴하는 시나리오로, 이 과정에서 대량 실업이 발생한다고 가정한다. 셋째는 기술 가속과 혁명 시나리오로, 단순히 실업이 발생하는 것을 넘어 AI 컨트롤러가 모든 분야를 지배하는 새로운 일자리 구조가 만들어지는 경우다. 그러나 현재 미국의 실업률과 고용 지표를 보면 완전고용 상태를 유지하고 있고, 어떤 직업군 전체를 대체할 만한 새로운 컨트롤러도 아직 등장하지 않아 혁명 시나리오의 근거는 부족하다.</p><p>선진국의 생산성 증가율은 10년 단위로 보면 전반적으로 하락 추세이며, 이는 2015년 이후 세계가 분절되기 시작하면서 플랫폼과 기술은 발전했음에도 생산성은 오히려 떨어진 패턴과 일치한다. 미국이 효율적인 AI 도구를 만들어도 유럽, 일본, 아시아 등 다른 선진국들이 자금 부족으로 이를 널리 도입하지 못하는 한 생산성 개선은 전 세계적 현상으로 확산되기 어렵다. 또한 사무직의 경우 AI가 정보 탐색 시간을 줄여줘 생산성이 올라간 것처럼 보이지만, 제조 현장에서는 전력 공급 한계나 관세로 인한 부품 조달 문제 등으로 시간이 절약되어도 실제 생산량은 늘지 않는 경우가 많다. 예컨대 GM은 공장 자동화를 적극 추진했지만 멕시코산 부품이 관세 문제로 들어오지 못해 생산 대수가 오히려 평균보다 줄어드는 일이 발생했다.</p><p>자산배분 측면에서는 전략적 자산배분과 전술적 자산배분을 구분해야 하며, 현재처럼 불확실성이 큰 시기에는 매크로 사이클에 기반한 전술적 자산배분이 중요하다. 올해 3분기 미국 성장률이 4%를 넘는 것은 1분기와 2분기의 낮은 기저효과에 따른 설비투자 집중 효과일 뿐이다. 경기가 바닥에서 회복기로 가는 국면인지, 정점에 가까워 모든 자산이 폭발적으로 상승하는 불꽃놀이 국면인지, 아니면 정점을 지나 긴축으로 유동성이 줄어드는 국면인지에 따라 유리한 자산군이 완전히 달라진다. 미국 ETF 자금 흐름을 보면 3월 전쟁 발발 이후 급증했던 자금 유입이 6~8월 들어 횡보 및 소폭 위축되는 모습을 보이고 있으며, 최근 국채형 펀드로의 자금 유입이 가팔라지는 반면 아시아태평양 지역, 특히 대만 등에서는 순유출이 나타나고 있다. 이는 글로벌 헤지펀드들이 경기 정점 부근에서 상승과 하락 양방향 가능성을 열어두고 채권 비중을 늘리면서도 동시에 우량 대형주 위주로만 주식을 보유하는 투웨이 전략을 구사하고 있음을 보여준다. 이런 흐름은 코로나 이전인 트럼프 1기 때 미중 무역전쟁과 이란 핵합의 탈퇴로 인플레이션이 발생했던 시기와 유사한 패턴이다.</p><p>단기적으로 경기 방향이 상승이든 하락이든 양방향으로 열려 있을 때는 안전자산으로서 미국 주식으로의 쏠림이 불가피하다. 미국은 전 세계 주식형 펀드 자산의 51%를 차지하는 반면 한국은 1%에 불과해, 글로벌 투자자들이 미국 내 상위 몇 개 종목 비중만 소폭 늘리고 나머지에서 자금을 빼도 한국 비중 전체가 통째로 매도되는 것처럼 보일 수 있는 절대적 규모 차이가 존재한다. 삼성전자와 하이닉스가 미국 AI 산업과 밸류체인으로 연결되어 있다고 해도, 사이클이 전환되는 순간에는 결국 환율과 원화, 달러화, 엔화 자산 간의 등급 차이가 작동하기 때문에 한국은 한국대로 미국은 미국대로 구분된다. 미국은 뮤추얼펀드 등 전문 자산운용 기관이 매크로 상황에 따라 지속적으로 자산을 조정해주는 반면, 한국은 연기금 시장과 공모펀드 시장이 아직 충분히 발달하지 않아 개인이 스스로 판단하고 대응해야 하는 구조이므로, 이러한 거시적 자금 흐름과 사이클 위치를 스스로 파악해 자산을 지키는 지혜가 필요하다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=VyrtC644Ol8" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+  </section>
+
+  <footer class="foot">
+    <b>Investment Digest</b> · generated automatically. Not financial advice — personal reading notes only.
+  </footer>
+</div>
+<script>
+(function() {
+  var h = window.location.hash;
+  if (h && h.indexOf("#vid-") === 0) {
+    var el = document.querySelector(h);
+    if (el && el.tagName === "DETAILS") {
+      el.open = true;
+      el.scrollIntoView({block: "start"});
+    }
+  }
+})();
+</script>
+</body>
+</html>

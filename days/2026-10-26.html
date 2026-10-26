@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026-10-26 — Investment Digest</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Mulish:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#FBF6EC">
+<script>(function(){
+  var t = localStorage.getItem('theme') || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  document.documentElement.setAttribute('data-theme', t);
+})();</script>
+<style>
+:root{
+  --paper:#FBF6EC; --paper-2:#F3EADA; --card:#FFFDF8;
+  --ink:#332C24; --ink-soft:#6E6456; --ink-faint:#9A8E7C;
+  --line:#E7DBC6; --line-strong:#D8C8AC;
+  --honey:#E8A33D; --honey-deep:#C27D14; --honey-soft:#FBEACB;
+  --dram:#2C8C7C; --dram-soft:#DCEFE9;
+  --ltram:#5A61B4; --ltram-soft:#E6E6F6;
+  --optane:#C0563B; --optane-soft:#F7E1D8;
+  --shadow-sm:0 1px 2px rgba(80,60,30,.06),0 2px 8px rgba(80,60,30,.05);
+  --shadow-md:0 6px 18px rgba(90,66,28,.10),0 16px 36px rgba(90,66,28,.08);
+  --radius:18px; --radius-sm:12px; --maxw:1500px;
+  --display:"Fraunces",Georgia,serif;
+  --body:"Mulish",-apple-system,system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,monospace;
+  /* status scale: buy (green) -> hold (neutral) -> sell (red). Never used alone --
+     every status also carries an icon glyph + text label. */
+  --buy:#1F7A4D; --buy-soft:#DDF0E3;
+  --buyhold:#6E9A3C; --buyhold-soft:#EAF2D8;
+  --hold:#8A7F6C; --hold-soft:#F3EADA;
+  --holdsell:#C27D14; --holdsell-soft:#FBEACB; --holdsell-text:#8A5A0E;
+  --sell:#B23D26; --sell-soft:#F7E1D8;
+}
+/* Dark theme -- same design tokens, re-tuned for a dark warm-charcoal background
+   instead of the light "paper" one. Applied via a data-theme attribute on <html>
+   (set before first paint by the inline init script in <head>, so there's no
+   flash of the wrong theme) rather than only prefers-color-scheme, so the
+   toggle button can override the system setting and remember the choice. */
+:root[data-theme="dark"]{
+  --paper:#181512; --paper-2:#211D18; --card:#221E19;
+  --ink:#EEE7D9; --ink-soft:#BBB09C; --ink-faint:#8C8172;
+  --line:#38332A; --line-strong:#4A4335;
+  --honey:#F0B85B; --honey-deep:#F5C878; --honey-soft:#3A2D16;
+  --dram:#4FC0A9; --dram-soft:#173129;
+  --ltram:#9098E8; --ltram-soft:#242850;
+  --optane:#E68A6B; --optane-soft:#3B241B;
+  --shadow-sm:0 1px 2px rgba(0,0,0,.35),0 2px 8px rgba(0,0,0,.3);
+  --shadow-md:0 6px 18px rgba(0,0,0,.45),0 16px 36px rgba(0,0,0,.4);
+  --buy:#5FCB93; --buy-soft:#173121;
+  --buyhold:#A9CC6D; --buyhold-soft:#262E16;
+  --hold:#BBB09C; --hold-soft:#2A2620;
+  --holdsell:#F0B85B; --holdsell-soft:#3A2D16; --holdsell-text:#F0B85B;
+  --sell:#EE8065; --sell-soft:#3A211A;
+}
+*{box-sizing:border-box} html{scroll-behavior:smooth}
+body{margin:0;font-family:var(--body);color:var(--ink);line-height:1.6;background:var(--paper);
+  background-image:radial-gradient(circle at 10% 6%,rgba(44,140,124,.06),transparent 42%),radial-gradient(circle at 90% 18%,rgba(90,97,180,.06),transparent 44%),radial-gradient(circle at 50% 120%,rgba(232,163,61,.07),transparent 55%);
+  -webkit-font-smoothing:antialiased;min-height:100vh;transition:background-color .25s,color .25s}
+:root[data-theme="dark"] body{
+  background-image:radial-gradient(circle at 10% 6%,rgba(79,192,169,.08),transparent 42%),radial-gradient(circle at 90% 18%,rgba(144,152,232,.08),transparent 44%),radial-gradient(circle at 50% 120%,rgba(240,184,91,.06),transparent 55%);
+}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 22px}
+.theme-toggle{position:fixed;top:18px;right:18px;z-index:30;display:inline-flex;align-items:center;justify-content:center;
+  width:42px;height:42px;border-radius:50%;border:1px solid var(--line-strong);background:var(--card);color:var(--ink-soft);
+  cursor:pointer;box-shadow:var(--shadow-sm);font-size:17px;line-height:1;padding:0;transition:border-color .2s,color .2s,transform .15s}
+.theme-toggle:hover{border-color:var(--honey);color:var(--honey-deep);transform:scale(1.06)}
+.theme-toggle .tt-sun,.theme-toggle .tt-moon{display:none}
+:root[data-theme="light"] .theme-toggle .tt-moon{display:inline}
+:root[data-theme="dark"] .theme-toggle .tt-sun{display:inline}
+@media(max-width:480px){.theme-toggle{top:12px;right:12px;width:38px;height:38px;font-size:15px}}
+:root[data-theme="dark"] .eyebrow{border-color:var(--line-strong)}
+a{color:var(--honey-deep);text-decoration:none;border-bottom:1.5px solid var(--honey-soft);transition:border-color .2s}
+a:hover{border-color:var(--honey)}
+h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.2;color:var(--ink);margin:0 0 .5em}
+.head{padding:52px 0 18px}
+.eyebrow{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--honey-deep);background:var(--honey-soft);padding:7px 14px;border-radius:999px;border:1px solid #F0DCB0;margin-bottom:18px}
+.eyebrow .dot{width:8px;height:8px;border-radius:50%;background:var(--honey);box-shadow:0 0 0 4px rgba(232,163,61,.2)}
+.head h1{font-weight:700;font-size:clamp(2.1rem,5.6vw,3.2rem);letter-spacing:-.015em;margin:0 0 .3em}
+.head p{font-size:clamp(1rem,2vw,1.1rem);color:var(--ink-soft);max-width:60ch;margin:0}
+.back{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:.85rem;color:var(--ink-soft);border-bottom:none;margin-bottom:18px}
+.back:hover{color:var(--honey-deep)}
+
+.sec{margin:30px 0 0}
+.sec-h{font-family:var(--display);font-weight:600;font-size:1.15rem;margin:0 0 14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
+a.cardlink{text-decoration:none;color:inherit;border-bottom:none}
+.gcard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px;box-shadow:var(--shadow-sm);
+  transition:transform .18s,box-shadow .18s,border-color .18s;height:100%;display:flex;flex-direction:column}
+.gcard:hover{transform:translateY(-4px);box-shadow:var(--shadow-md);border-color:var(--line-strong)}
+.gcard h2{font-size:1.18rem;letter-spacing:-.01em;margin:0 0 .3em}
+.gcard .date{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:10px}
+.gcard .counts{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 12px}
+.gcard .tickers{font-size:.88rem;color:var(--ink-soft);margin:0 0 12px;flex:1}
+.gcard .go{font-family:var(--body);font-weight:700;font-size:.88rem;color:var(--honey-deep);display:inline-flex;align-items:center;gap:6px}
+.gcard:hover .go{color:var(--ltram)}
+
+.status{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-weight:700;font-size:10.5px;letter-spacing:.03em;
+  text-transform:uppercase;padding:3px 9px;border-radius:999px}
+.status.buy{background:var(--buy-soft);color:var(--buy)}
+.status.buyhold{background:var(--buyhold-soft);color:var(--buyhold)}
+.status.hold{background:var(--hold-soft);color:var(--hold)}
+.status.holdsell{background:var(--holdsell-soft);color:var(--holdsell-text)}
+.status.sell{background:var(--sell-soft);color:var(--sell)}
+
+.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px 24px;margin:14px 0;box-shadow:var(--shadow-sm)}
+.panel.buy{border-left:4px solid var(--buy)}
+.panel.buyhold{border-left:4px solid var(--buyhold)}
+.panel.hold{border-left:4px solid var(--hold)}
+.panel.holdsell{border-left:4px solid var(--holdsell)}
+.panel.sell{border-left:4px solid var(--sell)}
+.panel h3{font-size:1.08rem;margin:0 0 12px;display:flex;align-items:center;gap:10px}
+.panel .empty{color:var(--ink-faint);font-style:italic;font-size:.94rem;margin:0}
+.pick{padding:10px 0;border-top:1px dashed var(--line)}
+.pick:first-of-type{border-top:none;padding-top:2px}
+.pick .ticker{font-weight:700;font-family:var(--display);font-size:1.02rem;margin-bottom:2px}
+.pick .rationale{font-size:.92rem;color:var(--ink-soft);margin:0}
+
+.tickerbar{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 6px}
+.tchip{font-family:var(--mono);font-weight:700;font-size:.82rem;background:var(--paper-2);color:var(--ink-soft);
+  border:1px solid var(--line-strong);border-radius:999px;padding:5px 12px}
+
+.vcard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius-sm);margin:12px 0;overflow:hidden}
+.vcard summary{list-style:none;cursor:pointer;padding:16px 20px;display:flex;gap:14px;align-items:flex-start}
+.vcard summary::-webkit-details-marker{display:none}
+.vcard .vmeta{flex:1;min-width:0}
+.vcard .channel{font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--honey-deep);margin-bottom:3px}
+.vcard .title{font-weight:700;font-size:1rem;color:var(--ink)}
+.vcard .chev{margin-left:auto;color:var(--ink-faint);transition:transform .25s;font-family:var(--mono);flex:0 0 auto}
+.vcard[open] summary .chev{transform:rotate(180deg)}
+.vcard .body{padding:0 20px 20px 20px;color:var(--ink-soft);font-size:.95rem}
+.vcard .body p{margin:0 0 12px}
+.vcard .watch{font-family:var(--mono);font-size:.82rem}
+
+.foot{margin:54px 0 40px;padding-top:20px;border-top:1px solid var(--line);font-size:.85rem;color:var(--ink-faint);font-family:var(--mono);line-height:1.7}
+.foot b{color:var(--ink-soft)}
+.empty-state{color:var(--ink-faint);font-style:italic;padding:24px 2px}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+.zchart-panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px 24px;box-shadow:var(--shadow-sm)}
+.zchart-asof{font-size:.86rem;color:var(--ink-faint);margin-bottom:14px;line-height:1.5}
+.zchart-grid{display:grid;grid-template-columns:1fr 300px;gap:22px;align-items:start}
+@media(max-width:820px){.zchart-grid{grid-template-columns:1fr}}
+.zrank-list{display:flex;flex-direction:column;border-left:1px solid var(--line);padding-left:18px}
+@media(max-width:820px){.zrank-list{border-left:none;border-top:1px solid var(--line);padding-left:0;padding-top:14px}}
+.zrank-row{display:grid;grid-template-columns:12px 1fr auto auto;align-items:center;gap:9px;padding:6px 0;border-top:1px dashed var(--line);font-size:.86rem}
+.zrank-row:first-of-type{border-top:none}
+.zrank-row.zrank-head{border-top:none;border-bottom:1px solid var(--line);padding-bottom:8px;margin-bottom:2px;
+  font-family:var(--mono);font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-faint);font-weight:700}
+.zrank-dot{width:10px;height:10px;border-radius:50%}
+.zrank-ticker{color:var(--ink);font-weight:600}
+.zrank-val{font-family:var(--mono);font-weight:700;font-size:.85rem;text-align:right}
+.zrank-val.pos{color:var(--buy)}
+.zrank-val.neg{color:var(--sell)}
+.zrank-alloc{font-family:var(--mono);font-weight:700;font-size:.85rem;text-align:right;color:var(--ink-soft);min-width:52px}
+.zchart-note{font-size:.85rem;color:var(--ink-faint);margin:16px 0 0}
+
+.date-groups{display:flex;flex-direction:column;gap:16px}
+.date-group{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px 24px;box-shadow:var(--shadow-sm);
+  transition:border-color .18s,box-shadow .18s}
+.date-group:hover{border-color:var(--line-strong);box-shadow:var(--shadow-md)}
+.date-group .dg-head{display:flex;align-items:baseline;flex-wrap:wrap;gap:10px 14px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.date-group .dg-date{font-family:var(--display);font-weight:600;font-size:1.25rem;color:var(--ink);border-bottom:1.5px solid var(--honey-soft)}
+.date-group .dg-date:hover{color:var(--honey-deep);border-color:var(--honey)}
+.date-group .dg-count{font-family:var(--mono);font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-faint)}
+.date-videos{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+.date-videos li{display:flex;flex-direction:column;gap:3px;font-size:.94rem}
+.date-videos .dv-row{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline}
+.date-videos .dv-channel{font-family:var(--mono);font-size:10px;letter-spacing:.04em;text-transform:uppercase;color:var(--honey-deep);
+  background:var(--honey-soft);border-radius:999px;padding:2px 9px;flex:0 0 auto}
+.date-videos .dv-title{color:var(--ink)}
+.date-videos .dv-summary{color:var(--ink-faint);font-size:.85rem;line-height:1.5;margin:0 0 0 2px}
+.date-videos a{color:var(--ink);border-bottom:1.5px solid var(--line-strong)}
+.date-videos a:hover{color:var(--honey-deep);border-color:var(--honey)}
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode" title="Toggle dark mode">
+  <span class="tt-sun">☀</span><span class="tt-moon">☾</span>
+</button>
+<script>function toggleTheme(){
+  var r = document.documentElement, next = r.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  r.setAttribute('data-theme', next); localStorage.setItem('theme', next);
+  var mc = document.querySelector('meta[name="theme-color"]'); if (mc) mc.content = next === 'dark' ? '#181512' : '#FBF6EC';
+}</script>
+<div class="wrap">
+  <header class="head">
+    <a class="back" href="../index.html">← All digests</a>
+    <span class="eyebrow"><span class="dot"></span>2026-10-26</span>
+    <h1>Daily Digest</h1>
+    <p>Executive read of today's finance &amp; investing videos, sorted by call.</p>
+    <div class="tickerbar">
+      <span class="tchip">마이크로소프트</span>
+<span class="tchip">알파벳</span>
+<span class="tchip">제타글로벌</span>
+<span class="tchip">팔란티어</span>
+<span class="tchip">코인베이스</span>
+<span class="tchip">메타</span>
+<span class="tchip">넷플릭스</span>
+<span class="tchip">램리서치</span>
+<span class="tchip">팔로알토</span>
+<span class="tchip">크라우드스트라이크</span>
+<span class="tchip">아마존</span>
+<span class="tchip">오라클</span>
+<span class="tchip">스페이스X</span>
+<span class="tchip">앤트로픽</span>
+    </div>
+  </header>
+
+  <section class="sec">
+    <div class="sec-h">Executive summary</div>
+    
+    <div class="panel buy">
+      <h3><span class="status buy">▲ Buy</span></h3>
+      <div class="pick">
+        <div class="ticker">마이크로소프트</div>
+        <p class="rationale">AI 플랫폼의 깊이와 투자수익률 유연성을 근거로 골드만삭스가 매수 유망 종목으로 제시함.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">알파벳</div>
+        <p class="rationale">투자 기조 유지와 에이전트 기반 서비스 전환을 촉매로 매수 유망 종목으로 꼽힘.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">제타글로벌</div>
+        <p class="rationale">중립에서 매수로 상향 조정되며 유망 종목으로 제시됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">팔란티어</div>
+        <p class="rationale">미 국방부와의 계약 확대를 성장 동력으로 보고 매수 유망 종목으로 평가됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">코인베이스</div>
+        <p class="rationale">단기 변동성에도 향후 실적 전망이 긍정적이라 조정이 매수 기회로 평가됨.</p>
+      </div>
+    </div>
+
+    <div class="panel buyhold">
+      <h3><span class="status buyhold">◆ Buy / Hold</span></h3>
+      <p class="empty">No calls in this category today.</p>
+    </div>
+
+    <div class="panel hold">
+      <h3><span class="status hold">● Hold</span></h3>
+      <p class="empty">No calls in this category today.</p>
+    </div>
+
+    <div class="panel holdsell">
+      <h3><span class="status holdsell">◇ Hold / Sell</span></h3>
+      <div class="pick">
+        <div class="ticker">메타</div>
+        <p class="rationale">프리캐시플로우가 마이너스로 전환되며 AI 투자 자금조달 우려로 주가가 급락해 부정적으로 평가됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">넷플릭스</div>
+        <p class="rationale">실적 미스로 부진한 흐름을 보여 부정적으로 언급됨.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">램리서치</div>
+        <p class="rationale">반도체 장비 전망 부진으로 주가가 하락하며 부정적으로 평가됨.</p>
+      </div>
+    </div>
+
+    <div class="panel sell">
+      <h3><span class="status sell">▼ Sell</span></h3>
+      <p class="empty">No calls in this category today.</p>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="sec-h">Videos covered (6)</div>
+    
+    <details class="vcard" id="vid-0">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">Orlando Kim</div>
+          <div class="title">(주간시황) 다음주 금리와 빅테크 실적이 반등을 나오게 하나?</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        
+        <p>다음 주간 시황에서는 지난 한 주간의 시장 데이터를 복기하며 왜 보유나 매매 판단을 했는지 근거를 쌓는 과정이 중요하다는 점을 먼저 강조한다. 지난 한 주 동안 S&amp;P500은 0.43% 하락, 다우는 0.44% 상승했으며 나스닥은 큰 폭으로 하락했다. 나스닥 하락은 메타의 급락 영향이 크며, 메타는 프리캐시플로우가 2012년 이후 처음으로 마이너스로 전환되면서 AI 투자에 대한 자금 조달 우려가 커졌기 때문이다. 반면 미드캡과 스몰캡, 마이크로캡은 금리 하락에 힘입어 반등했다. 연초 이후(YTD) 기준으로는 S&amp;P500 11%, 다우 8%, 나스닥 14% 상승을 유지하고 있어 아직 전반적인 장세가 무너진 것은 아니다.</p><p>섹터별로는 테크놀로지, 커뮤니케이션 서비스, 인더스트리얼 세 섹터만 하락했고 나머지는 상승했다. 특히 헬스케어가 가장 많이 상승(1.84%)했고 에너지, 리얼에스테이트, 유틸리티, 컨슈머 디펜시브 등 경기 방어주 중심으로 자금이 이동하는 모습이 나타났다. 이는 기술주(나스닥)에서 다우 쪽, 즉 안전자산 성격의 업종으로 자금이 옮겨간 것으로 해석된다. 커뮤니케이션 서비스에서는 메타가 9.4% 급락했고, 넷플릭스도 실적 미스로 부진했다. 반도체 장비주(램리서치 등)도 전망 부진으로 하락했고, 산업재 섹터는 전력 관련 기업들의 현금흐름 우려로 하락했다. 반면 팔로알토, 크라우드스트라이크, 팔란티어 등 보안·소프트웨어 업체는 상승했다.</p><p>글로벌 시장도 전반적으로 하락했는데, 특히 한국 코스피가 한 주간 가장 큰 낙폭(약 40.9% 언급, 52주 고점 대비 괴리 포함 맥락)을 보였고 항셍, 니프티50, 일본 등도 고점 대비 크게 하락한 상태다. 채권(TLT)은 금리 하락에 따라 가격이 상승했으나, 국가부채 부담 등 펀더멘털 문제로 금리가 추가로 크게 내려가지는 않고 있다. 금, 은, 플래티넘 등 귀금속은 유가 상승에 따른 금리 인상 기대감으로 하락했고, 달러는 소폭 상승, 유로는 약세, 엔화는 강세를 보였다.</p><p>AI 관련 실적 발표에서는 이제 단순히 매출이 시장 예상치를 상회했는지가 아니라, 기업이 AI에 얼마를 지출하고 그 자금을 어떻게 조달하며 언제 성과를 낼 수 있는지가 핵심 질문으로 바뀌고 있다. 메타는 3분기 매출이 전년 대비 26% 증가한 646억 달러로 강력했지만 캐펙스 지출이 영업활동 현금창출액을 초과하면서 프리캐시플로우가 마이너스로 전환되어 주가가 7% 하락했다. 골드만삭스의 위험선호 지표는 4월 이후 최저 수준으로 떨어졌고, 거래량 감소와 투자자들의 방어적 태도가 뚜렷해지고 있다. 반도체(필라델피아 반도체지수)는 유가와 높은 상관관계를 보이며, 6월 유가 저점 이후 반도체가 꺾이기 시작한 흐름이 이어지고 있어 유가 방향이 반도체 업황의 중요한 변수로 작용하고 있다.</p><p>차트 분석상 S&amp;P500은 아직 큰 폭의 하락은 아니며 주봉 기준 약 3% 조정 수준이다. 나스닥은 고점 대비 약 6% 하락했고 20일선인 25,400선 방어 여부가 관건이다. 다우와 러셀은 저점에서 반발 매수세가 나타났고, 10년물 금리가 한 주간 하락하며 중소형주에 우호적인 환경이 조성되고 있다. 필라델피아 반도체지수는 고점 대비 약 20% 하락해 나스닥(6~7% 하락)보다 훨씬 큰 조정을 겪고 있다.</p><p>다음 주에는 마이크로소프트, 알파벳(수요일 장마감 후), 아마존(목요일 장마감 후) 등 빅테크 실적 발표가 예정되어 있고, 이들의 캐펙스 증가율과 프리캐시플로우 방향이 시장의 향방을 결정할 핵심 변수다. 또한 연준의 금리 결정(동결 유력)과 파월 의장의 향후 금리 방향에 대한 발언도 주목해야 한다. 공포탐욕지수는 21을 기록해 극도의 공포 상태이며, 이는 매도보다는 레버리지를 쓰지 않는 선에서 우량주 중심의 매수 관점으로 접근할 시점으로 해석된다. 다만 마진데트와 하이일드 스프레드(현재 3.4%p 수준으로 확대)가 상승하고 있어 신용시장의 리스크도 함께 점검해야 한다.</p><p>밸류에이션 측면에서 S&amp;P500은 18.6배로 2025년 말 22배보다 낮아졌고, IT섹터도 19배 수준으로 낮아져 고평가 국면은 아니다. 1/PER 역산 시 주식의 기대수익률이 약 5.3%로 10년물 금리 4.9%보다 소폭 높아 아직 큰 매력은 아니지만, 추가 조정 시 매수 매력이 커질 수 있다.</p><p>야데니 리서치와 골드만삭스는 5대 하이퍼스케일러(아마존, 알파벳, 메타, 마이크로소프트, 오라클)가 2026년 약 7,800억 달러, 2027~2030년에는 매년 1조 달러 이상의 캐펙스를 지속할 것으로 전망하며 AI 투자가 꺾이지 않을 것으로 본다. 다만 향후에는 단순 지출 규모보다 클라우드 매출 전환 속도와 수주잔고의 실제 매출화가 핵심 관전 포인트가 될 것으로 보고 있다. 현재 시장이 직면한 세 가지 문제로 자본비용 상승(하이일드 스프레드 확대), 전력·GPU 등 실제 공급 능력의 한계, AI 모델 간 경쟁 심화가 꼽히며, 중동 전쟁으로 인한 에너지 가격 상승도 위험 프리미엄을 높이는 요인으로 지목된다.</p><p>골드만삭스는 실적 발표를 앞두고 마이크로소프트, 알파벳, 제타글로벌, 팔란티어, 코인베이스 등을 매수 유망 종목으로 제시했다. 마이크로소프트는 AI 플랫폼의 깊이와 투자수익률 유연성이 강점으로 꼽히며, 제타글로벌은 중립에서 매수로 상향 조정됐다. 알파벳은 투자자 우려에도 투자 기조를 유지하며 에이전트 기반 서비스 전환이 촉매가 될 수 있다고 평가됐고, 팔란티어는 미 국방부와의 계약 확대가 성장 동력으로 지목됐다. 코인베이스는 단기 변동성에도 불구하고 향후 12개월 실적 전망이 긍정적이라 이번 조정이 매수 기회가 될 수 있다고 평가됐다.</p><p>11월에는 앤트로픽의 IPO 여부가 시장의 큰 변수로 떠오를 전망이다. 추수감사절 전 상장을 목표로 한다면 다음 주 중 S-1 서류 제출이 예상되며, 2조 달러 기업가치를 목표로 하되 2026년 상반기까지 최대 7,500억 달러의 AI 컴퓨팅 투자 계획과 800억 달러 이상의 손실 전망이 담긴 것으로 알려졌다. 다만 최근 AI 기업에 대한 시장 분위기가 비우호적으로 바뀌면서 IPO가 연기될 가능성도 있다. 예측시장에서는 IPO 성사 확률을 약 80%로 보고 있으며, 이는 현금 확보 목적이 크고 성사될 경우 반도체와 HBM 등 관련 산업에도 긍정적 파급효과를 줄 수 있다. 결론적으로 다음 주는 M7 빅테크들의 실적, 특히 캐펙스 증가 속도와 프리캐시플로우의 방향, 부채 규모와 매출 전환 여부가 나스닥 및 전체 시장의 반등 여부를 결정짓는 핵심 변수가 될 것으로 전망된다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=rzw22vOHhFU" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-1">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">The Rich (김단테)</div>
+          <div class="title">일론머스크 &quot;네오클라우드 대부분 망한다?&quot;</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        
+        <p>일론 머스크가 SNS를 통해 200개가 넘는 네오클라우드 기업 대부분이 파산할 것이라고 주장한 발언의 배경을 설명하는 영상이다. 일론 머스크는 자신의 회사인 스페이스X가 엔비디아 GPU 구매를 위해 400억 달러, 한화로 50조 원이 넘는 규모의 부채 조달 계약을 체결했다고 밝혔다. 스페이스X는 데이터센터를 계속 지어야 하기 때문에 이 자금이 필요했는데, 최근 시장이 데이터센터와 GPU 클라우드 사업에 매우 부정적인 시각을 갖고 있어 이런 대규모 자금 조달이 원래 매우 어려운 상황이었다. 그럼에도 스페이스X가 조달에 성공할 수 있었던 이유는 투자적격등급을 보유하고 있기 때문이다. 투자적격등급은 신용평가사가 채권 투자의 안전성을 판단하는 기준인데, 스페이스X는 스타링크 위성 사업과 로켓 발사 사업에서도 수익을 내고 있어 이 등급을 유지할 수 있었고, 이를 바탕으로 400억 달러 규모의 부채 조달이 가능했다는 것이다. 더 놀라운 점은 이 거래가 부외거래, 즉 오프밸런스시트 방식으로 이루어졌다는 것이다. 스페이스X는 특수목적법인을 설립해 이 법인이 실제로 자금을 차입하고 GPU를 구매해 사업을 운영하며 자산을 보유하도록 했다. 스페이스X와 이 특수목적법인 사이에는 장기 계약이 존재하지만, 부채 자체는 특수목적법인에 귀속되기 때문에 스페이스X 입장에서는 재무제표상 부채로 잡히지 않는 구조다. 스페이스X는 사용료를 지불하는 계약상의 의무만 지니며, 계약 위반 시 위약금 등 세부 내용은 아직 공개되지 않았다. 이런 구조 덕분에 스페이스X는 투자적격등급을 유지할 수 있을 것으로 보인다. 다만 일론 머스크는 마치 거래가 완전히 마무리된 것처럼 말했지만, 실제로는 아직 가격 조건 등이 협상 중인 단계로 알려져 있으며, 전체 과정의 약 80% 정도가 진행된 상태에서 이렇게 언급한 것으로 추정된다. 일론 머스크는 스페이스X와 다른 네오클라우드 기업들의 차이를 거듭 강조했는데, 스타링크와 로켓 발사 등 사업이 다각화되어 있다는 점을 내세우며 자신들은 다르다는 점을 부각시켰다. 그는 최근 몇 주간 AI 데이터센터와 무관한 의미 있는 매출을 내지 못하는 기업들은 채권 시장에서 사실상 자금 조달이 끊겼다고 말하며, 네오클라우드 기업들이 최근 자금을 조달하기가 얼마나 어려운지를 강조했다. 그러면서 200개가 넘는 수많은 네오클라우드 기업들이 소형 어종처럼 도태되고 통폐합될 것이며, 결국 대부분이 파산할 것이라는 대담한 주장을 펼쳤다. 일부는 살아남을 수 있겠지만 그 수는 많지 않을 것이라 언급했고, 스페이스X는 이런 네오클라우드 기업들을 인수할 계획이 없으며 그런 인수는 의미가 없다고 선을 그었다. 즉 스페이스X는 네오클라우드 사업을 하면서도 부외부채라는 좋은 조건으로 자금을 조달해 문제가 없지만, 나머지 기업들은 대부분 무너질 것이라는 취지의 발언이다. 참고로 그는 이미 50조 원 넘게 빌린 상태에서 추가로 더 차입할 가능성도 열어두었다고 밝혔다. 이에 대해 일부 비판도 있었는데, 한 X 이용자는 X의 소유주인 일론 머스크가 경쟁사들이 곧 망할 것이라는 뉴스를 계속 퍼뜨리면서, 동시에 X가 금융 투자에 좋은 플랫폼이라고 홍보하는 것은 이해충돌 아니냐는 지적을 제기했다. 이에 대한 발표자 본인의 생각으로는, 최근 발표된 GPU 대여 가격은 대부분 사상 최고치 수준이라고 한다. 오래된 모델인 A는 가격 변동의 의미가 크지 않을 수 있지만, 현재 주로 쓰이는 GPU들의 가격은 거의 사상 최고치에 가까운 수준이며, 이는 시장에 여전히 폭발적인 GPU 수요가 존재한다는 것을 보여준다고 설명한다. 네오클라우드의 펀더멘털 자체는 변한 것이 없지만, 변한 것은 시장의 심리라는 것이다. 채권을 계속 발행해 운영해야 하는 기업들 입장에서는 대출자들의 심리가 매우 중요한데, 현재 그 심리가 공포에 가까운 수준에 도달해 있다는 것이다. CDS가 사상 최고치를 기록하고 있다는 사실 자체가 시장에 과도한 공포가 존재함을 보여주는데, 실제 객관적인 펀더멘털 지표를 보면 그렇게 나쁘지 않다는 것이 발표자의 견해다. 이는 메모리 시장과 다소 유사한 현상으로, 실제 산업 지표는 나쁘지 않지만 시장의 공포와 지속가능성에 대한 불확실성이 반영되어 나타나는 현상으로 보인다고 분석한다. 일론 머스크에게 나쁜 의도가 있었는지는 본인만이 알겠지만, 스페이스X가 다른 네오클라우드 기업들에 비해 분명한 강점을 갖고 있는 것은 사실로 보인다고 말한다. 사업 다각화, 그리고 일론 머스크 특유의 매우 빠른 데이터센터 건설 속도가 그 강점이다. 또한 스페이스X는 다른 네오클라우드 업체들과 달리 계약을 단기로 체결하는데, 이는 GPU 대여 가격이 좋은 현재와 같은 시기에 높은 가격을 받을 수 있다는 장점이 있다. 반면 다른 많은 네오클라우드 기업들은 생각보다 단기 계약을 확보하지 못했고, 장기 계약을 체결한 경우 GPU 대여 가격이 계속 오르는 상황에서 오히려 손해를 보게 된다. 따라서 현재 상황에서는 스페이스X가 유리한 고지를 점하고 있다고 보며, 경쟁심이 강하고 승부욕이 센 일론 머스크의 성향상 다른 기업들을 견제하려는 의도도 함께 섞여 있었을 것이라는 분석으로 마무리한다. 영상 말미에는 실시간 코스피, 코스닥 지수가 각각 약 0.89%, 2% 하락한 상황을 언급하며 반등을 기대한다는 마무리 인사와 함께, 곧 신혼여행을 떠나지만 필요할 때는 틈틈이 영상으로 찾아오겠다는 인사로 영상을 마친다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=LgOIJMIgkUw" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-2">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">부읽남</div>
+          <div class="title">경기도 2028년까지 오를 겁니다, 서울 구축보다 &#x27;여기&#x27; 추천합니다 [심형석 교수 4부]</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        
+        <p>이 영상에서 심형석 교수는 서울 외곽 구축과 경기도 역세권 신축 아파트 중 어느 쪽을 선택할지 고민하는 사람들에게 조언을 전한다. 앞으로 1~2년간은 경기도 신축 아파트도 괜찮은 선택이며, 특히 아직 가격이 많이 오르지 않은 서부 지역, 예를 들어 신안산선이 지나가는 안산 같은 곳은 역세권을 중심으로 가격이 상당히 오를 가능성이 있다고 본다. 다만 경기도 신축은 2년에서 4년, 길게는 4~6년 정도 거주하며 자금을 모아 서울로 진입하기 위한 디딤돌로 접근하는 것이 바람직하다고 강조한다. 전문가들 사이에서도 경기도 핵심 지역조차 10년, 20년 뒤에는 입지 경쟁력에서 밀릴 수 있다는 우려가 있는 만큼, 입지가 우수한 곳을 선점하는 것이 중요하다고 말한다.</p><p>구축을 매수할 경우에는 입주 전 인테리어 리모델링을 적극 권장한다. 요즘 주택 매수층이 젊어지면서 깨끗한 집을 선호하는 경향이 강해졌고, 과거와 달리 지금은 리모델링 비용을 매도 시 어느 정도 회수할 수 있다는 점을 강조한다. 일반적으로 3천만 원에서 5천만 원 수준의 리모델링을 하면 동일 단지 내에서도 더 빠르게, 더 높은 가격에 매도할 수 있어 유동성 확보 측면에서 효과적이라고 설명한다. 신축 효과도 5년에서 10년이면 사라지므로 구축이라고 무조건 꺼릴 필요는 없다고 본다.</p><p>부동산을 고를 때 타협 가능한 요소와 타협해서는 안 되는 요소를 구분해서 설명한다. 서울 기준으로는 평형, 건물 연식, 브랜드, 세대수, 동 방향 등은 어느 정도 타협이 가능하다고 본다. 특히 평당가가 높아지면서 30평형대의 시대는 저물고 25평형, 59제곱미터대가 대세로 자리잡고 있으며, 이 평형이 단지 내에서 평당가가 가장 높고 가격 상승도 먼저 일어나는 경향이 있다고 설명한다. 1인 가구 증가로 마포, 용산, 강남 등 핵심지에서는 30~50제곱미터대의 이른바 &#x27;컴팩트맨션&#x27;도 좋은 대안이 될 수 있다고 언급한다. 반면 절대 타협해서는 안 되는 것은 입지라고 강조한다. 일자리와의 근접성, 역세권 여부, 학군 등은 포기해서는 안 되며, 오피스텔이나 도시형 생활주택처럼 환금성이 낮은 상품보다는 아파트를 선택해야 한다고 조언한다. 결국 가장 중요한 기준은 유동성, 즉 되팔기 쉬운 상품인지 여부라고 재차 강조한다.</p><p>지역 선택에 있어서는 이미 가격이 오른 곳을 매수할지, 아직 오르지 않은 곳을 공부해서 선점할지 고민이 필요하다고 말한다. 현금흐름이 좋다면 이미 상승한 곳을 매수하는 것이 안전하지만, 그렇지 않다면 전세가율이 높으면서 동시에 상승하는 지역, 전세가 상승률이 매매가 상승률보다 높은 지역, 전월세 매물이 빠르게 소진되는 지역 등 세 가지 조건을 활용해 저평가 지역을 찾아야 한다고 설명한다. 재건축, 재개발을 노린다면 용적률을 먼저 확인하고 사업성을 스스로 계산해볼 것을 권한다.</p><p>지역별 흐름으로는 경기 남동부가 상승을 주도하고 있고 남서부와 강서 지역도 움직임을 보이기 시작했으며, 서대문구를 비롯한 서울 서북권이 도심 접근성 개선과 함께 오를 가능성이 있다고 본다. 은평뉴타운, 연신내역, 불광역 인근, 그리고 신안산선이 지나는 시흥과 안산 지역도 주목할 만하다고 설명한다. 경기 남동부를 계속 선호한다면 신분당선 연장선이 지나는 화서, 호매실 등 신설역 인근, 강동구에서 하남으로 이어지는 9호선 연장선 인근의 길동 등을 눈여겨볼 것을 제안한다. 반면 경기 북부는 20~40대 수요자들의 선호도가 낮아 여전히 조용한 편이며, 파주 운정 정도가 그나마 괜찮다고 평가한다. GTX가 개통됐음에도 아직 반응이 크지 않은 구성역 인근 등은 상대적으로 저평가된 지역으로 추가 상승 여력이 있다고 본다.</p><p>무주택자에게는 안전성과 대출 한도를 우선 확인하고, 대출상담사의 도움을 받아 자신의 대출 가능 금액을 파악할 것과 생애최초 특별공급 등 정책대출을 적극 활용할 것을 권한다. 관심 있는 매물은 낮과 밤 모두 방문해 동네 분위기를 살피고, 등기부등본 등 권리관계를 꼼꼼히 확인하며, 집 상태를 볼 때는 수돗물이 나오는지보다 누수 여부와 결로 같은 누수 전조 증상을 중점적으로 점검해야 한다고 조언한다. 1주택자에게는 현재 규제 환경상 일시적 2주택 비과세 혜택을 활용하기 어려운 상황이므로 선매도 후매수 원칙을 지킬 것과, 취득세와 중개수수료 등 거래비용을 고려해 현재보다 1.5배 정도 비싼 상위 지역 주택으로 갈아타는 것을 목표로 삼을 것을 제안한다. 자금 여력이 부족한 경우에는 고덕강일3단지와 같은 토지임대부 주택도 자산 형성의 시작점으로서 나쁘지 않은 선택이라고 설명하며, 무엇보다 투자에 앞서 꾸준한 공부가 필요하다는 점을 강조하며 마무리한다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=46ndNxexlq4" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-3">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">부읽남</div>
+          <div class="title">&quot;규제할수록 더 오를 겁니다&quot; 앞으로도 답이 없는 부동산 시장 [김인만 소장 2부]</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        
+        <p>규제할수록 서울 아파트값은 더 오를 수밖에 없다는 전망이 2부 대담에서 제시된다. 대출 규제가 오히려 수도권의 똘똘한 한 채 수요를 부채질하고 있다는 진단이다. 사람들이 불안하기 때문에 다른 곳에 투자하지 않고, 지금 집값 상승은 다주택자들이 집 수를 늘려서가 아니라 실수요자들이 생존을 위해 집을 사고 있기 때문이라는 것이다. 이런 상황에서 토지거래허가구역 지정은 의미가 없고 오히려 세입자만 피해를 본다고 지적한다. 집주인이 세입자와 계약을 갱신하면 2년간 집을 팔 수 없기 때문에, 갱신 시점이 되면 재계약을 거부하고 집을 공실로 두거나 직접 들어가 산다는 것이다. 이 때문에 전세 매물이 계속 사라지고 있다.</p><p>토지거래허가구역 해제 논의와 관련해, 경기도에서도 해제 이야기가 나오고 있고 국정감사에서도 거론되고 있다고 전해진다. 해제해야 한다는 입장이지만, 정부는 겁이 나서 해제하지 못할 것이라는 전망이 우세하다. 오세훈 서울시장이 2022년 3월 강남 일대를 토지거래허가구역으로 지정했을 때 집값이 안정화되던 시점에 오히려 규제를 걸어 트라우마가 생겼다는 분석이다. 규제가 없었다면 그해 4~5월경 자연스럽게 안정됐을 것이라는 것이다. 시장에는 자체 기능이 있어서 가격이 너무 비싸지면 투자자들이 스스로 매수를 꺼리게 되는데, 정부가 이를 기다리지 못하고 규제로 막아버렸다는 비판이다. 지금 해제하면 두세 달은 급등할 수 있지만 그 이후 안정될 것이므로 그 정도는 감내해야 한다는 주장이다. 반면 해제하지 않으면 전세 문제가 만성적으로 계속될 것이라고 우려한다.</p><p>정부는 등록임대사업자 제도도 활용하지 않고 공공 부문 공급만 고집하고 있는데, 공공 공급만으로는 한계가 있다는 지적이다. 결국 정부도 딜레마에 빠져 있다는 것이다. 실수요자들은 정부가 뚜렷한 해법이 없다는 것을 느끼고 불안해하며, 대출 규제설이 돌 때마다 지금 사지 않으면 못 살 수도 있다는 조급함에 서둘러 매수에 나선다. 현재 총량 대출 규제로 인해 대출이 잘 나오지 않고 있지만 내년 1월경 총량이 풀리면 거래량이 다시 늘어날 것으로 예상된다.</p><p>아파트만 오르고 상가, 토지, 전원주택 등 다른 부동산 시장은 모두 침체되어 있다는 점도 언급된다. 양평 지역 전원주택 사례를 들며, 공시지가 기준으로는 평당 600만 원 정도에 거래되어야 할 물건이 대출이 나오지 않아 공시지가 수준에서만 거래되고 있다는 것이다. 총량 규제로 은행들이 아파트 대출조차 부족한 상황에서 전원주택 대출에 여력을 할애할 이유가 없기 때문이다. 결국 대출 규제가 상가, 토지, 전원주택 등 실수요 시장을 모두 죽이고 수도권의 똘똘한 한 채 아파트 시장만 남겨놓았다는 분석이다. 정부가 대출 규제를 통해 오히려 기형적인 선호 구조를 만들고 있다는 비판이 이어진다.</p><p>토지거래허가구역은 정부가 잘못을 인정하고 원상복구해야 하지만, 어떤 정부도 스스로 잘못을 인정하려 하지 않을 것이므로 해제가 쉽지 않을 것이라는 전망이다. 허가구역 지정 기한이 만료될 때마다 보통 1년씩 연장해왔기 때문에 내년 초 해제 가능성은 낮다고 본다. 2028년 총선과 그 이후 대선 일정까지 고려하면 정치적으로 해제 타이밍을 잡기 어려운 구조라는 점도 짚는다. 다만 토지거래허가구역을 해제한다고 해도 전월세 공급이 100% 회복되지는 않을 것이며, 서울의 입주 물량 감소와 비거주자에 대한 세금 문제 등도 함께 해결해야 할 과제로 제시된다. 그럼에도 완전한 해법이 아니라는 이유로 계속 규제를 붙들고 있는 것은 답이 아니며, 정부가 시장에 대한 의지를 보여줄 필요가 있다는 의견이다.</p><p>작년 11월 1일 대책으로 경기도 12개 지역과 서울 전역을 묶은 데 이어, 올해 5월경 화성 동탄, 용인 기흥구, 구리시까지 추가로 토지거래허가구역으로 묶었지만 이들 지역은 지정 이후에도 계속 집값이 올랐다는 사실이 지적된다. 토지거래허가구역은 실거주 요건으로 인해 다소 불편할 뿐 실제 매수를 막는 효과는 크지 않다는 것이다. 다주택자나 투자자들의 갭투자를 막는 데는 효과가 있을 수 있지만, 지금처럼 실수요자가 생존을 위해 집을 사는 상황에서는 아무런 효과가 없다는 설명이다. 노무현 정부 때와 달리 지금은 다주택자 증가가 집값 상승의 원인이 아니기 때문에 토지거래허가제가 시대착오적이라는 평가다.</p><p>금리 인상 가능성에 대해서는, 금리가 오르면 부담이 커지는 것은 사실이지만 집값과 금리는 역의 관계에 있다는 점을 짚는다. 최근 집을 산 사람들은 이미 높은 금리를 감안해 대출 한도를 설계했기 때문에 15억에서 25억 구간은 대출 한도가 4억 원, 25억 초과는 2억 원으로 제한되어 있어 큰 무리가 없다는 분석이다. 다만 2020~2021년 저금리 시기에 대출을 받은 사람들 중 일부는 부담이 클 수 있는데, 이미 2022년에 한 차례 리스크 관리가 안 된 사람들은 정리된 바 있다는 것이다. 수도권은 집값이 전고점을 넘어선 경우가 많아 이자 부담이 커져도 집값 상승분으로 버틸 수 있는 반면, 비수도권 일부 지역은 집값이 아직 회복되지 않은 상태에서 금리까지 오르면 더 힘들어질 수 있다고 본다.</p><p>다만 2022년 하반기와 같은 급격한 집값 하락이 재현될 가능성은 낮다고 본다. 당시에는 파월 의장이 금리를 3년간 올리지 않겠다고 했다가 급격히 인상하면서 시장이 예상치 못한 충격을 받았지만, 지금은 기준금리가 3.5% 수준으로 이미 예고되어 있어 불확실성이 크지 않다는 것이다. 시장이 가장 두려워하는 것은 불확실성 자체이며, 예상된 범위 내의 금리 인상은 공포영화의 예고편처럼 오히려 실제보다 덜 무섭게 느껴진다는 비유를 든다. 윤석열 정부 시기에도 기준금리가 3.5%였고 노무현 정부 때는 5.25%였던 점을 감안하면 기준금리 자체는 큰 문제가 아니며, 오히려 은행들이 정부 승인 아래 가산금리를 과도하게 붙이는 것이 더 큰 부담이라고 지적한다. 다만 가산금리가 지나치게 치솟으면 부실과 금융위기로 이어질 수 있어 이 부분은 별도로 관리해야 한다고 강조하며, 대부분의 예측이 이미 시장에 반영되어 있는 만큼 2022년과 같은 급락이 재현될 가능성은 낮다고 전망하면서도 대출 이자 부담과 원리금 상환에 대한 리스크 관리는 필요하다고 마무리한다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=vgD5v3GrYMc" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-4">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">SBS 교양이를 부탁해</div>
+          <div class="title">성장은 1%, 금리는 5% 프랑스, 첫 디폴트 국가 되나 #교양이를부탁해 #프랑스 #국채금리 #유럽 #경제</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        
+        <p>프랑스가 고금리 시대에 첫 디폴트 국가가 될 가능성에 대해 완전히 배제할 수는 없다는 진단이 나온다. 프랑스 재정 당국이 발표한 국가부채 전망치는 GDP 대비 120% 수준이며, 만기 10년짜리 국채가 현재 5%대 금리로 계속 발행될 경우 매년 GDP의 약 6%를 이자로 지급해야 하는 상황에 놓인다. 이는 현재 프랑스의 재정적자 규모인 GDP 대비 6%와 맞먹는 수준이다. 과거 2020년 팬데믹 시기와 2012~2013년 유럽 재정위기 당시에는 유럽중앙은행이 양적완화를 통해 국채를 대거 매입하면서 국채 금리가 1%대까지 떨어질 정도로 매우 낮게 유지됐다. 하지만 당시 발행된 국채들이 10년이 지나 하나둘 만기를 맞이하고 있고, 새로 발행되는 국채는 5%대 고금리로 책정되고 있어 이를 감당할 수 있을지가 관건이다. 마크롱 정부는 법인세 인하, 스타트업 지원, 친환경 정책 추진 등을 통해 경제를 살리려 애써왔지만, 세계은행 통계에 따르면 프랑스의 1인당 GDP는 9년 동안 단 1.8% 성장하는 데 그쳤다. 한국에서 1년 성장률이 1.8%에 불과하다면 저성장에 대한 우려가 커질 텐데, 프랑스는 그런 수준의 성장을 9년에 걸쳐 겪은 셈으로 사실상 경제 성장이 멈춘 상태라는 평가다. 이런 상황에서 글로벌 기업 본사 입장이라면 지금 프랑스에 투자하지 않을 것이라는 지적도 나온다. 유럽에 공장을 짓는다면 임금이 저렴한 폴란드나 세율이 낮은 아일랜드가 먼저 떠오를 것이기 때문이다. 정치적 갈등이 극단으로 치달아 미래가 불확실하고 금리 수준도 높은 나라에 선뜻 투자할 기업이 있을지 의문이라는 것이다. 결국 국가와 국제사회의 신뢰를 확보하지 못한다면, 1%의 경제 성장조차 달성하지 못하는 나라가 5%에 달하는 금리를 어떻게 견뎌낼 수 있을지에 대한 우려가 제기된다.</p>
+        <a class="watch" href="https://www.youtube.com/shorts/8LPef2ph_xM" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-5">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">SBS 교양이를 부탁해</div>
+          <div class="title">97년 한국 IMF 사태가 보인다... 프랑스가 위기 못 막는 이유 #교양이를부탁해 #프랑스 #국채금리 #유럽 #경제</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        
+        <p>1997년 한국의 IMF 외환위기 상황이 지금 프랑스가 처한 상황과 겹쳐 보인다는 우려를 다룬 내용이다. 과거 유럽중앙은행과 IMF는 이탈리아, 그리스, 스페인에 구제금융을 지원하면서 긴축재정을 요구했는데, 문제는 앞으로 집권할 가능성이 있는 차기 지도자들이 이런 긴축 요구를 받아들이지 않거나 받아들일 의사가 없어 보인다는 점이다. 이는 1997년 한국의 외환위기 당시 상황을 떠올리게 한다. 당시 한국은 1997년 10월 홍콩이 헤지펀드의 공격을 받은 직후 사실상 외환위기에 빠졌고, 대통령 선거는 그해 12월에 치러졌다. 선거가 끝나자마자 미셸 캉드쉬 IMF 총재가 방한해 당선자였던 김대중 대통령에게 긴축재정을 포함한 각종 IMF 요구 조건에 서명하도록 압박했다. 인도네시아의 수하르토 대통령이 협약에 서명할 때 캉드쉬 총재가 팔짱을 낀 채 서 있던 유명한 사진도 이런 맥락에서 회자된다. 결국 문제는 위기가 실제로 터진 후에야 해결될 것인지, 아니면 그 전에 선제적으로 해결될 수 있을지에 대한 불안이다. 다만 프랑스는 그리스나 스페인과 달리 유럽연합 경제에서 차지하는 비중이 훨씬 크기 때문에, 프랑스가 흔들릴 경우 유럽연합이 감당하기 어려울 수 있고 유럽중앙은행도 적극적으로 나서기 힘들 수 있다는 분석이 나온다. 실제로 유럽중앙은행이 프랑스 문제에는 선을 긋고 있다는 취지의 기사도 있었다는 언급이 있다. 경제 지표만 놓고 볼 때, 최근 몇 주 사이 프랑스 국채금리가 거의 1퍼센트 가까이 급등한 것은 매우 이례적이고 폭발적인 움직임으로, 이는 사람들이 느끼는 심리적 공포를 반영하는 신호로 해석된다. 즉 1997년 한국의 IMF 사태처럼 이자 지급에 문제가 생기거나 국채 금리가 지나치게 치솟아 그 높은 금리로 계속 빚을 내야 하는 상황이 결국 이자 부담으로 인한 국가적 붕괴로 이어질 수 있다는 디폴트 성격의 사태에 대한 공포다. 이 사태가 과연 평화롭게 해결될 수 있을지 의문을 갖는 사람들이 지금 채권을 매도하고 있으며, 현재의 금리 급등은 단순한 일시적 현상이 아니라 채권시장에서 중대한 사건이 발생할 수도 있다는 공포를 반영하는 신호로 볼 수 있다.</p>
+        <a class="watch" href="https://www.youtube.com/shorts/gaeIDjhULHE" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+  </section>
+
+  <footer class="foot">
+    <b>Investment Digest</b> · generated automatically. Not financial advice — personal reading notes only.
+  </footer>
+</div>
+<script>
+(function() {
+  var h = window.location.hash;
+  if (h && h.indexOf("#vid-") === 0) {
+    var el = document.querySelector(h);
+    if (el && el.tagName === "DETAILS") {
+      el.open = true;
+      el.scrollIntoView({block: "start"});
+    }
+  }
+})();
+</script>
+</body>
+</html>

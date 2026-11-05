@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026-11-05 — Investment Digest</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Mulish:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<meta name="theme-color" content="#FBF6EC">
+<script>(function(){
+  var t = localStorage.getItem('theme') || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  document.documentElement.setAttribute('data-theme', t);
+})();</script>
+<style>
+:root{
+  --paper:#FBF6EC; --paper-2:#F3EADA; --card:#FFFDF8;
+  --ink:#332C24; --ink-soft:#6E6456; --ink-faint:#9A8E7C;
+  --line:#E7DBC6; --line-strong:#D8C8AC;
+  --honey:#E8A33D; --honey-deep:#C27D14; --honey-soft:#FBEACB;
+  --dram:#2C8C7C; --dram-soft:#DCEFE9;
+  --ltram:#5A61B4; --ltram-soft:#E6E6F6;
+  --optane:#C0563B; --optane-soft:#F7E1D8;
+  --shadow-sm:0 1px 2px rgba(80,60,30,.06),0 2px 8px rgba(80,60,30,.05);
+  --shadow-md:0 6px 18px rgba(90,66,28,.10),0 16px 36px rgba(90,66,28,.08);
+  --radius:18px; --radius-sm:12px; --maxw:1500px;
+  --display:"Fraunces",Georgia,serif;
+  --body:"Mulish",-apple-system,system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,monospace;
+  /* status scale: buy (green) -> hold (neutral) -> sell (red). Never used alone --
+     every status also carries an icon glyph + text label. */
+  --buy:#1F7A4D; --buy-soft:#DDF0E3;
+  --buyhold:#6E9A3C; --buyhold-soft:#EAF2D8;
+  --hold:#8A7F6C; --hold-soft:#F3EADA;
+  --holdsell:#C27D14; --holdsell-soft:#FBEACB; --holdsell-text:#8A5A0E;
+  --sell:#B23D26; --sell-soft:#F7E1D8;
+}
+/* Dark theme -- same design tokens, re-tuned for a dark warm-charcoal background
+   instead of the light "paper" one. Applied via a data-theme attribute on <html>
+   (set before first paint by the inline init script in <head>, so there's no
+   flash of the wrong theme) rather than only prefers-color-scheme, so the
+   toggle button can override the system setting and remember the choice. */
+:root[data-theme="dark"]{
+  --paper:#181512; --paper-2:#211D18; --card:#221E19;
+  --ink:#EEE7D9; --ink-soft:#BBB09C; --ink-faint:#8C8172;
+  --line:#38332A; --line-strong:#4A4335;
+  --honey:#F0B85B; --honey-deep:#F5C878; --honey-soft:#3A2D16;
+  --dram:#4FC0A9; --dram-soft:#173129;
+  --ltram:#9098E8; --ltram-soft:#242850;
+  --optane:#E68A6B; --optane-soft:#3B241B;
+  --shadow-sm:0 1px 2px rgba(0,0,0,.35),0 2px 8px rgba(0,0,0,.3);
+  --shadow-md:0 6px 18px rgba(0,0,0,.45),0 16px 36px rgba(0,0,0,.4);
+  --buy:#5FCB93; --buy-soft:#173121;
+  --buyhold:#A9CC6D; --buyhold-soft:#262E16;
+  --hold:#BBB09C; --hold-soft:#2A2620;
+  --holdsell:#F0B85B; --holdsell-soft:#3A2D16; --holdsell-text:#F0B85B;
+  --sell:#EE8065; --sell-soft:#3A211A;
+}
+*{box-sizing:border-box} html{scroll-behavior:smooth}
+body{margin:0;font-family:var(--body);color:var(--ink);line-height:1.6;background:var(--paper);
+  background-image:radial-gradient(circle at 10% 6%,rgba(44,140,124,.06),transparent 42%),radial-gradient(circle at 90% 18%,rgba(90,97,180,.06),transparent 44%),radial-gradient(circle at 50% 120%,rgba(232,163,61,.07),transparent 55%);
+  -webkit-font-smoothing:antialiased;min-height:100vh;transition:background-color .25s,color .25s}
+:root[data-theme="dark"] body{
+  background-image:radial-gradient(circle at 10% 6%,rgba(79,192,169,.08),transparent 42%),radial-gradient(circle at 90% 18%,rgba(144,152,232,.08),transparent 44%),radial-gradient(circle at 50% 120%,rgba(240,184,91,.06),transparent 55%);
+}
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 22px}
+.theme-toggle{position:fixed;top:18px;right:18px;z-index:30;display:inline-flex;align-items:center;justify-content:center;
+  width:42px;height:42px;border-radius:50%;border:1px solid var(--line-strong);background:var(--card);color:var(--ink-soft);
+  cursor:pointer;box-shadow:var(--shadow-sm);font-size:17px;line-height:1;padding:0;transition:border-color .2s,color .2s,transform .15s}
+.theme-toggle:hover{border-color:var(--honey);color:var(--honey-deep);transform:scale(1.06)}
+.theme-toggle .tt-sun,.theme-toggle .tt-moon{display:none}
+:root[data-theme="light"] .theme-toggle .tt-moon{display:inline}
+:root[data-theme="dark"] .theme-toggle .tt-sun{display:inline}
+@media(max-width:480px){.theme-toggle{top:12px;right:12px;width:38px;height:38px;font-size:15px}}
+:root[data-theme="dark"] .eyebrow{border-color:var(--line-strong)}
+a{color:var(--honey-deep);text-decoration:none;border-bottom:1.5px solid var(--honey-soft);transition:border-color .2s}
+a:hover{border-color:var(--honey)}
+h1,h2,h3{font-family:var(--display);font-weight:600;line-height:1.2;color:var(--ink);margin:0 0 .5em}
+.head{padding:52px 0 18px}
+.eyebrow{display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--honey-deep);background:var(--honey-soft);padding:7px 14px;border-radius:999px;border:1px solid #F0DCB0;margin-bottom:18px}
+.eyebrow .dot{width:8px;height:8px;border-radius:50%;background:var(--honey);box-shadow:0 0 0 4px rgba(232,163,61,.2)}
+.head h1{font-weight:700;font-size:clamp(2.1rem,5.6vw,3.2rem);letter-spacing:-.015em;margin:0 0 .3em}
+.head p{font-size:clamp(1rem,2vw,1.1rem);color:var(--ink-soft);max-width:60ch;margin:0}
+.back{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:.85rem;color:var(--ink-soft);border-bottom:none;margin-bottom:18px}
+.back:hover{color:var(--honey-deep)}
+
+.sec{margin:30px 0 0}
+.sec-h{font-family:var(--display);font-weight:600;font-size:1.15rem;margin:0 0 14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px}
+a.cardlink{text-decoration:none;color:inherit;border-bottom:none}
+.gcard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px;box-shadow:var(--shadow-sm);
+  transition:transform .18s,box-shadow .18s,border-color .18s;height:100%;display:flex;flex-direction:column}
+.gcard:hover{transform:translateY(-4px);box-shadow:var(--shadow-md);border-color:var(--line-strong)}
+.gcard h2{font-size:1.18rem;letter-spacing:-.01em;margin:0 0 .3em}
+.gcard .date{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:10px}
+.gcard .counts{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 12px}
+.gcard .tickers{font-size:.88rem;color:var(--ink-soft);margin:0 0 12px;flex:1}
+.gcard .go{font-family:var(--body);font-weight:700;font-size:.88rem;color:var(--honey-deep);display:inline-flex;align-items:center;gap:6px}
+.gcard:hover .go{color:var(--ltram)}
+
+.status{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-weight:700;font-size:10.5px;letter-spacing:.03em;
+  text-transform:uppercase;padding:3px 9px;border-radius:999px}
+.status.buy{background:var(--buy-soft);color:var(--buy)}
+.status.buyhold{background:var(--buyhold-soft);color:var(--buyhold)}
+.status.hold{background:var(--hold-soft);color:var(--hold)}
+.status.holdsell{background:var(--holdsell-soft);color:var(--holdsell-text)}
+.status.sell{background:var(--sell-soft);color:var(--sell)}
+
+.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px 24px;margin:14px 0;box-shadow:var(--shadow-sm)}
+.panel.buy{border-left:4px solid var(--buy)}
+.panel.buyhold{border-left:4px solid var(--buyhold)}
+.panel.hold{border-left:4px solid var(--hold)}
+.panel.holdsell{border-left:4px solid var(--holdsell)}
+.panel.sell{border-left:4px solid var(--sell)}
+.panel h3{font-size:1.08rem;margin:0 0 12px;display:flex;align-items:center;gap:10px}
+.panel .empty{color:var(--ink-faint);font-style:italic;font-size:.94rem;margin:0}
+.pick{padding:10px 0;border-top:1px dashed var(--line)}
+.pick:first-of-type{border-top:none;padding-top:2px}
+.pick .ticker{font-weight:700;font-family:var(--display);font-size:1.02rem;margin-bottom:2px}
+.pick .rationale{font-size:.92rem;color:var(--ink-soft);margin:0}
+
+.tickerbar{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 6px}
+.tchip{font-family:var(--mono);font-weight:700;font-size:.82rem;background:var(--paper-2);color:var(--ink-soft);
+  border:1px solid var(--line-strong);border-radius:999px;padding:5px 12px}
+
+.vcard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius-sm);margin:12px 0;overflow:hidden}
+.vcard summary{list-style:none;cursor:pointer;padding:16px 20px;display:flex;gap:14px;align-items:flex-start}
+.vcard summary::-webkit-details-marker{display:none}
+.vcard .vmeta{flex:1;min-width:0}
+.vcard .channel{font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--honey-deep);margin-bottom:3px}
+.vcard .title{font-weight:700;font-size:1rem;color:var(--ink)}
+.vcard .chev{margin-left:auto;color:var(--ink-faint);transition:transform .25s;font-family:var(--mono);flex:0 0 auto}
+.vcard[open] summary .chev{transform:rotate(180deg)}
+.vcard .body{padding:0 20px 20px 20px;color:var(--ink-soft);font-size:.95rem}
+.vcard .body p{margin:0 0 12px}
+.vcard .watch{font-family:var(--mono);font-size:.82rem}
+
+.foot{margin:54px 0 40px;padding-top:20px;border-top:1px solid var(--line);font-size:.85rem;color:var(--ink-faint);font-family:var(--mono);line-height:1.7}
+.foot b{color:var(--ink-soft)}
+.empty-state{color:var(--ink-faint);font-style:italic;padding:24px 2px}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+.zchart-panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:22px 24px;box-shadow:var(--shadow-sm)}
+.zchart-asof{font-size:.86rem;color:var(--ink-faint);margin-bottom:14px;line-height:1.5}
+.zchart-grid{display:grid;grid-template-columns:1fr 300px;gap:22px;align-items:start}
+@media(max-width:820px){.zchart-grid{grid-template-columns:1fr}}
+.zrank-list{display:flex;flex-direction:column;border-left:1px solid var(--line);padding-left:18px}
+@media(max-width:820px){.zrank-list{border-left:none;border-top:1px solid var(--line);padding-left:0;padding-top:14px}}
+.zrank-row{display:grid;grid-template-columns:12px 1fr auto auto;align-items:center;gap:9px;padding:6px 0;border-top:1px dashed var(--line);font-size:.86rem}
+.zrank-row:first-of-type{border-top:none}
+.zrank-row.zrank-head{border-top:none;border-bottom:1px solid var(--line);padding-bottom:8px;margin-bottom:2px;
+  font-family:var(--mono);font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-faint);font-weight:700}
+.zrank-dot{width:10px;height:10px;border-radius:50%}
+.zrank-ticker{color:var(--ink);font-weight:600}
+.zrank-val{font-family:var(--mono);font-weight:700;font-size:.85rem;text-align:right}
+.zrank-val.pos{color:var(--buy)}
+.zrank-val.neg{color:var(--sell)}
+.zrank-alloc{font-family:var(--mono);font-weight:700;font-size:.85rem;text-align:right;color:var(--ink-soft);min-width:52px}
+.zchart-note{font-size:.85rem;color:var(--ink-faint);margin:16px 0 0}
+
+.date-groups{display:flex;flex-direction:column;gap:16px}
+.date-group{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:20px 24px;box-shadow:var(--shadow-sm);
+  transition:border-color .18s,box-shadow .18s}
+.date-group:hover{border-color:var(--line-strong);box-shadow:var(--shadow-md)}
+.date-group .dg-head{display:flex;align-items:baseline;flex-wrap:wrap;gap:10px 14px;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.date-group .dg-date{font-family:var(--display);font-weight:600;font-size:1.25rem;color:var(--ink);border-bottom:1.5px solid var(--honey-soft)}
+.date-group .dg-date:hover{color:var(--honey-deep);border-color:var(--honey)}
+.date-group .dg-count{font-family:var(--mono);font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-faint)}
+.date-videos{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+.date-videos li{display:flex;flex-direction:column;gap:3px;font-size:.94rem}
+.date-videos .dv-row{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline}
+.date-videos .dv-channel{font-family:var(--mono);font-size:10px;letter-spacing:.04em;text-transform:uppercase;color:var(--honey-deep);
+  background:var(--honey-soft);border-radius:999px;padding:2px 9px;flex:0 0 auto}
+.date-videos .dv-title{color:var(--ink)}
+.date-videos .dv-summary{color:var(--ink-faint);font-size:.85rem;line-height:1.5;margin:0 0 0 2px}
+.date-videos a{color:var(--ink);border-bottom:1.5px solid var(--line-strong)}
+.date-videos a:hover{color:var(--honey-deep);border-color:var(--honey)}
+</style>
+</head>
+<body>
+<button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode" title="Toggle dark mode">
+  <span class="tt-sun">☀</span><span class="tt-moon">☾</span>
+</button>
+<script>function toggleTheme(){
+  var r = document.documentElement, next = r.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  r.setAttribute('data-theme', next); localStorage.setItem('theme', next);
+  var mc = document.querySelector('meta[name="theme-color"]'); if (mc) mc.content = next === 'dark' ? '#181512' : '#FBF6EC';
+}</script>
+<div class="wrap">
+  <header class="head">
+    <a class="back" href="../index.html">← All digests</a>
+    <span class="eyebrow"><span class="dot"></span>2026-11-05</span>
+    <h1>Daily Digest</h1>
+    <p>Executive read of today's finance &amp; investing videos, sorted by call.</p>
+    <div class="tickerbar">
+      <span class="tchip">삼성전자</span>
+<span class="tchip">SK하이닉스</span>
+<span class="tchip">코어위브</span>
+<span class="tchip">엔비디아</span>
+<span class="tchip">마이크론</span>
+<span class="tchip">알파벳</span>
+<span class="tchip">아마존</span>
+<span class="tchip">메타</span>
+<span class="tchip">마이크로소프트</span>
+<span class="tchip">AMD</span>
+<span class="tchip">네비우스</span>
+<span class="tchip">오라클</span>
+<span class="tchip">로키드마틴</span>
+<span class="tchip">제너럴다이내믹스</span>
+<span class="tchip">레이시온</span>
+<span class="tchip">RTX</span>
+<span class="tchip">노스롭그루먼</span>
+<span class="tchip">비스타 에너지</span>
+<span class="tchip">카카오</span>
+<span class="tchip">네이버</span>
+<span class="tchip">한진칼</span>
+<span class="tchip">삼성전기</span>
+<span class="tchip">효성중공업</span>
+<span class="tchip">한화에어로스페이스</span>
+<span class="tchip">테슬라</span>
+<span class="tchip">스페이스X</span>
+<span class="tchip">포트리스</span>
+<span class="tchip">라이프타임</span>
+<span class="tchip">블랙록</span>
+    </div>
+  </header>
+
+  <section class="sec">
+    <div class="sec-h">Executive summary</div>
+    
+    <div class="panel buy">
+      <h3><span class="status buy">▲ Buy</span></h3>
+      <p class="empty">No calls in this category today.</p>
+    </div>
+
+    <div class="panel buyhold">
+      <h3><span class="status buyhold">◆ Buy / Hold</span></h3>
+      <div class="pick">
+        <div class="ticker">삼성전자</div>
+        <p class="rationale">저가 매수 구간으로 보고 분할 매수 대응이 이루어지고 있으나 아직 뚜렷한 추세 전환은 확인되지 않았다.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">SK하이닉스</div>
+        <p class="rationale">지지선 공방 속에서도 매수 관점이 유효하다는 평가와 함께 분할 매수가 이루어지고 있다.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">마이크로소프트</div>
+        <p class="rationale">이미 데이터센터를 구축해 규제 강화의 수혜를 입으며 주가가 큰 폭으로 상승했다.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">알파벳</div>
+        <p class="rationale">기존 데이터센터 보유로 신규 규제 속에서도 진입장벽 효과를 누리며 주가가 상승했다.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">아마존</div>
+        <p class="rationale">하이퍼스케일러로서 데이터센터 규제 강화의 반사 수혜를 받으며 주가가 올랐다.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">메타</div>
+        <p class="rationale">기존 데이터센터 보유 기업으로 규제 강화 국면에서 상대적으로 유리한 위치에 있다고 평가됐다.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">카카오</div>
+        <p class="rationale">국내 반도체 약세장 속에서도 급등하며 긍정적 모멘텀을 보였다.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">네이버</div>
+        <p class="rationale">반도체 약세 속에서도 큰 폭으로 상승하며 상대적 강세를 나타냈다.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">로키드마틴</div>
+        <p class="rationale">국방비 우려로 단기 하락했으나 과거 전례상 중장기적으로 회복할 가능성이 높게 평가됐다.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">제너럴다이내믹스</div>
+        <p class="rationale">정부 매출 비중이 높아 단기 하락했지만 과거 사례처럼 회복 가능성이 있다고 평가됐다.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">레이시온</div>
+        <p class="rationale">국방 예산 우려로 하락했으나 장기적으로는 회복 전례가 있다고 평가됐다.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">RTX</div>
+        <p class="rationale">방산 지출 우려에 따른 단기 조정이나 지정학적 긴장 지속으로 장기 전망은 나쁘지 않다고 평가됐다.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">노스롭그루먼</div>
+        <p class="rationale">국방비 검토 우려로 하락했지만 과거 사례처럼 예산 증가와 함께 회복할 가능성이 제기됐다.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">비스타 에너지</div>
+        <p class="rationale">규제 우려로 급락했으나 과도한 매도 반응으로 보고 장기 전력 수요에는 여전히 긍정적으로 평가됐다.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">포트리스</div>
+        <p class="rationale">전쟁 발생 여부와 무관하게 막대한 인프라 계약으로 수익을 내는 구조라 긍정적으로 언급됐다.</p>
+      </div>
+    </div>
+
+    <div class="panel hold">
+      <h3><span class="status hold">● Hold</span></h3>
+      <div class="pick">
+        <div class="ticker">AMD</div>
+        <p class="rationale">실적은 양호했으나 반도체 업종 전반의 약세에 가려져 별다른 평가 없이 보합세로 다뤄졌다.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">한진칼</div>
+        <p class="rationale">경영권 분쟁 이슈로 강세를 보였을 뿐 투자 의견 자체는 제시되지 않았다.</p>
+      </div>
+    </div>
+
+    <div class="panel holdsell">
+      <h3><span class="status holdsell">◇ Hold / Sell</span></h3>
+      <div class="pick">
+        <div class="ticker">코어위브</div>
+        <p class="rationale">네오클라우드 업체로 데이터센터 규제 강화의 부담을 직접 받아 약세를 보였다.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">네비우스</div>
+        <p class="rationale">소규모 AI 클라우드 제공업체로 규제 우려 속에 주가가 약세를 보였다.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">오라클</div>
+        <p class="rationale">데이터센터 관련 규제 우려로 약세 흐름을 보였다.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">엔비디아</div>
+        <p class="rationale">데이터센터 건설 둔화 우려로 반도체 업종과 함께 하락 압력을 받고 있다.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">마이크론</div>
+        <p class="rationale">데이터센터 지연 우려로 반도체 업종 전반과 함께 매도 압력을 받았다.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">삼성전기</div>
+        <p class="rationale">중간선거발 충격 속에서 큰 폭으로 급락했다.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">효성중공업</div>
+        <p class="rationale">시장 충격 속에서 두 자릿수 급락을 기록했다.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">한화에어로스페이스</div>
+        <p class="rationale">전쟁 조기 종료 기대감으로 방산 수요 둔화 우려에 약세를 보였다.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">테슬라</div>
+        <p class="rationale">머스크 관련 기업으로 분류되며 약세를 보였다.</p>
+      </div>
+      <div class="pick">
+        <div class="ticker">스페이스X</div>
+        <p class="rationale">머스크 관련 기업으로 묶여 약세 흐름을 보였다.</p>
+      </div>
+    </div>
+
+    <div class="panel sell">
+      <h3><span class="status sell">▼ Sell</span></h3>
+      <p class="empty">No calls in this category today.</p>
+    </div>
+  </section>
+
+  <section class="sec">
+    <div class="sec-h">Videos covered (14)</div>
+    
+    <details class="vcard" id="vid-0">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">Orlando Kim</div>
+          <div class="title">(반도체) 반도체는 내려갈때 우리가 생각지도 못할 정도로 내려갈수 있다.</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        
+        <p>올린도 킴이 반도체 업황과 11월 미국 중간선거 결과가 시장에 미치는 영향을 분석했다. 먼저 기술적 분석 측면에서 싹스 지수는 헤드앤숄더 패턴이 나타나며 장기 상승 추세선이 무너지고 직전 저점까지 붕괴되었다. 현재 주가는 하락 추세 안에 있으며 아직 바닥을 확인하지 못한 상태로, 최악의 시나리오에서는 367 선까지 추가 하락할 가능성이 있다고 언급했다. 반도체는 상승할 때 급등하지만 하락할 때도 매우 빠르게 내려갈 수 있어 주의가 필요하며, 하락 구간에서 물타기 방식으로 싹쓸이 매수하는 전략은 위험하다고 경고했다. SK하이닉스는 110만원대 지지선에서 반등 여부를 지켜봐야 하고, 삼성전자는 19만원대 지지가 중요하며 이선이 무너지면 16만8000원대까지 추가 하락할 수 있다고 분석했다. 두 종목 모두 아직 추세 전환이 확인되지 않아 매수 시점으로 보기는 이르다고 평가했다.</p><p>이어서 중간선거 이후 투자자들이 주목해야 할 이슈들을 다뤘다. 민주당이 하원, 상원 및 다수 주지사직을 장악하면서 가장 큰 영향은 데이터센터 건설 속도 둔화로 인한 컴퓨팅 비용 상승이다. 이는 이미 데이터센터를 보유한 하이퍼스케일 기업(구글, 아마존, 메타, 마이크로소프트 등)에는 호재로 작용하는 반면, 코어위브 같은 네오클라우드 및 엔비디아, 마이크론 등 반도체 기업에는 부담으로 작용할 수 있다고 설명했다. 실제로 선거 이후 하이퍼스케일 기업 주가는 대부분 상승한 반면 반도체, 네오클라우드, 전력 관련 산업주는 하락했다.</p><p>연준 관련해서는 국채 수익률이 하락했고, 민주당이 장악한 상원이 트럼프의 비둘기파가 아닌 매파적 인사 임명을 견제할 것으로 예상되며, 2027년 추가 금리 인상 가능성은 낮아졌다고 분석했다. 재정 측면에서는 12월 11일 정부 지출 시한을 앞두고 협상이 격화될 수 있으며, 부채한도 문제는 내년 하반기까지는 큰 변화가 없을 전망이나 재정적자는 GDP 대비 6.5% 수준을 유지할 것으로 예상했다.</p><p>계절성 측면에서는 역사적으로 중간선거 이후 시장 수익률이 높았던 점을 짚었다. 1950년대 이후 11월은 S&amp;P500 기준 두 번째로 수익률이 좋은 달이며, 1930년부터 2010년까지 중간선거 후 12개월간 S&amp;P500이 하락한 적이 없었고 평균 수익률이 14%에 달해 연평균보다 높았다는 통계를 제시했다.</p><p>에너지 관련주의 경우 중간선거 이후 규제 강화와 데이터센터 둔화 우려로 급락했으나(비스타 에너지 약 14% 하락 등), 일부 분석가들은 이를 과도한 매도 반응으로 보고 장기적인 전력 및 가스 수요에 대해서는 여전히 긍정적이라고 평가했다. 데이터센터 입지는 주 정부별로 규제 강도가 다르게 적용될 것이며, 민주당 주지사가 당선된 텍사스, 오하이오, 조지아 등에서는 개발 지연 또는 추가 비용이 발생할 수 있지만 전체 산업 지출이 급감하지는 않을 것으로 전망했다. 오히려 규제가 까다로운 지역에서 웨스트버지니아처럼 천연가스가 풍부하고 자체 발전이 가능한 지역으로 프로젝트가 이전될 가능성이 제기되었다.</p><p>결론적으로 중간선거로 인한 데이터센터 규제 강화와 건설 둔화는 전체 업계 지출을 크게 줄이기보다 비용 상승과 프로젝트 지연, 입지 이동을 초래할 것으로 예상되며, 이미 데이터센터를 구축해 보유한 하이퍼스케일 기업들은 공급 부족 심화로 오히려 자산 가치가 상승하는 수혜를 입을 수 있는 반면, 데이터센터 개발업체와 반도체, 전력 관련 기업들은 상대적으로 더 큰 위험에 노출되어 있다고 정리했다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=hyyqFMhDuD4" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-1">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">Orlando Kim</div>
+          <div class="title">(시황분석) 데이터센터 종목중 반도체,전력만 빠졌다</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        
+        <p>트럼프 시장 분석에서 미국 증시는 민주당의 중간선거 압승과 유가 하락에 힘입어 S&amp;P500이 1.58퍼센트, 다우지수가 3.03퍼센트, 나스닥이 1.44퍼센트 상승하며 대부분 지수가 큰 폭으로 반등했다. 다우지수는 1500포인트 급등하며 가장 두드러진 상승세를 보였다. 다만 반도체 섹터만 유일하게 하락했는데, 반도체와 반도체 장비, CPU, HBM 관련 종목들이 데이터센터 건설 지연 우려로 집중적으로 매도됐다. AMD는 실적이 좋았음에도 반도체 업종 전반의 약세에 묻혀 빛을바래지 못했다. 전력 관련 종목과 칩 관련주 역시 데이터센터 지원 축소 우려로 하락했으며, 방산주도 국방비 지출 삭감 우려로 하락했다. 반면 마이크로소프트, 알파벳, 아마존 등 이미 데이터센터를 상당 부분 구축해놓은 하이퍼스케일러 기업들은 모두 5퍼센트 이상 상승했는데, 이는 규제가 강화될수록 기존 사업자의 진입장벽이 높아져 신규 진입이 어려워지기 때문이다. 반대로 코어위브, 네비우스 같은 소규모 AI 클라우드 제공업체와 오라클은 약세를 보였다.</p><p>원자재 시장에서는 브렌트유가 8.77퍼센트 급락해 95달러로, WTI도 8.47퍼센트 급락해 88달러대로 떨어졌다. 10년물 국채금리는 4.88퍼센트로 1.57퍼센트 하락했고, 금리 하락에 따라 달러가치가 떨어지면서 금과 비트코인 등 자산이 큰 폭으로 상승했다. 반도체지수는 직전 저점을 하회했고 반등이 나오지 않아 고점과 저점이 낮아지는 하락추세가 지속되고 있어 추세 전환까지는 시간이 더 필요한 것으로 분석됐다.</p><p>민주당의 승리 배경에는 인플레이션과 유가 상승에 대한 불만, 전쟁 조기 종식 요구가 있으며, 트럼프도 뉴욕타임즈와의 인터뷰에서 협력 의지를 밝혔다. 민주당은 하원에서 약 250석을 차지할 것으로 예상되고 상원에서도 과반에 근접했다. 이번 선거 결과로 포트폴리오에서 주의가 필요한 두 영역으로 데이터센터 관련주와 방산주가 꼽혔다. 특히 텍사스주에서 데이터센터 건설 금지를 공약으로 내세운 민주당 소속 진 위사도 주지사 당선자가 승리하면서, 현재 계획된 41기가와트 규모의 데이터센터 용량에 대한 불확실성이 커졌다. 다만 JP모건은 텍사스 외에도 데이터센터를 건설할 수 있는 다른 주가 많고, 규제 변화가 데이터센터 활동 중단보다는 신규 규제 도입 수준에 그칠 가능성이 높다며 우려가 과장됐다고 평가했다. 이미 자금이 지원되었거나 계약이 체결된 프로젝트가 무산되는 것은 아니라는 분석이 지배적이며, 수요일의 하락은 가치평가 재조정 수준이라는 시각이 많다. 다만 건설 허가 절차 강화, 전력 및 용수 사용 제한, 세제 혜택 축소 등으로 건설비용이 상승하고 구축 속도가 늦어질 가능성은 존재하며, 반도체 주식 대부분이 중단 없는 성장을 전제로 평가되어 있어 성장 둔화 시 밸류에이션에 타격이 클 수 있다는 지적이 나온다.</p><p>방산주의 경우 로키드마틴, 제너럴다이내믹스, 레이시온, RTX, 노스롭그루먼 등이 3퍼센트 이상 하락했는데, 이는 민주당이 국방비 지출에 대한 검토를 강화할 것이라는 우려 때문이다. 로키드마틴 매출의 약 70퍼센트, 제너럴다이내믹스 매출 대부분이 미국 정부에서 나온다. 그러나 2006년 중간선거에서 민주당이 의회를 장악했을 때도 방산주는 초기 하락 후 군사예산 증가와 함께 회복한 전례가 있으며, 이란과 러시아우크라이나 분쟁이 지속되는 상황에서 민주당이 다수당이 된다고 반드시 국방비가 줄어드는 것은 아니라는 분석이 나왔다. 오히려 2027회계연도 예산안이 공화당 임기 말 회기 중 서둘러 통과될 가능성이 높아 긍정적 요인으로 평가됐다.</p><p>트럼프는 민주당이 의회를 장악했음에도 관세, 이란 전쟁 등 외교안보 사안에서는 단독으로 행동할 수 있는 권한을 유지하고 있으며, 민주당의 생활비 지원 법안에 거부권을 행사할 수 있다. 다만 2년 내내 모든 법안에 거부권을 행사하지는 않을 것이라는 입장이며, 메디케이드 환급금이나 오바마케어 가입자 지원금 등 협상 없이도 추진 가능한 재정지원책도 존재한다. 이란과의 긴장은 11월 중순경 고조될 가능성이 있으며 에너지 시장에 영향을 줄 수 있다. 부채한도 문제는 2027년, 세제 조항 만료는 2028년 말로 예정되어 있어 향후 재정정책 변화는 초당적 합의가 필요한 상황이다.</p><p>재무부는 약 2조 달러 규모의 재정적자를 메우기 위한 국채 발행 계획 변경을 검토 중이며, 10년물 국채금리가 5퍼센트 수준까지 하락한 가운데 장기 국채 매입 규모 축소 가능성도 거론되고 있다. 다음 주 1250억 달러 규모의 국채를 발행해 만기 도래하는 970억 달러를 상환하고 280억 달러의 신규 자금을 조달할 예정이며, 9월 종료된 회계연도 재정적자는 1조 9900억 달러로 GDP 대비 6.2퍼센트에 달해 목표치인 3퍼센트를 크게 초과한 상태다. 전반적으로 AI 산업에 대한 투자는 여전히 자본 조달에 목말라 있는 상태이며, 데이터센터 구축 둔화가 거품을 급격히 터뜨리기보다는 서서히 공기를 빼는 효과로 작용해 중장기적으로 AI 산업의 지속가능성에 도움이 될 수 있다는 시각도 제시됐다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=DI2gAfFvT2Q" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-2">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">Schuka World (슈카월드)</div>
+          <div class="title">수능 주식 문제 1타 강사</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        
+        <p>수능 모의고사 문제집에 실제 ETF 관련 문제가 출제될 정도로 주식 시장이 뜨거운 상황을 소개하며, 그 문제를 가져와 풀이하는 내용이다. 문제에 등장하는 그래프에서 실선은 ETF의 실제 시장가격이고, 점선은 ETF의 실시간 추정 순자산가치, 즉 이론가격을 의미한다. ETF는 여러 종목, 예를 들어 열 개의 주식을 담은 바스켓 상품이기 때문에 이론적으로는 그 구성 종목들의 가격을 그대로 반영해야 한다. 그런데 사람들이 ETF 자체를 사고팔다 보니 실제 시장가격과 이론가격 사이에 순간적으로 괴리가 생기는 경우가 있고, 이때 차익거래 기회가 발생한다. 이론가격이 더 높고 실제 가격이 더 낮으면 낮은 쪽을 사고 높은 쪽을 팔아 두 가격이 같아지도록 만드는 식이며, 실제로 시장 참여자들이 이런 거래를 많이 한다는 점이 문제 풀이의 핵심 개념이다. 이어서 문제의 선택지들을 하나씩 검토한다. 일반 펀드가 실시간 거래가 가능한 ETF보다 유동성이 높다는 선택지는 틀렸는데, 실제로는 ETF보다 일반 펀드의 유동성이 더 낮기 때문에 적절하지 않은 설명이다. 또한 상관계수가 1에 가까워질수록 ETF 수익률이 기초지수의 움직임과 다르게 나타난다는 선택지도 틀렸는데, 상관계수가 1에 가깝다는 것은 두 움직임이 거의 동일하게 함께 움직인다는 뜻이므로 다르게 나타난다는 설명은 모순이다. 정답으로 제시된 선택지는 유동성 공급자, 즉 LP가 ETF의 설정과 환매 과정에 참여하여 ETF의 시장가격이 내재가치에 가깝게 유지되도록 돕는다는 내용이다. 이는 앞서 설명한 이론가격과 실제 가격의 차이를 LP들이 이용해 매수와 매도를 통해 두 가격을 수렴시키는 과정과 정확히 일치하는 설명이다. 이론가격이 높으면 현재 가격에 거래되는 ETF를 사고 바스켓을 팔며, 반대로 바스켓 가치가 오르면 바스켓을 팔고 ETF를 사는 방식으로 LP가 시장가격을 내재가치에 가깝게 유지시켜 준다는 것이다. 또한 ETF 한 주를 사는 것이 지수를 구성하는 개별 기업 한 주를 보유하는 것과 비슷한 경제적 효과를 가진다는 선택지도 등장하는데, ETF는 여러 종목을 담은 바스켓 상품이므로 개별 주식 한 주와 동일할 수 없다는 점에서 적절하지 않다. 마지막으로 ETF의 시장가격이 투자자들의 매수 매도 수요와 무관하게 ETF가 보유한 총자산 가치 변화만으로 계산된다는 선택지도 틀렸다고 설명하는데, 만약 그것이 사실이라면 애초에 이론가격과 실제 가격 사이에 괴리가 발생할 수 없기 때문이다. ETF 가격이 바스켓 구성 종목들의 가격으로만 결정된다면 두 가격은 항상 똑같이 움직여야 하지만, 실제로는 ETF 자체도 거래를 통해 가격이 형성되기 때문에 괴리가 생기고 이것이 차익거래를 통해 교정된다는 점이 핵심이다. 전체적으로 ETF의 작동 원리와 유동성 공급자의 역할, 차익거래 메커니즘을 이해하면 쉽게 풀 수 있는 문제라는 점을 강조하며, 주식에 대한 이해가 수능 문제 풀이에도 도움이 될 수 있다는 점을 유쾌하게 전달하는 영상이다.</p>
+        <a class="watch" href="https://www.youtube.com/shorts/QvMjNxpMmPo" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-3">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">부읽남</div>
+          <div class="title">&quot;진짜 전쟁나는 거 아냐?&quot; 소름 돋는 북한 상황 [유광종 소장 풀버전]</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        
+        <p>이번 영상은 부동산읽어주는남자 채널이 유광종 소장(중앙일보 및 조선일보에서 23년간 중국 전문기자로 활동, 타이베이와 베이징 특파원 역임, 베이징에서 약 12년 거주)을 초대해 중국의 정치 체제, 역사관, 경제 상황, 한중관계, 북중관계, 한반도 전쟁 가능성 등을 폭넓게 다룬 대담이다.</p><p>유 소장은 2002년부터 베이징 특파원으로 근무하던 시절에는 중국이 WTO 가입 이후 개혁개방으로 급성장하면서 남방주말 같은 언론이 권력 부패를 비판적으로 보도하는 등 사회적으로도 성숙해지는 분위기였다고 회고한다. 그러나 2012년 시진핑 총서기 집권 이후 분위기가 완전히 달라져, 비판적 언론은 사라지고 중국인들은 스스로를 형님, 종주국, 천조국이라 칭하는 등 중화사상과 배타적 민족주의가 강해졌다고 설명한다. 공산당은 개혁개방으로 공산주의 이념이 약화되자 그 공백을 메우기 위해 혁명 성지를 민족주의 거점으로 활용하며 국가주의를 강화했고, 시진핑의 중국몽 제시 이후 이러한 흐름이 더욱 굳어졌다고 본다.</p><p>그는 신간 중국별곡을 소개하며, 중국 역사를 통치자 관점이 아니라 다수 백성의 삶과 행복이라는 관점에서 봐야 한다고 강조한다. 민(民)이라는 한자가 포로의 눈을 찌르는 모습에서 유래했다는 설명을 들며, 백성이 강해지면 나라가 약해진다는 민강국약 사상이 2천 년 넘게 이어져 왔고, 대약진운동(1959년 시작) 당시 관료들의 허위 보고로 6억 인구 중 약 4천만 명이 아사했음에도 공산당은 이를 공식 인정하지 않는다고 지적한다. 현재도 황금방패(만리방화벽)와 톈왕(스카이넷) 프로젝트를 통한 안면인식 등 첨단 IT 감시 체제로 국민의 언행을 철저히 통제하며, 파룬궁 탄압 사례처럼 민간 조직화 자체를 극도로 경계한다고 말한다.</p><p>경제 측면에서는 중국 부동산 시장이 여전히 침체 상태이며, 시진핑이 2020년경 부동산은 투기 대상이 아니라는 발언 이후 산도홍선 같은 대출 규제를 시행해 헝다 등 대기업이 부실화됐다고 설명한다. 1990년대 주룽지 총리의 세제 개혁으로 중앙정부가 부가가치세의 75%를 가져가면서 지방정부 재정이 취약해졌고, 지방정부는 의료보험·연금·교육 등 민생 부담은 떠안은 채 토지 사용권 매각에 의존하다 보니 부동산 개발업자와의 유착, 미분양 아파트와 유령도시 문제가 발생했다고 본다. 코로나19 당시 우한·상하이 전면 봉쇄 사례를 들어 시진핑 집권 이후 의사결정 구조가 지나치게 경직되었다고 평가한다. 지방공무원 급여 체불(상하이 경찰 급여 40% 삭감 사례 등)도 심각하며, 부동산이 중국인 자산의 약 70%를 차지하는 만큼 소비 위축과 디플레이션 우려가 크고, 청년실업률도 한때 44%까지 보도됐다가 통계에서 대학생을 제외해 10%대로 낮춘 사례를 언급한다.</p><p>중국은 신품질생산력이라 불리는 전기차, 태양광, 배터리, 로봇, 반도체 등 첨단산업에 선택과 집중으로 막대한 보조금을 투입하고 있으며, 이공계 인재를 국가적으로 우대하고 체계적으로 육성하는 반면, 지속적 혁신을 끌어낼 자율적 구조는 부족하다고 평가한다. 최근 로봇·AI 관련 중국 주식이 단기간 45% 폭락한 사례도 언급된다. 미중 패권 경쟁 속에서 중국은 반도체 자립을 추진하지만 삼성·하이닉스를 당장 따라잡기는 어렵다고 보며, 다만 격차는 좁혀지고 있어 경계를 늦춰서는 안 된다고 말한다. 미국과 유럽이 중국산 저가 전기차·철강 등에 관세 장벽을 높이면서 그 덤핑 물량이 상대적으로 장벽이 낮은 한국으로 몰려 국내 제조업에 타격을 주고 있다고 우려한다.</p><p>한중관계에 대해서는, 중국이 한국을 바라볼 때 실제로는 그 뒤에 있는 미국과 한미동맹을 의식하는 것이며, 역사적으로 조공관계도 중국이 진정으로 우월해서가 아니라 국제 세력균형 속 외교적 의례였을 뿐이라고 설명한다. 중국은 단일 민족·통일국가라는 수사와 달리 실제로는 매우 이질적이고 다양한 문명의 집합체이며, 통일보다 분열의 시기가 더 길었다고 지적한다. 스파이(間)라는 한자가 문틈의 달빛에서 유래했다는 일화와 3500년 전부터 존재한 바둑을 예로 들며, 중국 문명은 책략과 승부 중심의 사고가 강해 반도체 등에 백도어를 심거나 전기차로 정보를 수집하는 등 어떤 수단이든 동원할 수 있다고 경고한다.</p><p>북중관계와 관련해서는, 북한이 러시아에 파병하며 한때 북중 관계가 소원해지는 듯했으나 최근 김정은의 항미원조기념관 방문과 왕후닝의 방북 등으로 다시 가까워지고 있다고 본다. 북한 경제의 70% 이상이 원유 등 중국 지원에 의존하면서도 전통적으로 반중 정서가 있으며, 중국에게 북한은 미군의 북상을 막는 완충지대이자 전략 카드로서 필요한 존재라고 설명한다. 중국은 한반도에서 전쟁이 나면 난민 유입과 동북 3성의 불안정, 미군과의 직접 충돌 가능성 때문에 북한의 도발을 억제하려 하지만, 북한이 독자적으로 핵버튼을 누르는 것까지 막을 수는 없다고 본다.</p><p>최근 김포 건너편 북한의 지뢰 매설과 자주포 배치 등으로 전쟁 우려가 온라인에서 확산되는 것에 대해, 유 소장은 한미동맹의 억지력과 탐지·타격 능력이 세계적 수준이어서 북한이 도발하면 궤멸될 것이라며 전면전 가능성은 낮다고 평가한다. 다만 안보에 틈을 보이면 상황이 달라질 수 있다며, 전시작전권 전환 등을 민족주의적 감정만으로 섣불리 요구해서는 안 되고 한미동맹을 굳건히 유지해야 한다고 강조한다. 대만해협 문제에 대해서도, 시진핑이 2019년 처음으로 무력통일 가능성을 언급했고 2027년이 상륙작전 능력 완성 시점으로 거론되지만, 중국이 그동안 이룬 경제적 성과와 국제적 지위를 모두 걸어야 하는 도박이라 실제 전면 침공 가능성은 낮다고 본다. 다만 일통이라는 중국의 전통적 통일 이념상 대만 독립 허용 시 위구르·티베트 등 다른 지역의 연쇄 분리 움직임을 우려해 무력 사용 가능성을 완전히 배제하지는 않는다고 말한다. 전반적으로 그는 한국이 미국과의 동맹 및 자유·인권·법치 등 가치 공유를 기반으로 쌓아온 지위를 과소평가해서는 안 되며, 최근 한미관계 균열 조짐에 대해 우려를 표하면서 투자자들이 전쟁 위험을 과도하게 두려워할 필요는 없지만 안보의 틈을 보이지 않는 것이 중요하다고 결론짓는다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=svjOCbkvi84" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-4">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">부읽남</div>
+          <div class="title">갈아타기 지금 해도 될까요? 상급지 고민되면 이렇게 판단하세요 [바이집 상담소]</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        
+        <p>감사와 사연 소개 이후 세 번째 상담 사연이 이어진다. 상담을 요청한 사람은 40대 초반 직장인 남성으로 내년 상반기 결혼을 앞두고 있으며, 예비 신부는 30대 중반의 공무원이다. 결혼 준비보다 주택 문제로 더 고민이 많은 상황이다. 남성은 노원구 학계역 인근의 구축 아파트를 2021년 패닉바잉 시기에 6억 8천만원에 매수해 5년째 거주 중이며, 대출 잔액은 2억 2천만원이다. 최근 실거래가는 7억 7천만원까지 회복되었다. 2022~2023년 하락기에는 힘들었지만 올해 겨우 원금을 회복했고, 노원 지역은 하락할 때는 크게 떨어지고 오를 때는 더디게 오른다는 것을 체감했다고 한다. 그런데 최근 이 아파트 단지에 재건축 인센티브가 적용되어 기존 1800세대에서 최대 49층 2700세대 규모의 대단지로 재탄생하는 계획이 추진 중이며, 동북선도 2027년 12월 개통 예정이어서 호재가 겹치고 있다. 내년 상반기 조합설립인가가 임박했는데, 이 지역이 규제지역이라 조합설립 이후에는 조합원 지위 양도가 제한된다. 1주택자 예외 요건은 10년 보유 5년 거주인데, 거주 요건은 이미 채웠으므로 매도하려면 앞으로 5년을 더 보유해야 하는 상황이다. 이에 따라 재건축 완성까지 기다리며 시간과 기회비용, 추가 분담금을 감수할지, 아니면 조합설립 전에 서둘러 매도할지 기로에 놓여 있다. 지금 매도하면 대출을 상환하고 5억 5천만원에서 6억원 정도가 남는다. 예비 신부는 별내역 인근 오피스텔을 보유하고 있는데 시세 5억 5천만원에 대출 3억 4천만원이 있어 실제 묶인 돈은 약 2억원이다. 신혼집으로 오피스텔에 입주하는 것을 고려하면서, 매도 타이밍을 맞춰 아파트와 오피스텔을 모두 처분하고 주식 등을 합쳐 10억원을 만들어 향후 계획을 세우려는 생각도 있다. 다만 너무 오래 보유하다가 매도 타이밍을 놓칠까 봐 걱정하고 있다.</p><p>이에 대해 상담 전문가들은 먼저 해당 아파트가 학계 상미아파트로 추정되며 주변 지역과 통합 재개발이 진행되는 괜찮은 단지라고 평가한다. 서울시가 학계동, 상계동 지역의 추가 분담금 부담이 커서 재건축이 어려운 점을 고려해 인센티브를 제공하는 것으로 보이며, 이런 정책 기조가 유지된다면 전망이 밝고 하락기가 아닌 상승 초입 국면이라는 점에서 긍정적으로 평가한다. 예비 신부 명의의 오피스텔은 주택이 아니므로 대출에는 문제가 없다고 설명한다. 다만 이 커플이 향후 16억에서 17억원대 상급지로 갈아타려는 계획을 갖고 있는데, 현재 대출 정책상 16억원 주택에 대해서는 최대 4억원까지만 대출이 가능하므로 자기자본을 늘리거나 대안을 고민해야 한다고 조언한다.</p><p>조합설립 후 매도가 제한되는 문제에 대해, 자산을 모두 정리해 15억원 이하 아파트로 갈아타는 방안도 검토했으나 현재 시장에서 15억원대에 저평가된 좋은 매물을 찾기 어렵다는 현실적 판단이 나온다. 이미 많이 오른 15억원대 시장에서 현재 보유한 아파트보다 투자 가치가 높은 물건을 찾을 가능성은 낮다고 보고, 그렇다면 현재 아파트를 계속 보유하는 것이 낫다는 결론에 무게를 둔다. 두 자산을 합쳐도 대출 한도를 고려하면 15억원 이하 매물만 가능한 상황에서, 섣불리 매도해 적합한 대체 주택을 찾지 못하면 오히려 손해라는 점도 지적된다.</p><p>오피스텔과 관련해서는 5년 거주 10년 보유 요건에는 포함되지 않지만 양도소득세 계산 시에는 주택으로 간주되므로, 아내가 실제 2년 거주할 경우 10년 보유 특례와 혼인 특례를 적용받아 비과세가 가능하다고 설명한다. 따라서 오피스텔을 보유한 채 혼인신고를 해도 추후 아파트 매도 시 5년, 10년 요건에는 문제가 없다고 안내한다. 다만 오피스텔은 매도가 잘 되지 않는 특성이 있으므로, 둘 다 매도를 원한다면 오피스텔을 먼저 매도해 자금을 확보한 뒤, 그 자금과 기존 자금을 합쳐 현재 아파트보다 나은 물건을 찾을 자신이 있을 때 갈아타기를 시도하는 것이 합리적이라고 조언한다. 투자 가치가 특별히 높지 않다면 오피스텔은 정리하고 금융자산으로 운용하는 것도 방법이라고 덧붙인다.</p><p>재건축과 관련한 추가 설명으로, 조합원 입주권에 대해서는 대체주택 비과세 특례가 있어 조합원이 이주 중 대체주택을 취득해도 비과세가 가능하지만, 이주비 대출에는 건설사가 지원하는 경우도 있어 대출을 활용해 주택을 매입하면 문제가 될 수 있으므로, 대출 없이 대체주택을 매입해 비과세 혜택을 받는 전략도 고려할 필요가 있다고 설명한다. 이주비 대출이나 중도금 대출에는 추가 주택 매수를 금지하는 특약이 붙는 경우가 많은데, 이는 법적 의무가 아니라 은행들이 내부 규정으로 엄격하게 적용하는 경우가 많으며, 규제가 완화되는 경우는 시장이 크게 침체되는 등 특별한 계기가 있을 때뿐이고 정부도 섣불리 규제를 풀었다가 집값이 급등하면 책임을 지게 되므로 쉽게 완화하지 않는다는 점을 짚는다. 또한 1주택자 요건으로 인해 입주권이 있는 상태에서는 신규 주택 대출이 기존 주택 처분 조건부로만 가능하며, 2주택 상태에서는 대출이 어렵다는 점도 설명한다. 추가 분담금의 경우 보통 5억원 수준으로 거론되는데 이를 위한 별도 대출 상품은 없으므로 현금으로 마련해야 하는 부담이 있다는 점도 언급된다.</p><p>조합설립 이후 사업시행인가 이후 3년 내 착공하지 않으면 다시 매도 기회가 생기는 경우도 있지만 이를 전제로 계획을 세우기는 어렵다고 본다. 따라서 이미 5년 거주 요건을 채운 이 사람은 5년을 더 보유해 매도하는 것이 가장 현실적인 방안이며, 전세를 주는 것도 가능하다고 안내한다. 혼인신고를 하지 않은 상태에서는 아내 명의로 별도 주택을 매입하는 것도 가능하므로, 오피스텔은 정리하고 아내 명의로 거주할 아파트를 매입하는 전략을 추천한다. 이는 법률혼 신고 전이기 때문에 가능한 방법이며, 남편의 주택은 장기적 관점에서 유지하고 아내 명의로 추가 매입해 양쪽에서 수익을 노리는 전략이 나쁘지 않다고 평가한다. 아내가 공무원으로 소득이 있으므로 생애최초 특례대출을 활용하면 아내 명의 주택 매입이 가능할 것으로 보이며, 오피스텔은 주택이 아닌 상업용 부동산으로 분류되므로 생애최초 자격에도 영향이 없다고 설명한다. 혼인신고 전에 전략적으로 아내 명의 주택을 매입하고 이후 혼인신고를 하는 방식이 불법은 아니며 세제상 유리한 경우가 많다고 언급한다.</p><p>전문가들은 이어 동북권 재건축 단지 전반에 대한 의견도 나눈다. 최근 동북권 곳곳에서 재건축이 추진되며 추격 매수 심리가 커지고 있지만, 추가 분담금과 조합 내부 갈등 등의 변수가 있어 장기적 관점으로 접근해야 한다고 강조한다. 고령 거주자들에게는 2억원을 넘는 추가 분담금이 큰 부담이 되는데, 실제로는 자녀들이 분담금을 대신 부담하고 새 집에 입주하는 경우가 많다고 설명한다. 조감도가 공개되면 소유주들의 매도 의지가 약해지는 경향이 있다는 점, 조감도는 실제보다 건물을 크게 보이도록 그려지는 경향이 있다는 점도 언급된다. 반대로 이미 가격이 많이 오른 재건축 단지에 지금 진입하는 것은 부담이 크므로 신중해야 한다고 조언한다. 최근 강남구 등 고가 재건축 단지들은 보유세 이슈로 가격이 조정되며 거래량이 늘고 있는데, 이는 종합부동산세 부담에 대한 우려 때문이며, 전문가들은 이런 시기를 오히려 기회로 볼 수 있다고 평가한다. 다만 이런 주택은 대출이 2억원까지만 가능해 기존 주택을 처분해 자금을 마련하는 경우가 많고, 최근에는 기업들이 직원의 주택 구입을 지원하는 사례도 늘고 있어 일단 매입부터 하고 자금 계획을 세우는 사람들도 많다고 전한다. 세금이나 규제가 강화되는 시기는 위기이자 기회가 될 수 있으므로 각자 신중하게 판단할 것을 당부하며 상담을 마무리한다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=MYUx95locRg" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-5">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">부읽남</div>
+          <div class="title">상위 1%는 벌써 눈치챘어요, 앞으로 ‘이 시장’ 미친 듯이 뜬다 [김용섭 소장 4부]</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        
+        <p>부읽남 채널의 상위 1% 부자들의 소비와 주거 트렌드를 다룬 김용섭 소장 인터뷰 요약이다.</p><p>과거 부자들은 자동차나 명품 가방으로 부를 과시했지만 이제 그런 시장은 크게 위축되었다. 대신 건강하게 오래 사는 것, 즉 수명과 시간을 사는 데 돈을 쓰는 쪽으로 욕망이 이동하고 있다. 부자들의 욕망은 항상 희소한 쪽으로 먼저 움직이며, 상류층이 먼저 시도한 것이 시간이 지나 대중화되는 패턴을 보인다. 퍼스널 트레이닝도 처음에는 부자들만 전담 코치를 고용해 운동하던 것이었으나 이제는 대중화되었다는 것이 그 예시다.</p><p>부동산에 대한 관심도 지금까지는 대부분 거주 편의성보다 집값 상승 가능성 때문이었다. 돈 없는 사람들이 몰리는 시장에서 돈 많은 사람들이 찾는 시장으로 흐름이 옮겨가면, 그다음은 얼마나 쾌적하고 풍요롭게 사느냐의 시장이 된다. 재건축을 앞둔 낡고 불편한 아파트에 들어가 참고 사는 것은 과거 수십 년간의 투자 방식이었지 미래의 시장은 아니다. 앞으로는 재건축 여부와 상관없이 낡은 집을 빠르게 리모델링해서 거주 쾌적성을 높이는 시장이 커질 것이다.</p><p>인테리어 시장도 변화하고 있다. 과거에는 새 아파트는 리모델링할 필요가 없다고 여겼지만, 요즘 20대부터 40대 소비자들은 새 집이라도 자신에게 맞게 맞춤 인테리어를 하는 데 수천만 원을 쓰는 것을 기본으로 여긴다. 이런 인식이 자리 잡으면 노후 주택을 얼마나 손봐야 하는지에 대한 시장도 함께 커진다. 서울의 아파트들은 갈수록 노후화되고 있어 이 시장은 더욱 중요해진다.</p><p>이와 함께 주거가 건강수명에 미치는 영향에 대한 관심이 커지고 있다. 지금까지 건강수명은 운동, 약, 음식으로만 관리한다고 생각했지만, 정작 가장 오래 머무는 공간인 집은 건강을 고려해 설계되지 않았다. 공동주거의 가장 큰 문제는 자재와 공기질이며, 이에 민감한 사람들이 늘면서 개별 리모델링 시장이 성장할 것이다. 이미 고급 단독주택과 고급 빌라 시장에서 이런 시도가 시작되고 있고, 욕망은 위에서 아래로 흐르므로 점차 확산될 것이다. 과거에는 차와 가방으로 과시했다면 이제는 집을 꾸미는 것으로 과시하며, 그 초점은 미관에서 건강과 수명 연장으로 옮겨가고 자재, 조명, 공기, 목재와 천연 소재 사용 여부로 이어진다.</p><p>조경이 잘 된 대단지 아파트에 대한 선호도 커지고 있다. 그러나 진짜 부자들은 인공적으로 조성된 조경이 아니라 산을 등지고 물을 바라보는 실제 자연 속에서 산다. 이런 입지는 공기도 좋고 대중교통에 의존하지 않아도 되며 외부인 접근을 막아 격리 효과도 준다. 대단지 아파트는 이런 입지를 복제할 수 없기 때문에, 평지에서 주차를 지하화하고 지상을 공원화해 조경을 극대화하는 것이 과제가 되고 있다. 다만 최상위권 수준의 조경이 아니라면 그 효과는 제한적이며, 결국 진짜 자연에 대한 선호가 더 강해질 것이다. 공원이나 산 인근, 혹은 외곽의 대단지에서 새로운 기회가 생길 수 있다. 한편 조경이나 공원이 없는 노후 대단지는 재건축이 어려워지는 미래가 온다. 용적률을 늘려 일반분양으로 추가분담금을 줄이는 방식이 막히면 가구당 수억 원의 현금을 내야 하므로 재건축이 쉽지 않다. 결국 낙후된 대단지는 철거되지 못하고 그대로 남아 슬럼화될 수 있으며, 사람들은 그 주변 지역을 피해 거주지를 선택하게 되어 서울의 공간 구조 자체가 재해석될 필요가 있다.</p><p>신간 트렌드 플러스 2027에서도 상위 1%의 주거 환경 변화가 핵심 키워드다. 부자들의 욕망은 항상 희소한 것을 향한다. 과거 아파트가 처음 나왔을 때는 부자들의 전유물이었지만 지금은 보편화되었고, 이제 서울에서 마당 있는 집은 초부유층만 가질 수 있는 희소한 것이 되었다. 부자들이 가장 원하는 것은 시간과 수명이다. 돈을 벌어도 오래 살지 못하면 의미가 없기 때문에, 돈으로 시간을 사고 타인에게 일을 위임해 내 시간을 확보하며 동시에 수명을 연장하는 것이 최대 관심사가 된다. 이 두 가지가 만나는 지점이 바로 운동이다. 그래서 운동 관련 시장, 특히 부동산과 결합된 피트니스 산업이 커질 것으로 본다. 관련 키워드로는 롱제비티 레지던스, 웰니스 레지던스가 있다.</p><p>미국의 피트니스 기업 라이프타임이 라이프타임 리빙이라는 이름으로 부동산 사업을 벌이는 사례가 소개되었다. 이 회사는 현재 미국에 4개 단지를 운영 중이고 2개를 추가로 짓고 있으며 전국 확장을 목표로 한다. 과거 공동주거에서 피트니스는 부속 시설로 취급되었지만 이제는 주인공이 되어 건물 설계 자체를 주도한다. 엘리베이터보다 계단이 먼저 보이도록 동선을 설계해 일상에서 자연스럽게 운동하게 만들고, 입주자 전원에게 개인별 맞춤 트레이닝을 제공한다. 개인의 기상 시간, 컨디션, 식단, 운동량을 종합적으로 파악해 정형외과 등 각 분야 전문가가 참여한 맞춤 프로그램을 설계한다. 최근 미국에서는 단순히 열심히 운동하는 것이 아니라 균형감각 훈련이나 기억력 향상 운동처럼 과학적으로 입증된 수명 연장 전용 운동, 즉 롱제비티 피트니스가 트렌드다. 이런 흐름은 한국 피트니스 시장에도 반영될 것이며, 특히 30대에서 50대 소비자층에 크게 소구할 것으로 예상된다.</p><p>이러한 피트니스 중심 주거는 분양보다 월세 임대 형태로 발전할 가능성이 크다. 분양 후에는 지속적인 관리가 어렵지만 임대는 매달 관리비를 받으며 서비스를 지속 제공할 수 있기 때문이다. 한국에서도 전세와 매매 중심에서 월세의 중요성이 커지고 있으며, 건강과 운동 중심 주거는 소유보다 매일 관리받는 것이 중요하므로 임대와 잘 맞는다. 실버타운도 대부분 월세 기반으로 운영되는 것과 같은 맥락이다. 지금까지 건강과 장수는 부유한 노년층의 전유물로 여겨졌지만 실제로는 젊은 세대가 운동에 더 민감하며, 30대에서 50대를 겨냥한 임대 시장이 성장하고 병원 중심이 아닌 일상적 활력 관리 중심의 시장이 커질 것으로 전망된다.</p><p>마지막으로 투자 관점에서, 상위 1%의 소비와 주거 변화는 소셜미디어 등을 통해 상위 10%, 20%, 30%로 점차 확산되는 흐름을 보인다. 이는 부자들만의 이야기가 아니라 결국 대중에게도 해당되는 흐름이며, 그 흐름 속에서 돈을 버는 기업이나 시장에 투자 기회가 있다. 투자 대상을 테크 기업이나 아파트에만 한정하지 말고 다변화할 필요가 있으며, 시간 절약과 경험, 개인 취향에 대한 소비 증가는 이미 거스를 수 없는 흐름이다. 낯선 신규 시장일수록 기회가 크고 리스크도 크지만, 모두가 알게 된 시점에는 이미 초기 기회를 놓친 것이다. 부동산 시장을 보다가 낯선 분양 공고나 사업 공고를 접하면 오늘 논의한 트렌드와 연결지어 단서를 찾아보는 것이 투자 아이디어로 이어질 수 있다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=kxCl-i0LZgc" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-6">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">부읽남</div>
+          <div class="title">&quot;진짜 집값 떨어뜨리겠다&quot; 10만호 공급대책 또 발표</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        
+        <p>이재명 대통령이 10월부터 X와 기자회견 등을 통해 집값 문제를 여러 차례 언급했고, 관계 부처 수장들도 일제히 집값 하락 가능성을 거론하며 조만간 안정될 것이라는 전망과 함께 급락 시 정부가 대거 매입하겠다는 입장을 밝히고 있다. 부동산 불패 신화를 깨야 한다는 발언까지 나오는 등 정부가 집값 하락을 준비하는 듯한 모습을 보이고 있으며, 2028년부터 공급절벽이 해소되면서 공급 과잉에 따른 하락을 걱정해야 한다는 논리를 펴고 있다.</p><p>그러나 실제 데이터를 보면 집값 하락이 뚜렷한 곳은 강남3구뿐이다. 재건축 단지를 중심으로 10에서 20퍼센트 이상 급등했다가 일부 단지는 비슷한 수준으로 하락했지만, 성북구, 강북구, 경기도, 인천 등 서울과 수도권 대부분 지역은 90주 가까이 상승세를 이어가며 보합이거나 오히려 오르고 있다. 최근 1년, 2년, 3년 누적 상승률을 봐도 서울은 각각 약 10퍼센트, 19퍼센트, 24퍼센트에 달하고 강남구, 서초구, 송파구도 수십 퍼센트씩 올랐다. 따라서 전반적인 급락 가능성을 뒷받침할 근거는 부족하다는 것이다.</p><p>정부가 믿고 있는 것은 결국 공급이다. 이번에 수도권에 10만호를 추가 공급하겠다고 발표했는데, 이 중 약 7만7천호는 고촌, 하남, 구리, 의정부 등 서울 경계에서 5킬로미터 이내 지역에 집중되어 있고, 작년 8.13대책에서 나온 2만7천호도 포함된 수치다. 특히 김포 고촌의 경우 기존 김포한강신도시 내 유휴부지에 콤팩트시티 개발이 예정되어 있었는데, 여기에 다시 3만7천호를 추가로 짓겠다고 밝혀 주민들 입장에서는 날벼락 같은 소식이다. 입지 자체는 김포공항과 인접해 서울 강서구와 거의 붙어 있어 나쁘지 않지만, 문제는 교통 등 기반시설이다.</p><p>김포골드레일은 설계 당시 2량짜리 소형 경전철로 만들어져 출퇴근 시간대 혼잡도가 290퍼센트에 달해 승객이 바닥에서 발이 뜰 정도로 극심한 혼잡을 겪고 있다. 5호선 연장이나 GTX 연장 등 대안이 논의되고는 있지만 인천과 김포 간 이견으로 확정된 것이 없고, 설사 확정되더라도 실현까지는 오랜 시간이 걸린다. 즉 교통 인프라 없이 주택만 먼저 짓겠다는 발상은 실효성이 떨어진다.</p><p>정부는 인허가만 해주면 공급이 이루어진다는 식으로 말하지만, 인허가는 착공까지 가기 전 초기 단계에 불과하며 실제 입주까지는 통상 8년에서 10년이 걸린다. 이번 발표도 착공 시점조차 명확히 밝히지 못했고, 2030년 착공을 가정해도 첫 입주는 2033년, 전체 물량의 상당 부분이 공급되려면 2040년 가까이 걸릴 수 있다. 2018년 발표된 3기 신도시도 애초 2025년 입주를 목표로 했으나 아직 상당수가 착공조차 못했고 토지보상도 진행 중이어서, 실제로는 2032년에서 2034년경에야 전체의 3분의 1 정도가 공급될 것으로 추정된다. 이렇게 먼 미래의 공급 계획만으로 당장 집값 급락을 기대하는 것은 논리적으로 맞지 않는다는 지적이다.</p><p>더 큰 문제는 제5차 국가철도망 구축계획이 2026년부터 2030년까지인데 아직 발표조차 되지 않았고, 서부권 광역급행철도 연장이나 GTX-A 개통 등 기존에 추진 중이던 사업들도 지연되고 있다는 점이다. 이런 기존 사업들을 빠르게 추진해 파주, 일산, 평택 등지의 서울 접근성을 높이는 것이 당장의 전월세 부족 문제를 완화하는 데 훨씬 효과적일 수 있는데, 정부는 중장기 공급 계획 발표에만 집중하고 있다.</p><p>더 나아가 현재 정부 정책은 매매가 통제보다 전월세 안정이 훨씬 중요함에도 반대 방향으로 가고 있다는 비판이 제기된다. 집값 상승은 상대적 박탈감 정도의 문제지만, 전월세 상승은 이사와 자녀 전학 등 실생활에 직접적인 타격을 준다. 선진국들은 매매가보다 임대차 시장 안정에 주력하며 공급을 늘리는 방식으로 임대료를 안정시키고 이를 통해 매매가도 안정시키는 선순환을 추구하는데, 한국 정부는 1주택만 보유하도록 강제하고 다주택자에게 매각을 압박하며 임대사업자 등록을 말소하는 등 전월세 공급을 줄이는 정책을 펴고 있다. 민간이 전월세의 90퍼센트를 공급하는 상황에서 다주택자를 배제하면 결국 전월세 공급이 줄어들 수밖에 없다.</p><p>최근에는 빌라 연면적 기준을 660제곱미터에서 1000제곱미터로 늘려 가구수를 확대하겠다는 대책도 나왔지만, 다주택자가 매입을 꺼리는 상황에서 누가 이 빌라들을 매입해 임대로 내놓을지 불분명하며, 정부가 전량 매입하겠다는 발언도 재원 확보 측면에서 실현 가능성이 의문시된다. 재건축, 재개발 활성화로 수십만 명의 이주 수요가 발생할 것으로 예상되는데 이에 대한 대책도 뚜렷하지 않다. 결론적으로 현 정부 임기 동안 전월세 대란이 발생할 가능성이 높으며, 정치적 입장을 떠나 국민들이 이 문제에 대해 명확한 목소리를 낼 필요가 있다는 주장으로 영상이 마무리된다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=_ehSpp4-vcA" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-7">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">Andrei Jikh</div>
+          <div class="title">Did The Government Cause This Crisis?</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        
+        <p>한국의 유튜버 &#x27;앤드류 지크&#x27;(Andrei Jikh)는 영상에서 공포를 조장한 뒤 해결책을 제시하고, 그 다음 통제를 가하는 패턴이 반복되고 있다고 주장한다. 일부 사람들은 이러한 논리를 한 단계 더 확장해, 전 세계 정부들이 이러한 공포를 이용해 보다 중앙집권화되고 조율된 체제로 나아가고 있다고 말한다. 2015년에는 유엔 회원국 193개국 전체가 &#x27;2030 의제&#x27;라는 것에 서명했다. 이와 비슷한 시기에, 보다 통제된 금융 및 신원 확인 시스템을 위한 인프라도 구축되기 시작했다. 올해 초 영국은 노동할 권리를 증명하기 위한 디지털 신분증을 의무화하려는 시도를 했다. 프로그램 가능한 화폐를 위한 기반은 중앙은행 디지털화폐와 스테이블코인을 통해 구축되고 있다. 그리고 불과 며칠 전 열린 G20 회의에서 미국 국무장관은 전 세계 외교장관들에게 지금은 이른바 &#x27;선택의 순간&#x27;이며 이러한 위기들은 집단적인 해결책을 필요로 한다고 말했다. 패턴을 찾는 데 익숙한 사람이라면 여기서 패턴을 발견하기가 어렵지 않을 것이라고 영상은 말한다. 즉 공포를 조장하고, 해결책을 제시한 뒤, 통제가 뒤따른다는 것이다. 이러한 모든 지역적 위기들은 결국 더 많은 권력을 중앙집권화할 기회로 이용되고 있다는 것이 영상의 결론이다.</p>
+        <a class="watch" href="https://www.youtube.com/shorts/zddHwsd3rak" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-8">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">Andrei Jikh</div>
+          <div class="title">Fear Is Being Used Against You</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        
+        <p>fear를 전쟁 관련 공포 마케팅을 이용해 돈을 버는 구조에 대한 영상이다. 영상은 방위산업체들이 전쟁이 실제로 일어나든 일어나지 않든 이익을 본다고 지적한다. 전쟁을 준비하는 것 자체가 하나의 산업이자 비즈니스이기 때문이다. 공포는 사람들의 주의를 끄는 데 매우 효과적이며, 이 주의는 광고주들에게 중요한 가치를 지닌다. 광고주들은 돈을 지불하면서까지 사람들의 관심을 원하고, 공포는 사람들이 물건을 구매하도록 만드는 데도 매우 효과적인 수단이다. 영상은 이러한 현상이 과거에도 있었다는 점을 지적하며 2017년 사례를 든다. 당시 북한과의 전쟁 가능성에 대한 공포가 미국 대중 사이에 퍼졌고, 사람들은 이에 대비하기 시작했다. 한 미국 비상식량 회사는 이 시기 매출이 두 배로 늘었다고 밝혔다. 즉 공포가 하나의 산업 전체를 키운 셈이며, 이는 공포가 상품을 팔리게 만들기 때문이라고 설명한다. 다만 영상은 통조림 같은 비상식량이 실제 큰돈이 되는 영역은 아니라고 지적한다. 3일치 비상 키트는 대부분의 사람들에게 약 100달러 정도의 일회성 구매에 그치기 때문이다. 진짜 돈의 흐름을 보려면 포트리스 같은 기업을 봐야 한다고 말하며, 이들은 마이크로그리드, 배터리 저장 장치, 200개 기지에 들어갈 휴대용 원자로 같은 것들을 원한다고 설명한다. 이러한 사업은 수년에 걸쳐 수십억 달러 규모의 가치를 지닌다. 결국 방위산업체들은 전쟁이 일어나든 일어나지 않든 승리하는 구조인데, 전쟁 준비 자체가 이미 하나의 산업이기 때문이다. 영상은 이러한 공포 중 일부는 완전히 알고리즘에 의해 유발된 것이고, 일부는 수익을 위한 것이며, 또 일부는 사람들이 두려움을 느끼기를 원하는 이들에 의해 의도적으로 확산된다고 결론짓는다. 이는 공포가 곧 관심이고, 관심이 곧 자본이기 때문이라는 메시지로 영상을 마무리한다.</p>
+        <a class="watch" href="https://www.youtube.com/shorts/pdX1mCIjMwo" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-9">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">Andrei Jikh</div>
+          <div class="title">The Food Supply Is Getting Attacked</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        
+        <p>지난 몇 주간 유럽 전역에서 식료품 공급망을 겨냥한 것으로 의심되는 사이버 공격이 잇따라 발생했다. 벨기에, 스웨덴, 아일랜드, 에스토니아, 룩셈부르크의 슈퍼마켓에서 냉동고와 냉장고가 과열되어 수백만 파운드 상당의 식품이 폐기되는 사건이 벌어졌고, 불과 몇 주 전에는 프랑스의 500개 이상 슈퍼마켓에서도 비슷한 일이 발생해 일부 냉장 설비가 과열되어 화재까지 일으켰으며 수백만 유로 상당의 식품을 폐기해야 했다. 이러한 현상은 미국에서도 나타나고 있으며, 미군 기지 내 식료품점 여섯 곳에서 동일한 방식으로 설비 고장이 발생했다. 아직 누가 이 사건들의 배후인지는 밝혀지지 않았지만, 누군가가 한 국가의 식량 공급망 전체를 무너뜨릴 수 있는지를 시험하고 있는 것으로 보인다. 이러한 배경 속에서 미국은 포트리스라는 이름의 새로운 계획에 착수했다. 이는 전력망과 기타 핵심 인프라를 마비시키는 대규모 공격이 발생할 경우에도 군이 계속 작전을 수행할 수 있도록 군사 기지를 대비시키는 일종의 종말 대비 계획으로, 그 세부 내용은 상당히 불안감을 자아낸다. 한편 이란은 전쟁이 재개될 경우 이른바 깜짝 무기를 보유하고 있다고 주장했으며, 그 공격 대상으로는 해저 인터넷 케이블, 데이터센터, 인공지능 시설 등이 거론되고 있다.</p>
+        <a class="watch" href="https://www.youtube.com/shorts/hksCMldnbX4" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-10">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">SBS 교양이를 부탁해</div>
+          <div class="title">[긴급점검] &quot;트럼프 조기 레임덕 봉착했다&quot;...AI 투자 후폭풍 오나, 미 중간선거 이후 금융시장에 닥칠 일 / 교양이를 부탁해</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        
+        <p>트럼프 대통령 집권 2년 차를 맞은 미국 중간선거에서 민주당이 상원, 하원, 주지사 선거 모두에서 압도적인 승리를 거두며 이른바 블루스윕을 달성했다. 현직 대통령 소속 정당이 중간선거를 이렇게 크게 이기는 것은 역사적으로 매우 드문 일이며, 이는 단순한 견제 심리를 넘어 유권자들이 트럼프 정부에 대한 강한 통제 욕구와 분노를 표출한 결과로 해석된다. UMass의 타티시 은테타 교수의 여론조사 분석에 따르면 핵심 키워드는 신뢰의 문제다. 트럼프는 재선 당시 물가 인하, 전쟁 종식, 중산층과 서민층의 소비 여력 확대를 약속하며 히스패닉 유권자와 중도 성향 백인 여성층의 지지를 얻어 당선됐지만, 집권 후 물가는 잡히지 않았고 새로운 전쟁이 발발했으며 생활비 부담도 해소되지 않아 유권자들이 배신감을 느꼈다는 것이다.</p><p>다만 이번 선거 결과가 2년 뒤인 2028년 대선에서 민주당의 승리를 보장하는 것은 아니라는 점이 강조된다. 오히려 민주당이 향후 2년간 매우 바빠질 것이라는 전망이다. 민주당은 재집권의 발판을 마련했지만, 과거 오바마 행정부와 바이든 행정부 시절처럼 재생에너지와 이념적 정책에만 치중하다가 전력망 등 인프라 문제를 해결하지 못하고 성장 동력을 보여주지 못한 전철을 밟을 위험이 있다. 바이든 행정부 2기 당시에는 저소득층 지원을 위한 재정 투입이 과도한 인플레이션을 유발했고, 중국을 겨냥한 칩4 동맹 등 강경 조치가 반도체발 물가 상승을 부추기면서 유권자들의 실망으로 이어진 바 있다. 이런 학습 효과 때문에 유권자들은 향후 민주당의 모든 정책과 발언을 면밀히 검증할 것으로 예상된다.</p><p>실제로 이번에 당선된 민주당 소속 주지사들, 즉 텍사스, 오하이오, 미시간, 위스콘신 등에서는 데이터센터 건설과 관련해 물과 전력 사용량을 숨기는 비밀계약(NDA), 자원 소비와 환경 파괴, 투명성 부족 등을 문제 삼아 신규 데이터센터 개발에 조건부 또는 강한 규제를 요구하는 기조가 확인된다. 이는 비밀유지 해제, 투명성 확보, 자원의 무분별한 사용 방지, 주민을 위한 인센티브 마련이라는 네 가지 조건이 충족되면 사업을 진행하도록 하는 방향이며, 데이터센터 건설 자체를 완전히 막겠다는 것은 아니다. 금융시장에서는 이런 규제가 투자 지연과 반도체 등 수요 하향 조정으로 이어질 것을 우려하지만, 애초에 트럼프 행정부가 AI에 대한 기대감만으로 규제 없이 투자를 밀어붙인 것이 문제였기에 이번 규제 정비는 산업적으로 오히려 건강한 과정으로 볼 수 있다는 평가다.</p><p>중요한 점은 민주당이 만약 데이터센터 건설을 과도하게 지연시키거나 막아서 경제가 위축될 경우, 그 책임을 고스란히 뒤집어쓰고 2년 뒤 대선에서 공화당의 밴스 부통령에게 승기를 넘겨줄 수 있다는 것이다. 따라서 민주당 의원들이 규제 법안을 계속 발의하더라도 트럼프 대통령이 선제적으로 거부권을 행사하겠다고 선언하며 결국 양당이 중간 지점에서 타협할 가능성이 높다고 전망된다. 특히 양측의 실질적인 쟁점은 AI 자체가 아니라 전력 분야에 있다. 노후화된 교량과 전력망 등 인프라 교체는 바이든 행정부 시절에도 재생에너지와 메디케어, 메디케이드 확대에 예산을 과도하게 투입하면서 해결하지 못한 과제였고, 데이터센터 확산으로 전력 공급 문제가 다시 부각된 상황이다. 이 지점에서 양당이 협력해 전력망 문제를 해결하는 모습을 보이지 못하고 일방적으로 반대만 한다면 유권자들로부터 외면받을 수 있어, 민주당으로서는 매우 전략적이고 신중한 행보가 요구된다. 부자 증세와 같은 과거 민주당의 단골 정책 역시 실현 가능성이 낮고 포퓰리즘으로 비판받을 소지가 커서, 과거의 낡은 정책 모델을 그대로 답습하기는 어려울 것이라는 분석이다.</p><p>이어서 소개된 저서 &#x27;에이아이 붕괴 이후의 다음 질서&#x27;는 AI가 사라진다는 의미가 아니라, 금융시장이 가졌던 AI 혁명에 대한 환상과 과도한 기대가 붕괴한다는 의미로 설명된다. 금융시장은 그동안 AI는 혁명이니 무조건 성장할 것이고, 민주당이 집권해도 무조건 밀어붙일 것이며 경기 침체는 없을 것이라는 식의 단순한 가정에 기대왔지만, 실제로는 정치, 산업, 거시경제를 종합적으로 고려한 판단이 필요하다는 것이다. 저자는 금융 사이클 측면에서 보면 2024년 하반기부터 2026년 말까지 이어져온 설비투자 증가와 유동성 확대가 맞물린 모멘텀 장세가 정점을 지나고 있다고 진단한다. 실제로 블랙록이 최근 미국 자산 비중을 중립으로 하향 조정한 것도 이런 흐름을 보여주는 사례로 제시된다. 이 모멘텀이 정점을 지나면 주식과 하이일드 채권 같은 위험자산의 수익률은 상대적으로 낮아지고, 국채와 우량 회사채 중심의 수익률이 부각되는 국면으로 전환된다는 설명이다. 다만 모멘텀이 꺾였다고 해서 산업 자체의 질서가 멈추는 것은 아니며, 오히려 돈이 넘쳐나던 환경이 끝나고 선택과 집중이 필요한 국면으로 접어들면서 국방, 헬스케어, 에너지, 소비재 등 그동안 소외됐던 산업군이 새롭게 투자 기회를 얻을 수 있다고 전망된다. 아울러 트럼프 노선의 약화는 중국과 이란 등에게는 호재로 작용할 수 있으며, 전쟁이 끝나는 것이 아니라 국면이 전환되는 것으로 이해해야 한다는 점도 강조된다. 설령 두 전쟁이 동시에 종식되는 극적인 상황이 오더라도 이미 꺾인 금융 사이클을 되돌려 과거와 같은 급격한 반등을 만들어내기는 어려우며, 향후 시장은 소폭의 등락을 반복하는 국면에 가까울 것이라는 전망으로 마무리된다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=Q11RCvJdNpg" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-11">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">SBS 교양이를 부탁해</div>
+          <div class="title">&quot;서울인데 서울이 아니다&quot; 고소득 직장이 다시 그린 집값 지도 #교양이를부탁해 #부동산 #서울집값 #GTX #대서울역삼각권</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        
+        <p>서울의 주택시장과 부동산 가격 구조가 행정구역상의 경계가 아니라 실제 생활권과 업무지구와의 근접성을 기준으로 재편되고 있다는 내용이다. 행정구역으로서의 서울은 일반적으로 알려진 지도 모양을 하고 있지만, 실제 생활권으로서의 서울은 전혀 다른 형태를 띠고 있으며, 이를 넓게 보면 특정한 모양으로 확장되어 나타난다. 이 생활권에 속한 지역들은 결국 서로 비슷한 흐름으로 움직이며 동조화되는 양상을 보인다. 그 결과 행정구역상으로는 서울이지만 생활권상으로는 서울이 아닌 곳이 있는가 하면, 반대로 행정구역상으로는 서울이 아니지만 생활권상으로는 사실상 서울에 포함되는 지역도 존재한다. 이러한 현상이 나타나는 이유를 설명하기 위해 국민연금공단의 사업장 가입자 소득 빅데이터를 활용해 지역별 1인당 평균 소득 수준을 분석한 결과가 제시된다. 분석에 따르면 소득 상위 9분위와 10분위, 즉 1인당 연 소득이 약 566만 원 이상인 고소득 구간에 해당하는 지역들을 빨간색으로 표시했을 때, 이들 지역은 대부분 우수한 업무지구가 위치한 곳들과 일치하는 것으로 나타났다. 대표적으로 분당과 판교가 거대한 업무지구로서 고소득 지역에 포함되며, 삼성전자를 비롯한 대규모 반도체 클러스터가 위치한 지역 역시 이러한 고소득 지역 형성에 큰 영향을 미친 것으로 설명된다. 다만 반도체 산업 관련 지역을 제외하더라도 전체적인 고소득 지역의 분포는 유사한 형태, 즉 역삼각형과 비슷한 모양으로 나타난다는 점이 강조된다. 이 역삼각형 형태의 고소득 지역 분포는 현재 다시 변화하는 양상을 보이고 있으며, 이는 곧 서울을 중심으로 한 집값 지도와 생활권의 구조가 고소득 직장 및 업무지구의 분포에 따라 지속적으로 재편되고 있음을 보여준다.</p>
+        <a class="watch" href="https://www.youtube.com/shorts/R-jRxCQlYkA" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-12">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">SBS 교양이를 부탁해</div>
+          <div class="title">2호선 안과 밖, 집값이 갈린다... 서울이 도쿄를 닮아간다? #교양이를부탁해 #부동산 #서울집값 #GTX #대서울역삼각권</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        
+        <p>2호선 내부와 외부로 서울 집값이 갈리는 현상이 나타나고 있다. 강남 3구와 강동구를 포함해 2호선 순환선 안쪽 지역이 함께 움직이는 반면, 외곽 지역은 다른 흐름을 보인다. 흔히 말하는 &quot;대서울권&quot;이라는 개념은 20~30년 뒤의 먼 미래로 여겨지지만, 실제로는 이미 5~10년 안에 일어나고 있는 변화이며, 2호선 내부와 강남 3구, 강동구가 함께 움직이는 흐름이 지금 현실로 나타나고 있다. 이는 기존에 생각해온 부동산 시장의 틀이 완전히 바뀌고 있다는 것을 의미한다. 서울 안에는 여러 업무지구가 존재하는데, 강남, 비교적 큰 업무지구인 잠실, 성수, 광화문의 CBD, 홍대와 합정, 그 사이의 여의도, 구로가산, 그리고 상암, 마곡, 강서 등이 있다. 그런데 이 중에서도 CBD, YBD, GBD라는 3대 업무지구는 모두 2호선 순환선 위 또는 그 안쪽에 위치해 있다. 이 순환선은 매우 중요한 의미를 가지는데, 도시에서는 순환선이 가장 핵심적인 역할을 하며 도시는 이 순환선을 따라 발전하기 때문이다. 이러한 구조는 일본 도쿄의 야마노테선과 정확히 닮아 있다. 도쿄의 부동산 시장 역시 야마노테선 안쪽과 바깥쪽으로 나뉘어 움직이는데, 서울에서도 지금 이와 똑같은 현상이 나타나고 있다.</p>
+        <a class="watch" href="https://www.youtube.com/shorts/TDe58C1kQE8" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+
+    <details class="vcard" id="vid-13">
+      <summary>
+        <div class="vmeta">
+          <div class="channel">Money Comics</div>
+          <div class="title">[슈카의 시황방송] 11월5일ㅣ트럼프 대신 심판받는 국장 ㅠㅠㅣ코스피 &amp; 코스닥 매도 사이드카</div>
+        </div>
+        <span class="chev">▾</span>
+      </summary>
+      <div class="body">
+        
+        <p>금요일인 11월 5일 슈카월드의 시황 방송 내용이다. 미국 중간선거에서 민주당이 압도적으로 승리했다는 소식이 전해지면서 국내 증시가 큰 충격을 받았다. 코스피는 5.4퍼센트, 코스닥은 5.15퍼센트 급락했고, 장중 코스피와 코스닥 모두에 매도 사이드카가 발동됐다. 삼성전자는 장중 7.9퍼센트까지 빠지며 20만원 선이 붕괴와 회복을 반복했고, SK하이닉스는 10퍼센트 넘게 급락하며 126만원 선에서 공방이 벌어졌다. 외국인은 이날 3조 7천억원 이상을 순매도하며 낙폭을 키웠다.</p><p>흥미로운 점은 전 세계 증시는 오히려 상승세였다는 것이다. 다우존스 3퍼센트, 나스닥 1.44퍼센트, MSCI월드 1.38퍼센트, 유럽 스톡스 1.82퍼센트가 올랐다. 민주당 승리로 정치적 불확실성이 완화된 데다, 미국 민주당이 이란 전쟁을 내년 1월까지 끝낼 것을 요구하면서 전쟁 위험이 줄어들어 국제유가가 WTI 기준 105달러에서 85달러까지 급락했고 금리도 크게 하락했다. 유가와 금리 하락은 통상 증시에 호재로 작용한다. 다만 민주당이 집권 시 AI 데이터센터 관련 규제를 강화할 것이라는 우려로 마이크론, 엔비디아 등 반도체 및 AI 관련주와 테슬라, 스페이스X 등 머스크 관련 기업들은 미국에서도 약세를 보였다. 반면 국내 증시는 반도체 비중이 커서 이 여파를 유독 크게 받았다는 분석이다. 카카오와 네이버는 각각 10퍼센트, 8.78퍼센트 급등하며 반도체 약세장 속에서도 눈에 띄는 상승을 보였고, 한진칼은 경영권 분쟁 이슈로 강세를 보였다. 삼성전기는 16퍼센트, 효성중공업은 13퍼센트 넘게 급락했으며 방산주인 한화에어로스페이스도 전쟁 종료 기대감에 약세를 보였다.</p><p>미국 정치 상황에 대해서는, 공화당이 하원과 상원에서 동시에 역전당한 것은 1946년 이후 1994년, 2006년에 이어 역사상 세 번째라는 설명이 있었다. 20대 트럼프 지지율이 7퍼센트까지 추락하는 등 2030세대에서 지지율이 붕괴됐는데, 이는 인플레이션과 고유가로 저소득층과 청년층의 삶이 어려워진 것이 핵심 원인으로 꼽혔다. JD 밴스 부통령은 이란 전쟁 때문에 선거에서 패배했다며 트럼프의 전쟁 정책을 우회적으로 비판했고, 차기 대권 주자로 거론되는 루비오 국무장관은 침묵을 지키고 있다고 전했다. 반면 트럼프 대통령은 전쟁은 옳은 결정이었으며 다시 같은 상황이 와도 똑같이 할 것이라고 반박하며, 유권자들이 휘발유 가격 인상이라는 단기적 고통을 감내하지 못해 선거에서 패배했을 뿐이라는 입장을 밝혔다.</p><p>장 막판에는 20만원과 126만원 선을 둘러싼 매수와 매도 공방이 치열하게 펼쳐졌으며, 삼성전자는 20만1500원, SK하이닉스는 126만4000원으로 소폭 반등하며 장을 마쳤다. 방송 진행자는 현재 저가 매수 구간일 가능성에 무게를 두고 있으며, 본인도 삼성전자 등을 분할 매수로 대응하고 있다고 밝혔다. 다만 AI 산업 자체가 버블로 판명되는 등의 구조적 악재가 아니라면 결국 반등할 것으로 보고 있으며, 코스피 5000선 아래에서는 매수 관점이 유효하다는 개인적 견해를 전했다. 다음 거래일인 금요일 장 시작이 현재 가격대 위에서 출발할지 아래에서 출발할지가 향후 박스권 형성에 중요한 분기점이 될 것이라는 전망으로 방송을 마무리했다.</p>
+        <a class="watch" href="https://www.youtube.com/watch?v=MllkP70RRXg" target="_blank" rel="noopener">Watch on YouTube →</a>
+      </div>
+    </details>
+  </section>
+
+  <footer class="foot">
+    <b>Investment Digest</b> · generated automatically. Not financial advice — personal reading notes only.
+  </footer>
+</div>
+<script>
+(function() {
+  var h = window.location.hash;
+  if (h && h.indexOf("#vid-") === 0) {
+    var el = document.querySelector(h);
+    if (el && el.tagName === "DETAILS") {
+      el.open = true;
+      el.scrollIntoView({block: "start"});
+    }
+  }
+})();
+</script>
+</body>
+</html>
